@@ -1,0 +1,6107 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass scrartcl
+\begin_preamble
+%\VignetteIndexEntry{variablekey}
+
+\usepackage{booktabs}
+\usepackage{Sweavel}
+\usepackage{graphicx}
+\usepackage{color}
+
+\usepackage[samesize]{cancel}
+
+
+
+\usepackage{ifthen}
+
+\makeatletter
+
+\renewenvironment{figure}[1][]{%
+
+ \ifthenelse{\equal{#1}{}}{%
+
+   \@float{figure}
+
+ }{%
+
+   \@float{figure}[#1]%
+
+ }%
+
+ \centering
+
+}{%
+
+ \end@float
+
+}
+
+\renewenvironment{table}[1][]{%
+
+ \ifthenelse{\equal{#1}{}}{%
+
+   \@float{table}
+
+ }{%
+
+   \@float{table}[#1]%
+
+ }%
+
+ \centering
+
+%  \setlength{\@tempdima}{\abovecaptionskip}%
+
+%  \setlength{\abovecaptionskip}{\belowcaptionskip}%
+
+% \setlength{\belowcaptionskip}{\@tempdima}%
+
+}{%
+
+ \end@float
+
+}
+
+
+%\usepackage{listings}
+% Make ordinary listings look as if they come from Sweave
+\lstset{tabsize=2, breaklines=true, %,style=Rstyle}
+                        fancyvrb=false,escapechar=`,language=R,%
+                        %%basicstyle={\Rcolor\Sweavesize},%
+                        backgroundcolor=\Rbackground,%
+                        showstringspaces=false,%
+                        keywordstyle=\Rcolor,%
+                        commentstyle={\Rcommentcolor\ttfamily\itshape},%
+                        literate={<<-}{{$\twoheadleftarrow$}}2{~}{{$\sim$}}1{<=}{{$\leq$}}2{>=}{{$\geq$}}2{^}{{$^{\scriptstyle\wedge}$}}1{==}{{=\,=}}1,%
+                        alsoother={$},%
+                        alsoletter={.<-},%
+                        otherkeywords={!,!=,~,$,*,\&,\%/\%,\%*\%,\%\%,<-,<<-,/},%
+                        escapeinside={(*}{*)}}%
+
+
+% In document Latex options:
+\fvset{listparameters={\setlength{\topsep}{0em}}}
+\def\Sweavesize{\scriptsize} 
+\def\Rcolor{\color{black}} 
+\def\Rbackground{\color[gray]{0.95}}
+
+% for sideways table
+\usepackage{rotating}
+\end_preamble
+\use_default_options true
+\begin_modules
+sweave
+logicalmkup
+\end_modules
+\maintain_unincluded_children false
+\language american
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "lmodern" "default"
+\font_sans "lmss" "default"
+\font_typewriter "lmtt" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Variable Key Data Management Framework
+\end_layout
+
+\begin_layout Author
+
+\lang english
+Paul E.
+ Johnson<pauljohn@ku.edu>
+\begin_inset Newline newline
+\end_inset
+
+Benjamin A.
+ Kite<bakite@ku.edu> 
+\begin_inset Newline newline
+\end_inset
+
+Center for Research Methods and Data Analysis
+\begin_inset Newline newline
+\end_inset
+
+University of Kansas
+\end_layout
+
+\begin_layout Date
+\paragraph_spacing single
+\noindent
+
+\series bold
+\lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+today
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+This essay describes the 
+\begin_inset Quotes eld
+\end_inset
+
+variable key
+\begin_inset Quotes erd
+\end_inset
+
+ approach to importing and recoding data.
+ This method has been developed in the Center for Research Methods and Data
+ Analysis at the University of Kansas to deal with the importation of large,
+ complicated data sets.
+ This approach improves teamwork, keeps better records, and reduces slippage
+ between the intentions of principal investigators the implementation by
+ code writers.
+ The framework is implemented in the R 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "RCore"
+
+\end_inset
+
+ package 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+if(!dir.exists("plots")) dir.create("plots")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+% In document Latex options:
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fvset{listparameters={
+\backslash
+setlength{
+\backslash
+topsep}{0em}}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+SweaveOpts{prefix.string=plots/t,split=T,ae=F,height=4,width=5.5}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Roptions, echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+options(device = pdf)
+\end_layout
+
+\begin_layout Plain Layout
+
+options(width=100, prompt=" ", continue="  ")
+\end_layout
+
+\begin_layout Plain Layout
+
+options(useFancyQuotes = FALSE) 
+\end_layout
+
+\begin_layout Plain Layout
+
+options(SweaveHooks=list(fig=function() par(ps=10)))
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(onefile=F,family="Times",pointsize=10)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The staff of the Center for Research Methods and Data Analysis has been
+ asked to help with data importation and recoding from time to time.
+ In one very large project, we were asked to combine, recode, and integrate
+ variables from 21 different files.
+ The various files used different variable names and had different, unique
+ coding schemes.
+ A skeptic might have thought that the firm which created the data sets
+ intentionally obfuscated the records to prevent the comparison of variables
+ across a series of surveys.
+\end_layout
+
+\begin_layout Standard
+In projects like that, the challenge of importing and fixing the data seems
+ overwhelming.
+ The graduate research assistants are asked to cobble together thousands
+ of lines of 
+\begin_inset Quotes eld
+\end_inset
+
+recodes
+\begin_inset Quotes erd
+\end_inset
+
+ as they rename, regroup, and otherwise harmonize the information.
+ From a managerial point of view, that is not the main problem.
+ We expect to spend the time of research assistants.
+ While it may be tedious to read a codebook and write recodes, social scientists
+ have been doing that since the 1960s.
+ It is not all that difficult.
+ The truly difficult part is mustering up the confidence in the resulting
+ recoded data.
+ How can a supervisor check thousands of recode statements for accuracy?
+ The very extensibility of R itself–its openness to new functions and language
+ elements–makes proof-reading more difficult.
+ We might shift some of the proof reading duty to the principle investigators,
+ but they sometimes are not interested in details.
+ In the end, the responsibility for verifying the recodes falls on the project
+ supervisors.
+ While most supervisors with whom we are personally acquainted have nearly
+ super-human reading skills and almost-perfect comprehension, we have documented
+ a case in which one of them was unable to catch an error on line 827 within
+ an R file with 2119 lines.
+ 
+\end_layout
+
+\begin_layout Standard
+To reduce the risk of misunderstanding and error, we propose the 
+\emph on
+variable key procedure
+\emph default
+.
+ It is a systematic way to separate code writing from the process of renaming
+ variables and re-designating their values.
+ The characteristics of the data are summarized in a table, a simple-looking
+ structure that might be edited in a text editor or a spread sheet program.
+ This simple structure, which we call the variable key, can be used by principal
+ investigators and supervisors to designate the desired results.
+ Once the key is created, then the data set can be imported and recoded
+ by the application of the key's information.
+ This does not eliminate the need to proof-read the renaming and recoding
+ of the variables, it simply shifts that chore into a simpler, more workable
+ setting.
+\end_layout
+
+\begin_layout Standard
+This essay proceeds in 3 parts.
+ First, the general concepts behind the variable key system are explored.
+ Second, the four stages in the variable key procedure are outlined and
+ illustrated with examples.
+ Third, we offer some examples of ways to double-check the results.
+\end_layout
+
+\begin_layout Section
+Enter the Variable Key
+\end_layout
+
+\begin_layout Standard
+The variable key process was first developed for a very large project for
+ which we were hired by a commercial consulting company.
+ As it happened, the project manager who hired us was an Excel user who
+ did not know about R.
+ He was given several SPSS datasets.
+ After going through the usual R process of importing and recoding data
+ from 6 files, the aggregate of which included more than 40,000 observations
+ on 150 variables, we arrived at a renamed set of columns.
+ Unfortunately, the research assistant who had done most of the work resigned
+ in order to pursue a career as a magician.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Or graduated, we are not sure which.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+With the unavailability of our key asset, it was difficult to know for sure
+ what was in which column.
+ There was nobody to quickly answer questions like 
+\begin_inset Quotes eld
+\end_inset
+
+which column is the respondent's sexual identity?
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+if sex is V23418, did we change 1 to male or female
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The only way to find out is by hunting and pecking through a giant R file.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to better communicate about that project, we developed a table
+ that looked like Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:A-Small-Variable-key"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A Small Variable Key
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:A-Small-Variable-key"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values_new
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V23419
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+sex
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1|2|3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+male
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+female
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+neither
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V32422
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+education
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1|2|3|4|5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+elem
+\begin_inset Quotes erd
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+hs
+\begin_inset Quotes erd
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+somecoll
+\begin_inset Quotes erd
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+ba
+\begin_inset Quotes erd
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+post
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+V54532
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+income
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+.
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+numeric
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It was tedious to assemble that table, but it helped quite a bit in our
+ discussions.
+ The vertical bars were used to indicate that the original data had discrete
+ values.
+ When a variable has a natural ordering, the new values were placed in order
+ with the symbol (
+\begin_inset Quotes eld
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+).
+ That table grew quite large, since it had one row per variable, but it
+ was otherwise workable.
+ It was popular with the client.
+ 
+\end_layout
+
+\begin_layout Standard
+In the middle of preparing that summary table of recoded values, we realized
+ that it was possible to write an R program to import the key table and
+ use its information to recode and rename the variables.
+ The recodes would 
+\emph on
+just happen
+\emph default
+.
+ If we prepared the functions properly, we had not just a table masquerading
+ as a codebook, we had a 
+\emph on
+programmable codebook
+\emph default
+.
+ We wrote some functions that could import variables (as named in column
+ 1), apply the new values (from columns 3 and 4), then apply the new name
+ from column 2.
+ The functions to do that are somewhat difficult to prepare, but they are
+ very appealing from a supervisor's point of view.
+ There will be less proof-reading to do, at least in the R code itself.
+ Once we can validate the functions, then we never have to proof-read them
+ again.
+ These functions can be applied, row by row, to create a new data frame.
+ Instead, we need to concentrate our attention on the substance of the problem,
+ the specification of the new names and values in the table.
+\end_layout
+
+\begin_layout Standard
+In the projects where we have employed this system, we adjusted the key
+ and the R functions to suit the particular demands of the project and the
+ client.
+ That was unfortunate, because we had very little accumulation of code from
+ one project to another.
+ However, we did accumulate experience; there were concepts and vocabulary
+ which allowed us to understand the various challenges that might be faced.
+ The effort to develop a standardized framework for the variable key began
+ in 2016 with the creation of the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+ package for R.
+\end_layout
+
+\begin_layout Standard
+The variable key process allows project supervisors to create a table that
+ instructs the research assistants in the importation, renaming, and recoding
+ of data.
+ There is still a daunting problem, however, because the supervisors must
+ create that variable key table.
+ In a large data set, it might be arduous to simply type the old names of
+ the variables and their observed values.
+ In 2015 one of the graduate assistants in our lab was asked to type up
+ a variable key and he couldn't quite believe that was a good use of his
+ time.
+ After some discussion, we realized that it was not necessary to type the
+ variable key at all.
+ We would write a function to do so.
+ If R can import the candidate data set, then R can certainly output its
+ column names and a roster of observed values.
+ This lightened the workload considerably.
+ By tabulating all of the observed variables and their values, the most
+ tedious part of the process was done mechanically.
+ 
+\end_layout
+
+\begin_layout Standard
+In the remainder of this essay, we discuss the process of creating a variable
+ key template, revising it, and putting it to use.
+ 
+\end_layout
+
+\begin_layout Section
+Four Simple Steps
+\end_layout
+
+\begin_layout Standard
+The variable key process has four steps.
+ First, inspect an R data.frame object and create a key template file.
+ The key template summarizes the existing state of the variables and creates
+ 
+\begin_inset Quotes eld
+\end_inset
+
+placeholders
+\begin_inset Quotes erd
+\end_inset
+
+ where we might like to specify revisions.
+ Second, edit the key template file in a spreadsheet or other program that
+ can work with comma separate variables.
+ Change the names, values, and designate other recodes (which we will describe
+ next).
+ Third, import the revised key into R.
+ Fourth, apply the key to the data to generate a new, improved data frame.
+ Then run some diagnostic routines.
+\end_layout
+
+\begin_layout Standard
+If all goes well, we should end up with a new data frame in which
+\end_layout
+
+\begin_layout Enumerate
+The columns are renamed in accordance with the instructions of the principal
+ investigator (or supervisor).
+\end_layout
+
+\begin_layout Enumerate
+The values of all variables have been recoded according to the instructions
+ of the principal investigator (or supervisor).
+\end_layout
+
+\begin_layout Standard
+Diagnostic tables are reported to clearly demonstrate the effect of each
+ coding change, mapping out the difference between the input and the output
+ variables.
+ 
+\end_layout
+
+\begin_layout Standard
+For purposes of illustration, we have create an example data frame with
+ various types of variables.
+ This data frame, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+mydf
+\end_layout
+
+\end_inset
+
+, has most of the challenges that we see in actual projects.
+ It has integer variables that need to be reorganized and turned into character
+ or factor variables.
+ It has character variables that might become integers or factors.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<eval=T,include=T>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+set.seed(234234)
+\end_layout
+
+\begin_layout Plain Layout
+
+N <- 200
+\end_layout
+
+\begin_layout Plain Layout
+
+mydf <- data.frame(
+\end_layout
+
+\begin_layout Plain Layout
+
+    x5 = rnorm(N),
+\end_layout
+
+\begin_layout Plain Layout
+
+    x4 = rpois(N, lambda = 3),
+\end_layout
+
+\begin_layout Plain Layout
+
+    x3 = ordered(sample(c("lo", "med", "hi"), size = N, replace=TRUE),
+\end_layout
+
+\begin_layout Plain Layout
+
+            levels = c("med", "lo", "hi")),
+\end_layout
+
+\begin_layout Plain Layout
+
+    x2 = letters[sample(c(1:4,6), 200, replace = TRUE)],
+\end_layout
+
+\begin_layout Plain Layout
+
+    x1 = factor(sample(c("cindy", "jan", "marcia"), 200,
+\end_layout
+
+\begin_layout Plain Layout
+
+            replace = TRUE)),
+\end_layout
+
+\begin_layout Plain Layout
+
+    x7 = ordered(letters[sample(c(1:4,6), 200, replace = TRUE)]),
+\end_layout
+
+\begin_layout Plain Layout
+
+    x6 = sample(c(1:5), 200, replace = TRUE),
+\end_layout
+
+\begin_layout Plain Layout
+
+            stringsAsFactors = FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+mydf$x4[sample(1:N, 10)] <- 999
+\end_layout
+
+\begin_layout Plain Layout
+
+mydf$x5[sample(1:N, 10)] <- -999
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Step 1.
+ Create a Key Template
+\end_layout
+
+\begin_layout Standard
+The function 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+ scans a data frame and generates a new key template.
+ The key has 8 pieces of information about each variable.
+ The rows of the key are named by the variables of the data frame.
+ The 8 columns in the key are 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+ will fill 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+, in the with values based on the data input, while the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+new
+\end_layout
+
+\end_inset
+
+ columns will be copies of those old values.
+ The last 2, missings and recodes, will be empty.
+ 
+\end_layout
+
+\begin_layout Standard
+There are two formats for the key template, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+long
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+wide
+\end_layout
+
+\end_inset
+
+ (determined by the parameter 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+long
+\end_layout
+
+\end_inset
+
+).
+ These names are drawn from terminology in R's reshape function.
+ The long format has one row per value of each variable, while the wide
+ format has all of the information in one row.
+ The two key formats are intended to be interchangeable in functionality;
+ they differ solely for convenience.
+ Some users may prefer to edit variable information in one style.
+ The re-importation of the key should deal gracefully with either type of
+ variable key.
+ 
+\end_layout
+
+\begin_layout Standard
+A wide format key can be produced with a call to the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+ function like so:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+key_wide <- keyTemplate(mydf, file = "key_wide.csv", max.levels = 5)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+If the long argument is not specified, a wide key is the default.
+ One can ask for a long format:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+key_long <- keyTemplate(mydf, long = TRUE, file = "key_long.csv", max.levels
+ = 5)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+The key object is a data.frame.
+ 
+\end_layout
+
+\begin_layout Standard
+Apart from the long argument, the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+ function has two especially noteworthy arguments, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+file
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+max.levels
+\end_layout
+
+\end_inset
+
+.
+ If the file argument is supplied, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+keyTemplate
+\end_layout
+
+\end_inset
+
+ uses the suffix to determine storage format.
+ Legal suffixes are 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+.csv
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+.xlsx
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+.rds
+\end_layout
+
+\end_inset
+
+ (for creating comma separated variables, Excel spreadsheets, and R serializatio
+n data structures).
+ 
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+max.levels
+\end_layout
+
+\end_inset
+
+ argument is also important.
+ This is used in the same sense that functions like 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+read.spss
+\end_layout
+
+\end_inset
+
+ in the foreign package use that term.
+ There is guessing involved in deciding if we should enumerate a character
+ or integer variable.
+ We do want to enumerate the 
+\begin_inset Quotes eld
+\end_inset
+
+Strongly Disagree
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+Strongly Agree
+\begin_inset Quotes erd
+\end_inset
+
+ values of a 7 point scale, but we do not want to enumerate the first names
+ of all study participants.
+ If the number of discrete values exceeds 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+max.levels
+\end_layout
+
+\end_inset
+
+, for which the default is 15, then the key will not enumerate them.
+ 
+\end_layout
+
+\begin_layout Standard
+Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-Wide-Key"
+
+\end_inset
+
+ demonstrates a wide key template as it is produced by 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+.
+ We see now why it is called a wide key; the recoding information is tightly
+ packed into 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+.
+ The key includes more or less obvious columns for the old and new variable
+ names, their classes, and values of the variables.
+ Note that the values of x5 and x4 are not enumerated because we set max.levels
+ at 5.
+ The 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+max.levels
+\end_layout
+
+\end_inset
+
+ parameter defaults to 15, so that an integer variable with less than 15
+ values will have each value displayed.
+ For this example, the display of that variable key was too wide for the
+ page, so we reduced the number of values.
+ When the observed number of scores is above 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+max.levels
+\end_layout
+
+\end_inset
+
+, the key does not try to list the individual values (compare the treatment
+ of variables 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+x4
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+\noindent
+x6
+\end_layout
+
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<key0, include=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(kutils)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(xtable)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<key10, echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+key_wide <- keyTemplate(mydf, max.levels = 5)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A long key template is displayed in Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Long-Key"
+
+\end_inset
+
+.
+ The benefit of the long key is that the cells 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+ are easier to navigate.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<key30,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+key_long <- keyTemplate(mydf, long = TRUE, max.levels = 5)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The Wide Key Template
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:The-Wide-Key"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+def
+\backslash
+Sweavesize{
+\backslash
+tiny}
+\end_layout
+
+\begin_layout Plain Layout
+
+<<key20,echo=FALSE,results=tex>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+print(xtable(key_wide), include.rownames = FALSE, size = "small", floating
+ = FALSE )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The Long Key Template
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Long-Key"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+def
+\backslash
+Sweavesize{
+\backslash
+tiny}
+\end_layout
+
+\begin_layout Plain Layout
+
+<<key40,echo=FALSE,results=tex>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+print(xtable(key_long), include.rownames = FALSE, size = "small", floating
+ = FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The value of 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+ in the key is the first element in the return from the function class for
+ a variable.
+ There is one exception, where we have tried to differentiate integer variables
+ from numeric variables.
+ This is a confusing isssue in the history of R, as discussed in the R help
+ page for the function 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+as.double
+\end_layout
+
+\end_inset
+
+.
+ ,In the 
+\emph on
+Note on names
+\emph default
+ section, that page explains an 
+\begin_inset Quotes eld
+\end_inset
+
+anomaly
+\begin_inset Quotes erd
+\end_inset
+
+ in the usage of term 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+numeric
+\end_layout
+
+\end_inset
+
+.
+ The R function 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+as.numeric
+\end_layout
+
+\end_inset
+
+ creates a double precision floating point value, not an integer.
+ However, the is.numeric function responds TRUE for both integers and floating
+ point values.
+ For purposes of editing the key, it is useful to differentiate integers
+ from floating point numbers.
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+ includes a function named 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+safeInteger
+\end_layout
+
+\end_inset
+
+.
+ It checks the observed values of a variable to find out if any floating
+ point values are present.
+ If the aggregate deviations from integer values are miniscule, then a variable
+ is classified as an integer.
+ As a result, the keyTemplate function's column 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+ should be 
+\begin_inset Quotes eld
+\end_inset
+
+integer
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+numeric
+\begin_inset Quotes erd
+\end_inset
+
+, and by the latter we mean a floating point number.
+ 
+\end_layout
+
+\begin_layout Standard
+In some of our early projects, the variable key was in the wide format.
+ Difficulty in editing that caused us to shift some projects to the long
+ key.
+ The idea that we would glide back and forth between keys created in the
+ wide and long formats dawned on us only recently.
+ To ease the conversion back-and-forth between the formats, we developed
+ the functions named 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+wide2long
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+long2wide
+\end_layout
+
+\end_inset
+
+.
+ We believe these functions work effectively, but we have experienced some
+ troubles related to the way spreadsheets store character strings.
+ If the key in long format has a column of values 
+\begin_inset Quotes eld
+\end_inset
+
+Yes
+\begin_inset Quotes erd
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+No
+\begin_inset Quotes erd
+\end_inset
+
+, and 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+, the wide representation should be 
+\begin_inset Quotes eld
+\end_inset
+
+Yes|No|
+\begin_inset Quotes erd
+\end_inset
+
+, but there is some inclination to say we should have nested quotation marks,
+ as in 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+Yes
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+No
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+ That kind of string will not generally survive importation to and export
+ from a spread sheet at the current time.
+\end_layout
+
+\begin_layout Subsection
+Step 2.
+ Edit the variable key
+\end_layout
+
+\begin_layout Standard
+If the file argument was specified in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+, the work is laid out for us.
+ One can edit a csv file in any text editor or in a spreadsheet.
+ An xlsx file can be edited by Libre Office or Microsoft Office.
+ 
+\end_layout
+
+\begin_layout Standard
+It is not necessary to change all of the values in name_new, class_new,
+ and value_new.
+ In fact, one might change just a few elements and the un-altered variables
+ will remain as they were when the data is re-imported.
+ We suggest users start small by making a few edits in the key.
+ A principal investigator might change just a few variable names or values.
+ In a large project, there may be quite a bit of work involved.
+ 
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+
+ column must never be edited.
+ Generally, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ will not be edited either (the only exception might arise if 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ is either 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+factor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+).
+ The 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+
+ column should include legal R variable names (do not begin name_new with
+ a numeral or include mathematical symbols like 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+-
+\begin_inset Quotes erd
+\end_inset
+
+).
+ We use R's 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+make.names
+\end_layout
+
+\end_inset
+
+ function to clean up errant entries, so incorrect names are not fatal.
+\end_layout
+
+\begin_layout Standard
+The difficult user decisions will concern the contents of class_new and
+ value_new.
+ The desired variable type, of course, influences the values that are meaningful.
+ To convert a character variable to integer, for example, it should go without
+ saying that the value_new element should include integer values, not text
+ strings.
+\end_layout
+
+\begin_layout Standard
+The conversion of information from one type of variable into another may
+ be more complicated than it seems.
+ It is a bit more tricky to convert a factor into a numeric variable that
+ uses the factor's levels as numeric values.
+ 
+\end_layout
+
+\begin_layout Standard
+After experimenting with a number of cases, we believe that if 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ are elements of this the 
+\begin_inset Flex Emph
+status open
+
+\begin_layout Plain Layout
+safe class set
+\end_layout
+
+\end_inset
+
+: 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+logical
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+numeric
+\end_layout
+
+\end_inset
+
+ (same as 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+double
+\end_layout
+
+\end_inset
+
+), 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+factor
+\end_layout
+
+\end_inset
+
+, or 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+
+, then the re-importation and recoding of data will be more-or-less automatic.
+ If 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ differs from 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ is not an element in that 6 element set, then the user must supply a recode
+ function that creates a variable of the requested class.
+ Most commonly, we expect that will be used to incorporate 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+Date
+\end_layout
+
+\end_inset
+
+ variables.
+\end_layout
+
+\begin_layout Standard
+The enumerated values in the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+ column should be specified in the more or less obvious way.
+ If 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ is equal to 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+factor
+\end_layout
+
+\end_inset
+
+, or 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+
+, then the new values can be arbitrary strings.
+ 
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+ columns are empty in the key template.
+ The user will need to fill in those values if they are to be used.
+ When the key is later put to use, the order of processing will be as follows.
+ First, the values declared as missings will be applied (convert observed
+ value to R's NA symbol).
+ Second, if there is a recode function in the key, it is applied to a variable.
+ Third, if there was no recode function supplied, then the conversion of
+ discrete values by recalculation from 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ into 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+ will be applied.
+ Note that the discrete values are applied only if the recode cell is empty
+ in the key.
+\end_layout
+
+\begin_layout Standard
+The decision of whether to approach a given variable via value enumeration
+ or a recode function is, to an extent, simply a matter of taste.
+ Some chores that might be handled in either way.
+ If a variable includes floating point numbers (temperatures, dollar values,
+ etc), then we would not rely on new assignments in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+.
+ Truly numeric variables of that sort almost certainly call for assignment
+ of missings and recodes by the last two cells in the variable key.
+ However, if a column includes integers or characters (1 = male, 2 = female),
+ one might use the enumerated values (
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+) or one could design a recode function to produce the same result.
+ It is important to remember that if a recode function is applied, the enumerate
+d value recoding is not.
+ If one decides to use a recode statement, then the elements in value_old
+ and value_new are ignored entirely, they could be manually deleted to simplify
+ the key.
+ (That is to say, the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+max.levels
+\end_layout
+
+\end_inset
+
+ parameter is just a way of guessing how many unique levels is 
+\begin_inset Quotes eld
+\end_inset
+
+too many
+\begin_inset Quotes erd
+\end_inset
+
+ for an enumeration.
+ Users are free to delete values if recodes are used.)
+\end_layout
+
+\begin_layout Standard
+Despite the possibility that a factor (or ordered) variable may have many
+ values, we believe that all of the levels of those variables should be
+ usually be included in the key.
+ If a variable is declared as a factor, it means the researcher has assigned
+ meaning to the various observed values and we are reluctant to ignore them.
+ 
+\end_layout
+
+\begin_layout Standard
+There is a more important reason to enumerate all of the legal values for
+ factor variables.
+ If a value is omitted from the key, that value will be omitted from the
+ dataset.
+ 
+\end_layout
+
+\begin_layout Standard
+Among our users, we find opinion is roughly balanced between the long and
+ the wide key formats.
+ One might simply try both.
+ If the number of observed values is more than 5 or 10, editing the key
+ in a program like Microsoft Excel is less error prone in the long key.
+ This is simply a matter of taste, however.
+ The disadvantage of the long format is that it is somewhat verbose, with
+ repeated values in the name and class values.
+ If an editor makes an error in the assignment of a block, then hard to
+ find errors may result.
+\end_layout
+
+\begin_layout Standard
+Because editing the key can be a rather involved process, we will wait to
+ discuss the details until section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Editing-the-key"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Step 3.
+ keyImport
+\end_layout
+
+\begin_layout Standard
+Once any desired changes are entered in the variable key, the file needs
+ to be imported back into R.
+ For that purpose, we supply the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyImport
+\end_layout
+
+\end_inset
+
+ function.
+ As in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyTemplate
+\end_layout
+
+\end_inset
+
+, the file argument's suffix is used to discern whether the input should
+ be read as .csv, .xlsx, or .rds.
+ It is not necessary to specify that the key being imported is in the long
+ or wide format.
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyImport
+\end_layout
+
+\end_inset
+
+ includes heuristics that have classified user-edited keys very accurately.
+ 
+\end_layout
+
+\begin_layout Standard
+The returned value is an R data frame that should be very similar to the
+ template, except that the new values of 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+ will be visible.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to test this function with the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+ package, we include some variable keys.
+ The usage of those keys is demonstrated in the help page for 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyImport
+\end_layout
+
+\end_inset
+
+.
+ In addition to the mydf toy data frame created above, we also include a
+ subset of the US National Longitudinal Survey in a data frame named 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+natlongsurv
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Step 4.
+ Apply the imported key to the data
+\end_layout
+
+\begin_layout Standard
+The final step is to apply the key to the data frame (or some other data
+ frame that may have arrived in the interim).
+ The syntax is simple
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+mydf.cleaned <- keyApply(mydf, mydf.keylist)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because the default value of the argument 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+diagnostic
+\end_layout
+
+\end_inset
+
+ is TRUE, the output from 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyApply
+\end_layout
+
+\end_inset
+
+ is somewhat verbose.
+ After we have more feedback from test users, we will be able to quiet some
+ of that output.
+ 
+\end_layout
+
+\begin_layout Standard
+The diagnostic output will include information about mismatch between the
+ key and the data itself.
+ If variables that are included in the key that are not included in the
+ new data set, there will not be an error, but a gentle warning will appear.
+ Similarly, if the observed values of an enumerated variable are not included
+ in the variable key, there will be a warning.
+ 
+\end_layout
+
+\begin_layout Standard
+The diagnostic will also create a cross tabulation of each new variable
+ against its older counterpart.
+ This works very well with discrete variables with 10 or so values, but
+ for variables with more values it is rather unmanageable.
+ 
+\end_layout
+
+\begin_layout Section
+Editing the variable key
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Editing-the-key"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The work of revising the variable key can be driven by the separation of
+ variables into two type.
+ The variables with enumerated values–the ones for which we intend to rename
+ or re-assign values one-by-one–are treated in a very different way than
+ the other ones.
+ The enumerated value strategy works well with variables for which we simply
+ need to rename categories (e.g, 
+\begin_inset Quotes eld
+\end_inset
+
+cons
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+Conservative
+\begin_inset Quotes erd
+\end_inset
+
+).
+ Variables for which we do not do so (e.g., convert Fahrenheit to Celsius)
+ are treated differently.
+\end_layout
+
+\begin_layout Standard
+As we will see in this section, the revision of variables of the enumerated
+ value type emphasizes the revision of the value_old and value_new columns
+ in the key.
+ On the other hand, the other types will depend on writing correctly formatted
+ statements in the recode column of the variable key.
+\end_layout
+
+\begin_layout Subsection
+Enumerated variables
+\end_layout
+
+\begin_layout Standard
+All of the values observed for 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+logical
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+factor
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+
+ variables will appear in the key template.
+ Do not delete them unless the exclusion of those values from the analysis
+ intended.
+ For character and integer variables with fewer than 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+max.levels
+\end_layout
+
+\end_inset
+
+ discrete values, the observed scores will be included in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+.
+ If one wishes to convert a variable from being treated as an enumerated
+ to a numeric type, then one can delete all values from 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The recoding of discrete variables is a fairly obvious chore.
+ For each old value, a new value must be specified.
+ We first consider the case of a variable that enters as a character variable
+ but we might like to recode it and also create factor and integer variants
+ of it.
+ In the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+mydf
+\end_layout
+
+\end_inset
+
+ variable key (Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-Wide-Key"
+
+\end_inset
+
+), we have variable 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+x2
+\end_layout
+
+\end_inset
+
+ which is coded 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+a
+\end_layout
+
+\end_inset
+
+ through 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+f
+\end_layout
+
+\end_inset
+
+.
+ We demonstrate ways to spawn new character, factor, or integer variable
+ in Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Change-Type-Example1"
+
+\end_inset
+
+.
+ As long as name_old is preserved, as many lines as desired can be used
+ to create variables of different types.
+ Here we show the middle section of the revised key in which we have spawned
+ 3 new variants of x2, each with its own name.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Change Class, Example 1
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Change-Type-Example1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2.char
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+a|b|c|d|f
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Excellent|Proficient|Good|Fair|Poor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2.fac
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+factor
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+a|b|c|d|f
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Excellent|Proficient|Good|Fair|Poor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2.gpa
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+a|b|c|d|f
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4|3|2|1|0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In line one of Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Change-Type-Example1"
+
+\end_inset
+
+, the class 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+
+ remains the same.
+ That line will produce a new character variable with embellished values.
+ Line two demonstrates how to create an R factor variable, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+x2.fac
+\end_layout
+
+\end_inset
+
+, and line three converts the character to an integer variable.
+ Remember that it is important to match the value of 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ with the content proposed for 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+.
+ Do not include character values in a variable for which the new class will
+ be numeric or integer.
+ 
+\end_layout
+
+\begin_layout Standard
+Similarly, it is obvious to see how an integer input can be converted into
+ either an integer, character, or factor variable by employing any of the
+ rows seen in Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Change-Type-Example2"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Change Class Example 2
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Change-Type-Example2"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x6.i100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1|2|3|4|5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100|200|300|400|500
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x6.c
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1|2|3|4|5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Austin|Denver|Nashville|Provo|Miami
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x6.f
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+factor
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1|2|3|4|5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+F|D|C|B|A
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If a variable's 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+
+ is ordered, and we simply want to relabel the existing levels, the work
+ is also easy (see Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Change-Type-Example3"
+
+\end_inset
+
+).
+ The second row in Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Change-Type-Example3"
+
+\end_inset
+
+ shows that factor levels can be 
+\begin_inset Quotes eld
+\end_inset
+
+combined
+\begin_inset Quotes erd
+\end_inset
+
+ by assigning the same character string to several 
+\begin_inset Quotes eld
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+ separated values.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Change Class, Example 3
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Change-Type-Example3"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x7.grades
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+f<d<c<b<a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+F<D<C<B<A
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x7.passfail
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+f<d<c<b<a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fail<Fail<Pass<Pass<Pass
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x7.gpa
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+f<d<c<b<a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0|1|2|3|4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Working with ordered variables, whether as input or output, becomes more
+ complicated if the existing data are not ordered in the way we want.
+ In the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+mydf
+\end_layout
+
+\end_inset
+
+ example, the variable 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+mydf$x3
+\end_layout
+
+\end_inset
+
+ was coded as an ordered variable with levels (
+\begin_inset Quotes eld
+\end_inset
+
+med
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+lo
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+high
+\begin_inset Quotes erd
+\end_inset
+
+).
+ That might have been one person's idea of a joke, so we need to rearrange
+ these as (
+\begin_inset Quotes eld
+\end_inset
+
+lo
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+med
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+high
+\begin_inset Quotes erd
+\end_inset
+
+).
+ If the original ordering of the values is not consistent with the desired
+ ordering of the new ordered factor, then we need notation that allows researche
+rs to achieve two purposes.
+ First, the values must be re-leveled.
+ Second, allow for the possibility that the new values must be relabeled
+ as well.
+ We'd rather not proliferate new columns in the variable key or create some
+ confusing new notation.
+\end_layout
+
+\begin_layout Standard
+Reordering variable levels requires us to do something that seems dangerous.
+ We need to edit the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ to correct the ordering of the levels 
+\emph on
+as they are currently labeled
+\emph default
+.
+ This is the only time where we suggest that users edit the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ column.
+ In 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+, supply new labels in the in the correct order to parallel the newly edited
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ column (see Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Reorder-Values"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Reorder Values, Example 1
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Reorder-Values"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x3.lo2hi
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+low<med<hi
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+low<medium<high
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x3.passfail
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ordered
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+low<med<hi
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+low<pass<pass
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The key importer will check that all 
+\begin_inset Quotes eld
+\end_inset
+
+duplicated levels
+\begin_inset Quotes erd
+\end_inset
+
+ are adjacent with one another, so that the values above low are grouped
+ together.
+\end_layout
+
+\begin_layout Standard
+In the long key format, the equivalent information would be conveyed by
+ altering the ordering of the rows.
+ For example, it is necessary to re-order the rows to indicate the lo is
+ lower than med, and then for the new values we put in the desired names
+ (see Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Reorder-Values-Example2"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Reorder Values, Example 2
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Reorder-Values-Example2"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tabular}{llllllll}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+toprule
+\end_layout
+
+\begin_layout Plain Layout
+
+name
+\backslash
+_old & name
+\backslash
+_new & class
+\backslash
+_old & class
+\backslash
+_new & value
+\backslash
+_old & value
+\backslash
+_new
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+midrule
+\end_layout
+
+\begin_layout Plain Layout
+
+x3 & x3lo2hi & ordered & ordered & lo & low
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x3 & x3lo2hi & ordered & ordered & med & medium
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x3 & x3lo2hi & ordered & ordered & hi & high
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x3 & x3.passfail & ordered & ordered & low & low
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x3 & x3.passfail & ordered & ordered & medium & pass
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x3 & x3.passfail & ordered & ordered & high & pass
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bottomrule
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tabular}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+What to do about missing values.
+ Even within our small group, there is some disagreement about this.
+ The SAS tradition would have us enter a period, 
+\begin_inset Quotes eld
+\end_inset
+
+.
+\begin_inset Quotes erd
+\end_inset
+
+, in value_new for a level that is to be treated as missing.
+ Others are tempted to use special purpose character strings like 
+\begin_inset Quotes eld
+\end_inset
+
+NA
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+N/A
+\begin_inset Quotes erd
+\end_inset
+
+.
+ As long as neither 
+\begin_inset Quotes eld
+\end_inset
+
+NA
+\begin_inset Quotes erd
+\end_inset
+
+ nor 
+\begin_inset Quotes eld
+\end_inset
+
+N/A
+\begin_inset Quotes erd
+\end_inset
+
+ are legal values, that seems safe.
+ There is another school of thought to argue that if a user wants nothing,
+ the clearest, safest thing to do in the key is to enter nothing at all.
+ 
+\end_layout
+
+\begin_layout Standard
+As a result of this diversity, the keyImport function includes an argument
+ named na.strings (again, an argument drawn from R core funcitons).
+ The default setting has an 
+\begin_inset Quotes eld
+\end_inset
+
+all of the above
+\begin_inset Quotes erd
+\end_inset
+
+ flavor, treating any of the values that any of us think might be missing
+ as NA when the key is later put to use.
+ If one is fastidious in editing the key and represents all value_new that
+ should be missing as a period (hooray for SAS!), then the value of na.strings
+ can be tightened up in the obvious way.
+ 
+\end_layout
+
+\begin_layout Standard
+It is also possible to delete a level from value_old and value_new in order
+ to indicate that it should be treated as missing, but we do not recommend
+ this approach.
+ This destroys an element of 
+\begin_inset Quotes eld
+\end_inset
+
+book keeping
+\begin_inset Quotes erd
+\end_inset
+
+ because future users of the data, and the key, might like to know that
+ some levels were obliterated.
+\end_layout
+
+\begin_layout Standard
+The missing value cell in the key can be used with these enumerated variables.
+ Usually, writing the values to be omitted is not as easy as putting the
+ desired missing symbol in the value_new column, but either method should
+ work.
+\end_layout
+
+\begin_layout Standard
+In a long format key, there will be many repeated rows for each variable.
+ The entries in the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+ columns are harvested from the cells corresponding to each combination
+ of name_old and name_new, it is not necessary to retype the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+ entries for each element.
+\end_layout
+
+\begin_layout Standard
+The work of assigning missing values is carried out by a 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+ function named 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+assignMissing
+\end_layout
+
+\end_inset
+
+.
+ The help page for that function has verbose commentary to explain the format
+ of the cells that might work well in the missings column.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: fix this, describe the output key 
+\begin_inset Quotes eld
+\end_inset
+
+mydf.key.csv
+\begin_inset Quotes erd
+\end_inset
+
+ and get EXCEL discussion on how to add quoted elements inside strings.
+ Need to write out what Excel does to a string like 
+\begin_inset Quotes eld
+\end_inset
+
+cindy|bobby|
+\begin_inset Quotes erd
+\end_inset
+
+NA
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+, figure out why the key currently exports one big string 
+\begin_inset Quotes eld
+\end_inset
+
+bobby|cindy|marcia
+\begin_inset Quotes erd
+\end_inset
+
+ when perhaps instead it should export 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+bobby
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+cindy
+\begin_inset Quotes erd
+\end_inset
+
+|
+\begin_inset Quotes erd
+\end_inset
+
+marcia
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+About non-enumerated variables
+\end_layout
+
+\begin_layout Standard
+In the process that creates the variable key template, we think differently
+ about the enumerated variables–ones that have meaningfully discrete values
+ that can be reassigned one-by-one–and numeric variables.
+ Numeric variables, whether we literally mean integers like age or the number
+ of pennies in a jar, or floating point numbers (weight, temperature, volume,
+ etc) are different.
+ If we guessed right with 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+max.levels
+\end_layout
+
+\end_inset
+
+ when the key was created, those non-discrete variables are included as
+ just one row, whether the key is wide or long.
+ In those variables, the main elements of interest for these variables are
+ the columns labeled 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The instructions for specifying missing values are detailed in the help
+ page of the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+assignMissing
+\end_layout
+
+\end_inset
+
+ function in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+.
+ If the class_old is 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+numeric
+\end_layout
+
+\end_inset
+
+ or 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+
+, there are only three types of statements allowed in the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+
+ column.
+ Legal values must must begin with the characters 
+\begin_inset Quotes eld
+\end_inset
+
+<
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+>
+\begin_inset Quotes erd
+\end_inset
+
+, or 
+\begin_inset Quotes eld
+\end_inset
+
+c
+\begin_inset Quotes erd
+\end_inset
+
+.
+ These are illustrated in Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Recode-Examples"
+
+\end_inset
+
+.
+ The symbols 
+\begin_inset Quotes eld
+\end_inset
+
+<=
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+>=
+\begin_inset Quotes erd
+\end_inset
+
+ are accepted in the obvious way.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Missings Examples
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Recode-Examples"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+missings
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+interpretation: NA will be assigned to 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+example
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+> t
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values greater than t
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+> 99
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+>= t
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values greater than or equal to t 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+>=99
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+<t
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values less than t 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+<0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+<=t
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values less than or equal to t 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+<=0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+c(a,b)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+values equal to or greater than a and less than or equal to b 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+c(-999,-1)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The key specification for 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+ is discussed in the help page of the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+assignRecode
+\end_layout
+
+\end_inset
+
+ function in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+kutils
+\end_layout
+
+\end_inset
+
+.
+ The 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+ column takes R code and applies it to the desired variable.
+ For example, if one wanted to transform a variable by taking its square
+ root, this could be done by providing 
+\begin_inset Quotes eld
+\end_inset
+
+sqrt(x)
+\begin_inset Quotes erd
+\end_inset
+
+ in the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+recodes
+\end_layout
+
+\end_inset
+
+ column.
+ Here 
+\begin_inset Quotes eld
+\end_inset
+
+x
+\begin_inset Quotes erd
+\end_inset
+
+ is simply a placeholder where the name of the variable indicated in the
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+
+ column will be inserted when the variable key is applied.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Recoding Integer and Numeric Variables
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+footnotesize
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tabular}{lllllllll}
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+toprule
+\end_layout
+
+\begin_layout Plain Layout
+
+name
+\backslash
+_old & name
+\backslash
+_new & class
+\backslash
+_old & class
+\backslash
+_new & value
+\backslash
+_old & value
+\backslash
+_new & missings & recodes 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+midrule
+\end_layout
+
+\begin_layout Plain Layout
+
+x5 & x5 & numeric & numeric &  &  & <0 & log(x) 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x4 & x4 & numeric & numeric &  &  & c(-999) & abs(x) 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x6 & x6 & integer & integer & 1$|$2$|$3$|$4$|$5 & 1$|$2$|$3$|$4$|$5 & c(-9)
+ & 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bottomrule
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Class conversions
+\end_layout
+
+\begin_layout Standard
+The problem of recoding a variable, but leaving its class the same, is mostly
+ solved.
+ 
+\end_layout
+
+\begin_layout Standard
+The conversion of variables from one class to another requires special care.
+ R's built in functions for coercion of variables from one type to another
+ succeed meaningfully in many cases, but not all.
+ The coercion of an integer to a floating point number produces understandable
+ effects.
+ The coercion of a character to an integer is not always understandable,
+ and the conversion of factors to integers or numeric is, well, almost always
+ a source of concern.
+\end_layout
+
+\begin_layout Standard
+We are intending to support, at minimum, the 6 safe classes, which can be
+ used in any combination of 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+.
+ We need to be sure that conversion from each one into the other types is
+ handled accurately.
+ 
+\end_layout
+
+\begin_layout Standard
+In the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyApply
+\end_layout
+
+\end_inset
+
+ function, we have implemented special purpose code to handle a class change
+ from factor to numeric, for example, in a way that preserves the levels
+ as the new values.
+ This is needed when the input data has values like 10, 12, 14, and 
+\begin_inset Quotes eld
+\end_inset
+
+unknown
+\begin_inset Quotes erd
+\end_inset
+
+.
+ If an R function like read.table is used to import a column with those values,
+ the default behavior will convert that to a factor variable with values
+ 
+\begin_inset Quotes eld
+\end_inset
+
+10
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+12, 
+\begin_inset Quotes eld
+\end_inset
+
+14
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+unknown
+\begin_inset Quotes erd
+\end_inset
+
+.
+ What the user probably wants–and what we do now–is open the possibility
+ that 
+\begin_inset Quotes eld
+\end_inset
+
+unknown
+\begin_inset Quotes erd
+\end_inset
+
+ should be treated as NA and the values that appear to be numbers (but are
+ actually text strings) are converted into integer format.
+\end_layout
+
+\begin_layout Subsection
+Unanticipated 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ values
+\end_layout
+
+\begin_layout Standard
+By far, the most troublesome variable type is date and time information.
+ This is difficult for a number of reasons.
+ In order from less troublesome to more troublesome:
+\end_layout
+
+\begin_layout Enumerate
+No two people seem to represent dates with the same style.
+ Virtuous people (the authors) write 2016-12-01, while others write ambiguous
+ strings like 12/01/2016, 01/12/2016 or 01-12-2016.
+\end_layout
+
+\begin_layout Enumerate
+Computer programs absorb dates and convert them to internal numeric schemes.
+ However, programs differ in the way they record and export date information.
+ Most software converts dates as integers, for example.
+ The value is the number of days since time began.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Unfortunately, it appears that the day on which time began differs among
+ programs.
+ Microsoft Excel records dates as integers, and (shockingly!) the origin
+ date differs between Excel files created in Windows and Macintosh.
+ Mac designers were perplexed by the problem of leap years, which caused
+ them to use the origin 1904-01-01, while in MS Windows Excel dates begin
+ at 1900-01-01.
+ The program SPSS uses integers for dates as well, but the origin for SPSS
+ is 1582-10-14 (we guess most readers already knew that one, we apologize
+ for being surprised).
+ 
+\end_layout
+
+\begin_layout Standard
+On the other hand, dates on Unix/Linux systems tend to follow the POSIX
+ standard, so date information is interpreted as the number of days since
+ 1970-01-01.
+ That is a local favorite because it reminds us of Nixon and Vietnam.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Dates are, to a certain extent, arbitrary without time zone information.
+ Its Tuesday, December 8 in Lawrence, Kansas, but it is Wednesday, December
+ 9 in Moscow, Russia.
+ If time zones are not specified, than all date information is, well, approximat
+e.
+ Furthermore, when scholars try to put time zone information onto existing
+ data that was collected without it, they sometimes accidentally create
+ impossible dates and times (February 29, 1999, for example).
+ When R functions like 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+as.Date
+\end_layout
+
+\end_inset
+
+ encounter impossible dates, they return NA.
+\end_layout
+
+\begin_layout Enumerate
+Even when programs seem to have absorbed dates and saved the information,
+ even in casual testing we have found that the saved information is not
+ retrieved in a consistent way.
+ Some spreadsheet programs, on some computers, return values dates as integers,
+ while the same program with a different user returns a character string.
+ 
+\end_layout
+
+\begin_layout Standard
+All of this complaining is just our way of saying, 
+\begin_inset Quotes eld
+\end_inset
+
+we left the recode box open, why not use it to recode your date information?
+\begin_inset Quotes erd
+\end_inset
+
+ If the variable key template says that a column is 
+\begin_inset Quotes eld
+\end_inset
+
+integer,
+\begin_inset Quotes erd
+\end_inset
+
+ but you expected a date, then all is likely to be fine if we set the origin.
+ One needs to find out what the origin should be and tell R about it.
+ The right recode statement is likely to be 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+as.Date(x, origin = "1970-01-01")
+\end_layout
+
+\end_inset
+
+.
+ On the other hand, if the date information is in text format, with values
+ like 
+\begin_inset Quotes eld
+\end_inset
+
+2016-11-19
+\begin_inset Quotes erd
+\end_inset
+
+, then it is necessary to learn the shorthand notation for date symbols.
+ The right recode will be something like 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+as.Date(x, format = "%Y-%m-%d")
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If one sets 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ = 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+Date
+\end_layout
+
+\end_inset
+
+, the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyApply
+\end_layout
+
+\end_inset
+
+ function will succeed if the return value from the recode function is an
+ R Date variable.
+ Otherwise, an error will be raised.
+\end_layout
+
+\begin_layout Subsection
+Where more work should be done
+\end_layout
+
+\begin_layout Standard
+For the most part, our work now lies in development of better diagnostics
+ and error-checking routines.
+ 
+\end_layout
+
+\begin_layout Standard
+First, we need better filtering of user-created key entries.
+ User typographical errors occur in key preparation and more comprehensive
+ filtering should be done.
+ At the current time, the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyImport
+\end_layout
+
+\end_inset
+
+ function does not include many subroutines for the validation of the key.
+ We'd like to filter the values requested in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+, for example, but it is difficult to see how that can be done.
+ We want to leave open the possibility that users may specify values of
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+ that are unfamiliar to us.
+ Another problem may arise if the number of elements in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_old
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+ are not aligned one-to-one.
+ There will be an error when the key is put to use by 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyApply
+\end_layout
+
+\end_inset
+
+, but we should have a stop message in 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+keyImport
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Second, we need to better understand the problems that result when users
+ enter variable keys in programs like MS Excel or Libre Office.
+ Between programs, or versions of programs, or programs on various platforms,
+ we notice disappointing inconsistencies.
+ If keys are kept in 
+\begin_inset Quotes eld
+\end_inset
+
+flat text
+\begin_inset Quotes erd
+\end_inset
+
+ csv files, there is less danger, but there can still be some trouble because
+ spread sheets change the way they export to csv from time to time.
+ During the testing process, we have found that version updates Excel cause
+ unexpected changes in the way character vectors and dates are stored.
+ Until now, we have relied on the very popular package 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+openxlsx
+\end_layout
+
+\end_inset
+
+ (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Walker2015"
+
+\end_inset
+
+).
+ This does well most of the time, but we still find some inexplicable variations
+ in imported Excel files.
+ Sometimes, empty cells in the variable key appear as imported empty strings
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+, while sometimes they are imported as R NA symbols.
+ While it is probably safe to treat an entirely empty value as a missing
+ value in most projects, we'd rather not do so.
+ To deal with this problem, we need to develop a standard framework for
+ testing the quality of imported variable keys.
+ 
+\end_layout
+
+\begin_layout Standard
+Third, we need more comprehensive error-checking for the accuracy of the
+ imported data and compliance with the variable key.
+ The variable key system works well with the data sets for which it was
+ created, but we need more formal criteria for verifying that claim.
+ 
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Standard
+When a project has a small budget, we invite the principal investigator
+ to economize on the expenses by filling out the variable key's 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+name_new
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+class_new
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+value_new
+\end_layout
+
+\end_inset
+
+ columns.
+ There are several benefits in inviting the clients (or PIs) to be directly
+ involved in filling in the variable key.
+ Most importantly, they are allowed to name the variables in any way that
+ is meaningful to them.
+ When statistical results are obtained, it is never necessary for them to
+ ask, 
+\begin_inset Quotes eld
+\end_inset
+
+what did you mean by this variable 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+occupation
+\end_layout
+
+\end_inset
+
+?
+\begin_inset Quotes erd
+\end_inset
+
+ There are other benefits, however.
+ By making the principal investigator aware of the values that are actually
+ observed, and by offering the opportunity to specify how they ought to
+ be recoded, a substantial element of administrative slippage is ameliorated.
+ The variable key will specify exactly how categories are to be re-mapped,
+ there is much less danger of an accident buried in thousands of lines of
+ recodes.
+\end_layout
+
+\begin_layout Standard
+It often happens that the raw data to be imported are provided by one of
+ the national data centers.
+ The variables are given exciting, meaningful column names like V34342a.
+ It appears to be almost certain that research assistants will conclude
+ that these names are not meaningful, so they create names that are more
+ meaningful to them, such as 
+\emph on
+gender
+\emph default
+, 
+\emph on
+sex
+\emph default
+, 
+\emph on
+male
+\emph default
+, 
+\emph on
+female
+\emph default
+, or whatnot.
+ The research assistants disappear into a haze of code and come out talking
+ about the effect of income, gender, and education on educational achievement,
+ and the principal investigator has to say, 
+\begin_inset Quotes eld
+\end_inset
+
+which of those variables is income, again?
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+what's the coding on education?
+\begin_inset Quotes erd
+\end_inset
+
+ A very exciting conversation then follows as one of the research assistant
+ realizes that V34342b is the one that should have been used for gender,
+ while V34342a indicates if the respondent ever visited Eastern Europe.
+\end_layout
+
+\begin_layout Standard
+The variable key is intended to create neutral territory between principal
+ investigators and project supervisors on one side and the research assistants
+ on the other.
+ The numbers are more likely to come out correctly if the names, values,
+ and classes can be specified in one document that is accessible in numerous
+ formats on which many eyes can be laid.
+ The distance between a re-design of the imported values is minimized and
+ the production cycle of the projects is accelerated.
+ As we are frequently reminded, there are many some bright people who don't
+ know R, it appears they are all fluent in spread sheet.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Variable Key Editing Guidelines
+\end_layout
+
+\begin_layout Enumerate
+Omit a variable: delete its row(s) from the (long)key.
+\end_layout
+
+\begin_layout Enumerate
+The 
+\begin_inset Quotes eld
+\end_inset
+
+class_new
+\begin_inset Quotes erd
+\end_inset
+
+ value
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+discrete variable types:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+logical
+\end_layout
+
+\begin_layout Description
+integer
+\end_layout
+
+\begin_layout Description
+factor
+\end_layout
+
+\begin_layout Description
+ordered
+\end_layout
+
+\begin_layout Description
+logical
+\end_layout
+
+\begin_layout Description
+character
+\end_layout
+
+\begin_layout Description
+Date
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+floating-point numeric variable types:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+numeric
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Creating new variables.
+ Each input variable may be recoded in several different ways, assigning
+ a name_new value unique for each.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Assigning new values.
+ 
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+discrete variable types.
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+New 
+\begin_inset Quotes eld
+\end_inset
+
+value_old
+\begin_inset Quotes erd
+\end_inset
+
+ elements can be inserted in anticipation of new data sets with previously
+ unobserved values.
+\end_layout
+
+\begin_layout Enumerate
+To assign new values to any of the discrete variable types, set values in
+ 
+\begin_inset Quotes eld
+\end_inset
+
+value_new
+\begin_inset Quotes erd
+\end_inset
+
+.
+ It is important that the values can be coerced by R to match the value
+ of 
+\begin_inset Quotes eld
+\end_inset
+
+class_new
+\begin_inset Quotes erd
+\end_inset
+
+.
+ That is to say, if 
+\begin_inset Quotes eld
+\end_inset
+
+class_new
+\begin_inset Quotes erd
+\end_inset
+
+ is a 
+\begin_inset Quotes eld
+\end_inset
+
+integer
+\begin_inset Quotes erd
+\end_inset
+
+, then 
+\begin_inset Quotes eld
+\end_inset
+
+value_new
+\begin_inset Quotes erd
+\end_inset
+
+ should be an integer.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+numeric variable types.
+ 
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Because floating point numbers do not allow comparison with 
+\begin_inset Quotes eld
+\end_inset
+
+==
+\begin_inset Quotes erd
+\end_inset
+
+, it is not allowed to use 
+\begin_inset Quotes eld
+\end_inset
+
+value_old
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+value_new
+\begin_inset Quotes erd
+\end_inset
+
+ pairs for these variables.
+ It is necessary to write statements in the recode column of the variable
+ key.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Assign missings:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+discrete variables: several options, we should settle on one suggestion
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+insert 
+\begin_inset Quotes eld
+\end_inset
+
+NA
+\begin_inset Quotes erd
+\end_inset
+
+ in value_new column
+\end_layout
+
+\begin_layout Enumerate
+delete the value_old entry (not the best way, maybe don't mention it)
+\end_layout
+
+\begin_layout Enumerate
+list a vector of missing values in the recode column.
+ This vector applies to data as it was imported, before applying the value_old
+ to value_new transition.
+ PROBLEM: if input data's class does not match class_old, there may be a
+ problem.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+numeric variables
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "kutils"
+options "chicago"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,320 @@
+2016-12-22  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/likert.R: example with file output is commented out
+
+	* ../R/peek.R: examples: No file output
+
+	* ../R/cfaTable.R (cfaTable): examples \donttest on file
+	output examples.
+
+2016-12-15  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyDiagnostic): clean up message in
+	diagnostic for variables with too many values.
+	(long2wide): insert comment
+	(keyDiagnostic): clarify comment to user about wide editor display
+
+2016-12-07  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R: dts had no documentation, so it was inserted.
+
+	* ../R/project.R (initProject): Remove hard coded directory names,
+	rely on arguments to set them. Insert new argument gitArgs for git
+	init customization. Clear up documentation, revise examples
+	to be more informative.
+
+2016-12-02  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/dir.create.unique.R (dts): imported basics from rockchalk
+	package, fixed directory naming error if date = TRUE, clarified
+	error handling.
+
+2016-11-10  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyApply): fix error B&B found in !class
+
+2016-11-08  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyApply): create new  if/then for factor ->
+	numeric conversion.
+	(printvals): Brent's example showed that value_old as "NA" was
+	manufactured by long to wide in a paste statement. ifelse logic
+	should prevent that now.
+
+2016-11-07  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyDiagnostic): if variable is not in
+	data, do not run key diagnostic.
+
+	* ../R/peek.R (dev.create): create graphic device on user
+	workstation. Needed to defeat R Studio
+
+	* ../R/variableKey.R (cleanDataFrame): use new function
+	is.data.frame.simple.
+	(is.data.frame.simple): new function returns FALSE if data frame
+	is not made up of columns.
+
+2016-10-28  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (checkValues): prevent NA from triggering
+	output
+	(keyApply): add debug argument
+
+2016-10-25  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/textUtils.R (escape): html escape "/" as well
+	(alphaOnly): insert "also" argument
+
+2016-10-24  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (## keyUpdate):demonstrate mydf case after
+	adding Jan to new data
+
+2016-10-20  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/updatePkgDepends.R (updatePackages): pass through arguments
+	ask and checkBuilt from command line to update.packages.
+
+2016-10-09  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/project.R (initProject): insert new rheader file which
+	defines usual directories, named "rheader.R" in the R folder
+
+2016-10-06  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyTemplate): Changed naming so that key
+	templates are suffixed by "templ" and the edited keys will be
+	"key". No more "key_new" or "keylong_new", but now just "key" and
+	"key_long".
+	(keyUpdate): rework handling of new variables and new values,
+	relabel argument from bottom to append, new example stress tests.
+	(keyApply): was accidentally allowing stringsAsFactors=TRUE, which
+	prevented some variable class assignments.
+
+2016-09-23  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (padW0): fix error that was causing integers to
+	turn to all NA.
+	(stringbreak): vectorize stringbreak.
+
+2016-09-22  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (wide2long): rework to correct handling of
+	recodes and missings, which should not be repeated throughout
+	the column when there is only one value.
+
+2016-09-21  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (long2wide): correct problem that NA values
+	were turned to "NA" strings in missings and recodes.
+
+2016-09-20  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyApply): The use of split was causing
+	the name_old.new values to be alphabetized.  We don't want that.
+	(keyUpdate): 1) T -> TRUE. 2) replace "wide" with "long" for
+	consistency with other functions 3) Don't do wide == TRUE,
+	recommended to do isTRUE(wide). Inserted comments to suggest
+	change in design.
+	(long2wide): create name_old.new and set as factor with
+	ordering from original key, trying to prevent re-alphabetization.
+	(wide2long): insert sep argument, use while splitting key input.
+	(keyImport): Rip apart keyImport, redesign as key importer and
+	cleaner. This should handle all cleanup of user input and make
+	sure column names are correct. Does NOT return keylist object,
+	make separate function for that.
+	(makeKeylist): Does work previously by keyImport. Only called
+	from inside keyApply, so as to simpify user experience.
+
+2016-09-09  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (cleanDataFrame): new function that applies
+	safeInteger and checks that the data frame is made of columns, no
+	matrices embedded.
+	(keyApply): Ignore capitalization of "name_old" in scanning for
+	columns in data frame.
+	(smartSave): new function that does file save
+	(keyStacker): pile up key templates
+
+2016-09-08  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (safeInteger): new function to coerce
+	numerics that are "close enough" to integers as integers.
+	(keyTemplate): new argument safeNumericToInteger, uses
+	safeInteger to set classes on columns in data frame being
+	recoded.
+	(keyDiagnostic): conditionalize the confidentiality protecting
+	rounder argument.
+	(wide2long): Correct example, it verifies now!
+	(long2wide): Correct example, it verifies now!
+
+2016-09-03  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (padW0): front-pad values with zeroes.
+
+2016-09-01  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (wide2long): new utility key converter function.
+        (long2wide): new utility key converter function.
+
+2016-08-30  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyApply): use assignRecode in for loop, so
+	each element in the recodes is applied in a sequence.
+
+2016-08-29  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (assignRecodes): new function to apply the key
+
+2016-08-22  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyDiagnostic): new function to compare old
+	and new data against variable key
+	(keyApply): Dealing with duplicated factor levels problem,
+	avoiding them, reassinging values correctly. If $v$value_old is
+	empty, what to do?  Too risky to assing value_new in that case,
+	cutting out code which tried to guess and do so.
+
+2016-08-21  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyImport): Redesign to allow multiple name_new for a
+	single name_old. names on keylist object are "name_old.name_new"
+	for clarity.
+
+2016-08-19  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (getValues): max.levels change. If integer or
+	character is over the limit, then just print one line in key, just
+	as we do for real number variables.
+	* vignette/variablekey.lyx: revise commentary about keyTemplate to
+	match new interpretation of max.values.
+
+2016-08-17  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (stringbreak): New function to insert "\n" into strings
+
+	* ../R/peek.R (quickbar): barplot error because some category
+	values too ridiculously long. Now implement LIMIT, will later
+	insert line breaks
+
+	* ../R/utils.R (shorten): add shorten funtion with unique
+
+2016-08-12  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/modelcomparison.R (compareCFA): insert @export and @importFrom
+
+	* ../R/cfaTable.R (cfaTable): fitMeasures -> lavaan::fitMeasures
+
+	* ../R/modelcomparison.R (compareCFA): fitMeasures -> lavaan::fitMeasures
+	(compareCFA): break long lines in stop with paste()
+
+2016-08-11  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/assignMissing.R (getUnique): pack the keyTemplateLong and
+	keyTemplate functions into one single function with the argument
+	long = TRUE/FALSE to differentiate them.
+
+	* ../R/project.R (initProject): output "there is no git" message.
+
+2016-08-11  Paul Johnson  <pauljohn@dellap14>
+
+	* ../R/assignMissing.R (recodeDF): first working version
+
+2016-08-10  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/assignMissing.R (cleanDF): rough in work to
+	apply a keylist object to a data frame.
+
+2016-08-09  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/assignMissing.R (n2NA): n2NA accepts more arguments for
+	types of values to be removed; zapspace argument.
+
+	* ../R/assignMissing.R (zapspace): remove leading and trailing spaces.
+
+2016-08-08  Paul Johnson  <pauljohn@dellap14>
+
+	* ../R/assignMissing.R (unique2): In keyimport, chose plan to
+	create an output list.
+
+	* ../R/assignMissing.R (keyTemplateLong): make strings, not
+	factors in new key.
+
+2016-08-03  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/assignMissing.R (keyTemplateLong): remove usage of openxlsx
+	in function, put as example, add Suggests to DESCRIPTION document.
+
+2016-08-02  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/assignMissing.R (assignMissing): overhaul with
+	documentation to deal with different inputs for doubles, integers,
+	factors
+
+	* ../R/project.R (initProject): Sys.which("git") to check if
+	user's system has git in path. Could we search more aggressively
+	if it exists elsewhere?
+
+	* ../R/deleteBogusRows.R (deleteBogusRows): add arguments drop,
+	verbose, and n, use NCOL. Argument n allows NULL or NA values.
+	(deleteBogusColumns): a column version of deleteBogusRows. Should
+	have planned ahead and written one function with a margin
+	argument, may come back later work on that.
+
+
+2016-08-01  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/peek.R (varType): if noneoftheabove variables are not
+	present, do not print a warning about having to exclude them.
+	Rocket Science Alert.
+
+	* ../R/utils.R (floorvar): delete. I cannot think of any
+	reasonable use case for this.
+	(starsig): insert new argument symbols to allow users to have
+	whatever symbols they want.
+
+	* ../R/peek.R (varType): revise to allow single columns in
+	addition to data frames
+
+2016-07-31  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/project.R (initProject): new function to create project
+	directories, starts git repo, adds readme and changelog files.
+
+2016-07-29  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/histOMatic.R: fix documentation about arguments, reformat
+	as details.
+
+2016-07-28  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/histOMatic.R (quickbar): histargs, barargs inserted,
+	using to reduce warnings due to arguments that do not fit.
+
+	* ../R/utils.R (removeMatches): new function, adapted from Ben
+	Kite code
+	(mgsub): multi-gsub function, adapted from loose recollection of
+	something Jared harpole wrote.
+
+	* ../R/histOMatic.R (varType): dots arguments for pdf are now
+	extracted. Corrected ask logic when file is true. New, richer
+	examples showing combinations.
+
+2016-07-27  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/histOMatic.R: change histOMatic to "look", handles
+	numeric, string, or factor variables, can output on screen, in
+	file, also option to put text in session.
+
+	* ../R/updatePkgDepends.R: Accelerate by vectorization, insert
+	BIOC as repo, clean up docs
+
+2016-05-23  Paul Johnson  <pauljohn@dellap14>
+
+	* ../R/utils.R (stars): The stars function conflicted with
+	base package stars, so rename "starsig"
+
+2016-03-08  Paul Johnson  <pauljohn@dellap14>
+
+	* TODO: Created a TODO file, and ChangeLog for first time
+
