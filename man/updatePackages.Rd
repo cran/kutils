@@ -6,8 +6,7 @@
 \usage{
 updatePackages(ask = FALSE, checkBuilt = TRUE, dependencies = c("Depends",
   "Imports", "LinkingTo"), libnew = "/usr/share/R/library/",
-  repos = c("http://rweb.crmda.ku.edu/cran", "http://rweb.crmda.ku.edu/kran",
-  "http://www.bioconductor.org/packages/3.3/bioc"), ...)
+  repos = options("repos"), ...)
 }
 \arguments{
 \item{ask}{If TRUE, asks user to select packages to update}
@@ -66,12 +65,14 @@ full directory name or by setting it to NULL, which puts new
 packages in $R_LIBS_USER
 }
 \examples{
-## options(repos = c("http://rweb.crmda.ku.edu/kran", "http://rweb.crmda.ku.edu/cran"))
-## not run
-## updatePackages()
-## New packages will go to user directory
-## updatePackages(ask = FALSE, libnew = NULL)
-## otherwise must have write privileges in libnew.
+\dontrun{
+myrepos <- c("http://rweb.crmda.ku.edu/cran",
+             "http://www.bioconductor.org/packages/3.3/bioc")
+updatePackages(repos = myrepos)
+## libnew defaults to "/usr/share/R/library". Specify NULL
+## so that new packages will go to user's directory
+updatePackages(libnew = NULL)
+}
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

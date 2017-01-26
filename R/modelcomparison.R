@@ -71,12 +71,14 @@ detectNested <- function(models){
 ##'     added to the last three columns of the comparison table. The
 ##'     default value is TRUE.
 ##' @param file Default is NULL, no file created. If output file is desired,
-##'     provide a character string for the file name. 
-##' @author Benjamin Arthur Kite
+##'     provide a character string for the file name.
+##' @author Ben Kite
 ##' @export
 ##' @importFrom stats anova update
 ##' @importFrom plyr mapvalues
 ##' @examples
+##' \donttest{
+##' ## These run longer than 5 seconds
 ##' library(lavaan)
 ##' library(xtable)
 ##' set.seed(123)
@@ -84,13 +86,13 @@ detectNested <- function(models){
 ##' f1 ~~ 1*f1"
 ##' genmodel2 <- "f1 =~ .7*v1 + .7*v2 + .7*v3 + .7*v4 + .7*v5 + .2*v6
 ##' f1 ~~ 1*f1"
-##' 
+##'
 ##' dat1 <- simulateData(genmodel, sample.nobs = 300)
 ##' dat2 <- simulateData(genmodel2, sample.nobs = 300)
 ##' dat1$group <- 0
 ##' dat2$group <- 1
 ##' dat <- rbind(dat1, dat2)
-##'  
+##'
 ##' congModel <- "
 ##'               f1 =~ 1*v1 + v2 + v3 + v4 + v5 + v6
 ##'     		  f1 ~~ f1
@@ -135,7 +137,7 @@ detectNested <- function(models){
 ##'
 ##' compareCFA(models, fitmeas = c("chisq", "df", "cfi", "rmsea", "tli"),
 ##' nesting = "Configural > Metric + PartialMetric > Scalar")
-##' \donttest{
+##'
 ##' ## Creates output file
 ##' ## compareCFA(models, fitmeas = c("chisq", "df", "cfi", "rmsea", "tli"),
 ##' ## nesting = "Configural > Metric + PartialMetric > Scalar", file = "table.tex")
@@ -203,7 +205,7 @@ compareCFA <- function(models,
                 sumtable[i, c("dchi", "ddf", "npval")] <- tmp
                 sumtable[i, "dchi"] <- paste0(sumtable[i, "dchi"], letters[letter])
                 noteinfo[[letter]] <- paste0(letters[letter], " = ", comparison["nested"], " .vs ", comparison["parent"])
-                letter <- letter + 1      
+                letter <- letter + 1
             }
         }
         output <- list(sumtable, unlist(noteinfo))
@@ -213,12 +215,11 @@ compareCFA <- function(models,
     if(!is.null(file)){
         tableinfo <- output[[1]]
         names(tableinfo) <- gsub(".scaled", "", names(tableinfo))
-        texcode <- print(xtable(tableinfo))
-        name_old <- c("chisq", "pvalue", "dchi", "ddf", "npval")
+        texcode <- print(xtable(tableinfo), print.results = FALSE)
+        name_old <- c("^chisq$", "^pvalue$", "^dchi$", "^ddf$", "^npval$")
         name_new <- c("$\\\\chi^{2}$", "\\\\textit{p}-value", "$\\\\Delta\\\\chi^{2}$", "$\\\\Delta df$", "\\\\textit{p}")
-        for (i in 1:length(name_old)){
-            texcode <- gsub(name_old[i], name_new[i], texcode)
-        }
+        texcode <- mgsub(name_old, name_new, texcode)
+        
         if(length(output) > 1){
             texcode <- paste0(texcode, "\n", paste0(output[[2]], collapse = ", "))
         }

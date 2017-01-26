@@ -12,10 +12,8 @@ cfaTable(object, file = NULL, params = c("loadings", "intercepts"),
 \arguments{
 \item{object}{A cfa object from lavaan}
 
-\item{file}{Default is NULL, meaning no output file. If 
-a character string is provided, it will be used as the
-name of the output file. This function will add suffix ".tex"
-or ".html", depending on the \code{type} argument}
+\item{file}{Character string for file name.  Default is NULL,
+meaning no output file.}
 
 \item{params}{Measurement parameters to be included. Valid values
 are "loadings", "intercepts", "residuals", "latentvariances",
@@ -35,13 +33,14 @@ c("CFI", "TLI").}
 with unstandardized?  Default is FALSE. See Details.}
 
 \item{names_upper}{Should the names of the model fit parameters be
-forced to be uppercase.  The default is TRUE.  This
-will also affect whatever is specified in names_fit.}
+forced to be uppercase.  The default is TRUE.  This will also
+affect whatever is specified in names_fit.}
 
 \item{single_spaced}{Default = TRUE. If a double-spaced table is
 needed, set single_spaced = FALSE.}
 
-\item{type}{Type of output table ("latex" or "html"). Defaults to "latex".}
+\item{type}{Type of output table ("latex" or "html"). Defaults to
+"latex".}
 }
 \value{
 CFA table of desired type.
@@ -89,6 +88,8 @@ options were used when originally creating output, setting
 standardized = TRUE will yield two identical sets of two columns.
 }
 \examples{
+\donttest{
+## These run longer than 5 seconds
 require(lavaan)
 HS.model <- ' visual  =~ x1 + x2 + x3
 textual =~ x4 + x5 + x6
@@ -98,12 +99,10 @@ cfaTable(output1, fit = "rmsea",
 standardized = TRUE, params = c("loadings", "latentvariances"),
 type = "latex")
 
-\donttest{
 ## Example with file output
-## cfaTable(output1, file = "exampleTable", fit = "rmsea",
+## cfaTable(output1, file = "exampleTable.tex", fit = "rmsea",
 ## standardized = TRUE, params = c("loadings", "latentvariances"),
 ## type = "latex")
-}
 
 model <- "factor =~ .7*y1 + .7*y2 + .7*y3 + .7*y4
 y1 | -1*t1 + 1*t2
@@ -113,16 +112,15 @@ y4 | -1*t1 + 1*t2
 "
 dat <- simulateData(model, sample.nobs = 300)
 testmodel <- "ExampleFactor =~ y1 + y2 + y3 + y4"
-output <- cfa(testmodel, data = dat, ordered = colnames(dat),
+output2 <- cfa(testmodel, data = dat, ordered = colnames(dat),
     std.lv = FALSE)
-cfaTable(output, 
+cfaTable(output2,
     params = c("loadings", "thresholds", "residuals"),
     fit = c("tli", "chi-square"),
     names_fit = c("TLI", "chi-square"), type = "latex")
 
-\donttest{
 ## Example with file output
-## cfaTable(output, file = "catTable",
+## cfaTable(output, file = "catTable.tex",
 ##    params = c("loadings", "thresholds", "residuals"),
 ##    fit = c("tli", "chi-square"),
 ##    names_fit = c("TLI", "chi-square"), type = "latex")

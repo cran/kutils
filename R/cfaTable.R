@@ -41,17 +41,15 @@
 ##' standardized = TRUE will yield two identical sets of two columns.
 ##'
 ##' @param object A cfa object from lavaan
-##' @param file Default is NULL, meaning no output file. If 
-##' a character string is provided, it will be used as the
-##' name of the output file. This function will add suffix ".tex"
-##' or ".html", depending on the \code{type} argument
+##' @param file Character string for file name.  Default is NULL,
+##'     meaning no output file.
 ##' @param params Measurement parameters to be included. Valid values
-##' are "loadings", "intercepts", "residuals", "latentvariances",
-##' and "thresholds". See Details.
+##'     are "loadings", "intercepts", "residuals", "latentvariances",
+##'     and "thresholds". See Details.
 ##' @param fit A vector of fit measures that to be included. Listing
-##' "chi-square" will do special formatting to the chi-square
-##' value in the note. Any other measures listed must correspond
-##' to measures found in fitMeasures(object).
+##'     "chi-square" will do special formatting to the chi-square
+##'     value in the note. Any other measures listed must correspond
+##'     to measures found in fitMeasures(object).
 ##' @param names_fit Names for the fit measures requested by the fit
 ##'     parameter.  Must have same number of elements as fit.  For
 ##'     example, fit = c("cfi.scaled", "tli.scaled"), names_fit =
@@ -59,16 +57,19 @@
 ##' @param standardized Should standarized results be presented along
 ##'     with unstandardized?  Default is FALSE. See Details.
 ##' @param names_upper Should the names of the model fit parameters be
-##'     forced to be uppercase.  The default is TRUE.  This
-##'     will also affect whatever is specified in names_fit.
+##'     forced to be uppercase.  The default is TRUE.  This will also
+##'     affect whatever is specified in names_fit.
 ##' @param single_spaced Default = TRUE. If a double-spaced table is
 ##'     needed, set single_spaced = FALSE.
-##' @param type Type of output table ("latex" or "html"). Defaults to "latex".
+##' @param type Type of output table ("latex" or "html"). Defaults to
+##'     "latex".
 ##' @importFrom stats pnorm
 ##' @return CFA table of desired type.
 ##' @export
 ##' @author Ben Kite <bakite@@ku.edu>
 ##' @examples
+##' \donttest{
+##' ## These run longer than 5 seconds
 ##' require(lavaan)
 ##' HS.model <- ' visual  =~ x1 + x2 + x3
 ##' textual =~ x4 + x5 + x6
@@ -78,13 +79,11 @@
 ##' standardized = TRUE, params = c("loadings", "latentvariances"),
 ##' type = "latex")
 ##'
-##' \donttest{
 ##' ## Example with file output
-##' ## cfaTable(output1, file = "exampleTable", fit = "rmsea",
+##' ## cfaTable(output1, file = "exampleTable.tex", fit = "rmsea",
 ##' ## standardized = TRUE, params = c("loadings", "latentvariances"),
 ##' ## type = "latex")
-##' }
-##' 
+##'
 ##' model <- "factor =~ .7*y1 + .7*y2 + .7*y3 + .7*y4
 ##' y1 | -1*t1 + 1*t2
 ##' y2 | -.5*t1 + 1*t2
@@ -93,16 +92,15 @@
 ##' "
 ##' dat <- simulateData(model, sample.nobs = 300)
 ##' testmodel <- "ExampleFactor =~ y1 + y2 + y3 + y4"
-##' output <- cfa(testmodel, data = dat, ordered = colnames(dat),
+##' output2 <- cfa(testmodel, data = dat, ordered = colnames(dat),
 ##'     std.lv = FALSE)
-##' cfaTable(output, 
+##' cfaTable(output2,
 ##'     params = c("loadings", "thresholds", "residuals"),
 ##'     fit = c("tli", "chi-square"),
 ##'     names_fit = c("TLI", "chi-square"), type = "latex")
 ##'
-##' \donttest{
 ##' ## Example with file output
-##' ## cfaTable(output, file = "catTable",
+##' ## cfaTable(output, file = "catTable.tex",
 ##' ##    params = c("loadings", "thresholds", "residuals"),
 ##' ##    fit = c("tli", "chi-square"),
 ##' ##    names_fit = c("TLI", "chi-square"), type = "latex")
@@ -469,9 +467,9 @@ ROWINFORMATION
     }
     template <- markup(template, type)
     if(!is.null(file)){
-        if(type == "latex") exten <- ".tex" else exten <- ".html"
-        write(template, paste0(file, exten))
+        write(template, file)
     }
-    template
+    cat(template)
+    invisible(template)
 }
 

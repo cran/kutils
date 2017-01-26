@@ -42,6 +42,8 @@ provide a character string for the file name.}
 Compare CFA Tables
 }
 \examples{
+\donttest{
+## These run longer than 5 seconds
 library(lavaan)
 library(xtable)
 set.seed(123)
@@ -55,7 +57,7 @@ dat2 <- simulateData(genmodel2, sample.nobs = 300)
 dat1$group <- 0
 dat2$group <- 1
 dat <- rbind(dat1, dat2)
- 
+
 congModel <- "
               f1 =~ 1*v1 + v2 + v3 + v4 + v5 + v6
     		  f1 ~~ f1
@@ -100,13 +102,13 @@ compareCFA(models, nesting = "Configural > Metric + PartialMetric > Scalar")
 
 compareCFA(models, fitmeas = c("chisq", "df", "cfi", "rmsea", "tli"),
 nesting = "Configural > Metric + PartialMetric > Scalar")
-\donttest{
+
 ## Creates output file
 ## compareCFA(models, fitmeas = c("chisq", "df", "cfi", "rmsea", "tli"),
 ## nesting = "Configural > Metric + PartialMetric > Scalar", file = "table.tex")
 }
 }
 \author{
-Benjamin Arthur Kite
+Ben Kite
 }
 
