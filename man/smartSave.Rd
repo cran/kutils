@@ -17,7 +17,6 @@ smartSave(obj, file, outdir)
 just a convenience for this work, not general purpose
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
 \keyword{internal}
-

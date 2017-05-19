@@ -48,4 +48,6 @@ data(natlongsurv)
 nls.dat <- keyApply(natlongsurv, nls.keylong)
 
 }
-
+\author{
+Paul Johnson <pauljohn@ku.edu>
+}

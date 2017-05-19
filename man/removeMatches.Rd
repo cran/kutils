@@ -40,4 +40,3 @@ removeMatches(x, y)
 \author{
 Ben Kite <bakite@ku.edu> and Paul Johnson <pauljohn@ku.edu>
 }
-

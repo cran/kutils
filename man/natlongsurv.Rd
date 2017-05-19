@@ -55,10 +55,9 @@ All variables are for the 2003 year, except where otherwise noted.
 data(natlongsurv)
 peek(natlongsurv, ask = FALSE, file = paste0(tempdir(), "/","peek.pdf"))
 }
-\author{
-US Bureau of Labor Statistics
-}
 \references{
 \url{https://www.nlsinfo.org/investigator}
 }
-
+\author{
+US Bureau of Labor Statistics
+}

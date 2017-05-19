@@ -63,4 +63,3 @@ truncsmart(x, target = 20, tol = c(10,10), capwidth = 6)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

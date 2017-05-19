@@ -39,6 +39,5 @@ row.names(mydf.keylong) <- NULL
 all.equal(mydf.keylong, mydf.keywide2long)
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
-

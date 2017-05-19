@@ -40,4 +40,3 @@ TRUE. If usedate = FALSE, then output names will be like
 \author{
 Paul E Johnson <pauljohn@ku.edu>
 }
-

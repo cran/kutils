@@ -39,6 +39,5 @@ alphaOnly(x, also = c(" " = "_", "+" = "_"))
 alphaOnly(x, also = c("(" = "[", ")" = "]"))
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
-

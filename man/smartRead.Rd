@@ -22,4 +22,3 @@ read file after deducing file type from suffix.
 Paul Johnson <pauljohn@ku.edu>
 }
 \keyword{internal}
-

@@ -26,4 +26,3 @@ gg <- c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first")
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

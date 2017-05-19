@@ -117,6 +117,5 @@ if (require(openxlsx)){
 
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
-

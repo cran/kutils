@@ -111,4 +111,3 @@ nesting = "Configural > Metric + PartialMetric > Scalar")
 \author{
 Ben Kite
 }
-

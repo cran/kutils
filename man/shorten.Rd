@@ -29,6 +29,5 @@ shorten(x, 4)
 shorten(x, 4, unique = TRUE)
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
-

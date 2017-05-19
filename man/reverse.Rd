@@ -22,4 +22,3 @@ end of the list.
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

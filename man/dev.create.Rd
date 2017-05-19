@@ -32,4 +32,3 @@ dev.off()
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

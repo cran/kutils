@@ -5,7 +5,7 @@
 \title{Compare observed values with the values listed
 (presumably from a variable key).}
 \usage{
-checkValues(x, value_old, xname)
+checkValues(x, value_old, xname, diagnostic = FALSE)
 }
 \arguments{
 \item{x}{a variable, either character or factor}
@@ -13,6 +13,8 @@ checkValues(x, value_old, xname)
 \item{value_old}{a vector of old values for which we are checking}
 
 \item{xname}{character string to use for x's name when printing output}
+
+\item{diagnostic}{prints messages about variables if TRUE}
 }
 \description{
 This is purely diagnostic. It prints warnings in
@@ -24,4 +26,3 @@ values that are not in the data.
 Paul Johnson <pauljohn@ku.edu>
 }
 \keyword{internal}
-

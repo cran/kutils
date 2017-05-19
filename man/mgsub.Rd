@@ -40,4 +40,3 @@ x[1] <- "tom"
 Jared Harpole <jared.harpole@gmail.com> and Paul Johnson
     <pauljohn@ku.edu>
 }
-

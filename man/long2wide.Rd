@@ -22,10 +22,10 @@ mydf.path <- system.file("extdata", "mydf.csv", package = "kutils")
 mydf <- read.csv(mydf.path, stringsAsFactors=FALSE)
 ## A wide key we are trying to match:
 mydf.key <- keyTemplate(mydf, long = FALSE, sort = TRUE)
-mydf.key["x4", "missings"] <- "c(999)"
-## A long ke we will convert next
+mydf.key["x4", "missings"] <- "999"
+## A long key we will convert next
 mydf.keylong <- keyTemplate(mydf, long = TRUE, sort = TRUE)
-mydf.keylong["11", "missings"] <- "c(999)"
+mydf.keylong["11", "missings"] <- "999"
 mydf.long2wide <- long2wide(mydf.keylong)
 ## Tune the rownames to match style of long key
 rownames(mydf.key) <- paste0(mydf.key$name_old, ".", mydf.key$name_new)
@@ -34,4 +34,3 @@ all.equal(mydf.key, mydf.long2wide)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

@@ -46,6 +46,5 @@ escape(x2, type = "html")
 escape(x2, type = "filename")
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
-

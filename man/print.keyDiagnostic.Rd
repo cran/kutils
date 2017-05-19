@@ -17,4 +17,3 @@ Print the "changes" component of a keyDiagnostic object
 \author{
 Ben Kite <bakite@ku.edu>
 }
-

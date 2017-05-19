@@ -40,4 +40,3 @@ is.data.frame.simple(mydf)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

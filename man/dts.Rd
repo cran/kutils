@@ -28,4 +28,3 @@ This version also removes repeated adjacent slashes, so that
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

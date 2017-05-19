@@ -103,4 +103,3 @@ rockchalk::summarize(mydf4)
 \author{
 Ben Kite <bakite@ku.edu>
 }
-

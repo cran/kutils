@@ -36,4 +36,3 @@ keyDiff(key1, key2)
 \author{
 Ben Kite <bakite@ku.edu>
 }
-

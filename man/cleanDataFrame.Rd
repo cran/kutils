@@ -30,4 +30,3 @@ variables.
 Paul Johnson <pauljohn@ku.edu>
 }
 \keyword{internal}
-

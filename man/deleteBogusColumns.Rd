@@ -32,10 +32,9 @@ This is a column version of \code{deleteBogusRows}. Use the pm
 argument to set the proportion of missing required before a column
 is flagged for deletion
 }
-\author{
-Paul Johnson <pauljohn@ku.edu>
-}
 \seealso{
 \code{deleteBogusRows}
 }
-
+\author{
+Paul Johnson <pauljohn@ku.edu>
+}

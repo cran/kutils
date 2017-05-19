@@ -27,7 +27,7 @@ The main purpose was to correct ID numbers in studies that are
 entered as integers with leading 0's as in 000001 or 034554.  R's
 default coercion of integers will throw away the preceding 0's,
 and reduce that to 1 or 34554. The user might want to re-insert
-the 0's, thereby creating a character vector with values "000001" 
+the 0's, thereby creating a character vector with values "000001"
 and "045665".
 }
 \details{
@@ -63,4 +63,3 @@ padW0(x4)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

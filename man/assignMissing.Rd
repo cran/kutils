@@ -2,39 +2,42 @@
 % Please edit documentation in R/variableKey.R
 \name{assignMissing}
 \alias{assignMissing}
-\title{Scrub a variable's missings away}
+\title{Set missing values}
 \usage{
-assignMissing(x, missings = NULL)
+assignMissing(x, missings = NULL, sep = ";")
 }
 \arguments{
 \item{x}{A variable}
 
-\item{missings}{A string with a vector of values or R expressions.
-    These are done differently for integer, numeric, factor, and
-    character variables.  \enumerate{ \item For integer variables,
-    use a character string representing part of an R expression
-    such "> 8", ">= 8", "< 7", or "<= 7", or a character string
-    enclosing a range, a two valued vector, as in "c(8,9)". Any
-    strings that do not begin with ">", "<", or "c" will be
-    ignored. To reset particular values as missing one-by-one, use
-    the variable key.
+\item{missings}{A string vector of semi-colon separated values,
+    ranges, and/or inequalities.  For strings and factors, only an
+    enumeration of values (or factor levels) to be excluded is
+    allowed. For numeric variables (integers or floating point
+    variables), one can specify open and double-sided intervals as
+    well as particular values to be marked as missing. One can
+    append particular values and ranges by
+    "1;2;3;(8,10);[22,24];> 99;< 2". The double-sided interval is
+    represented in the usual mathematical way, where hard
+    bracketes indicate "closed" intervals and parentheses indicate
+    open intervals.\enumerate{
 
-\item For numerics, use an inequality such as "> 99". The only
-   other alternative we have allowed is a character string that
-   represents a range such as "c(99, 101)", to mean that values
-   greater than OR equal to 99 and less than OR equal to 101 will
-   be set as missing.
+\item "(a,b)" means values of x greater than a and smaller than b
+    will be set as missing.
 
-\item For factors, include a vector of levels to be
-        marked as missing and removed from the list of levels.
+\item "[a,b]" is a closed interval, one which includes the
+    endpoints, so a <= x <= b will be set as NA
 
-\item For character variables, a character vector of
-        values to be marked as missing.
-}
+\item "(a,b]" and "[a,b)" are acceptable.
+\item "< a"  indicates all values smaller than a will be missing
+\item  "<= a" means values smaller than or equal to a will be
+    excluded
+\item "> a" and ">= a" have comparable
+    interpretations.
+\item "8;9;10" It is possible to mark off specific values by providing an enumeration. Be aware, however, that this is useful only for integer variables.  As demonstrated in the example, for floating point numbers, one must specify intervals.
+\item For factors and character variables, the argument missings can be written either as
+"lo;med;hi" or "c('lo','med','hi')" }}
 
-One of the concerns is that comparison of real-valued numerics is
-not dependable.  Exact comparisons with == are
-unreliable, so don't ask for them.}
+\item{sep}{A separator symbol, ";" (semicolon) by default}
 }
 \value{
 A cleaned column in which R's NA symbol replaces values
@@ -44,31 +47,44 @@ A cleaned column in which R's NA symbol replaces values
 The missings values have to be carefully written, depending on the
 type of variable that is being processed.
 }
+\details{
+Version 0.95 of kutils introduced a new style for specification of
+missing values.
+}
 \examples{
 ## 1.  Integers.
-## must be very sure these are truly integers, or else fails
-x <- seq.int(2L, 22L, by = 2L)
+x <- seq.int(-2L, 22L, by = 2L)
+## Exclude scores 8, 10, 18
+assignMissing(x, "8;10;18")
 ## Specify range, 4 to 12 inclusive
-missings <- "c(4, 12)"
+missings <- "[4,12]"
 assignMissing(x, missings)
+## Not inclusive
+assignMissing(x,  "(4,12)")
+## Set missing for any value smaller that 7
+assignMissing(x, "< 7")
+assignMissing(x, "<= 8")
+assignMissing(x, "> 11")
+assignMissing(x, "< -1;2;4;(7, 9);> 20")
 
-missings <- " < 7"
-assignMissing(x, missings)
-
-missings <- " > 11"
-assignMissing(x, missings)
 
 ## 2. strings
 x <- c("low", "low", "med", "high")
-missings <- "c(\\"low\\", \\"high\\")"
+missings <- "low;high"
 assignMissing(x, missings)
-missings <- c("med", "doesnot exist")
+missings <- "med;doesnot exist"
 assignMissing(x, missings)
+## Test alternate separator
+assignMissing(x, "low|med", sep = "|")
 
-## 3. factors (same as strings inside assignMissing)
+## 3. factors (same as strings, really)
 x <- factor(c("low", "low", "med", "high"), levels = c("low", "med", "high"))
+missings <- "low;high"
+assignMissing(x, missings)
+## Previous same as
 missings <- c("low", "high")
 assignMissing(x, missings)
+
 missings <- c("med", "doesnot exist")
 assignMissing(x, missings)
 ## ordered factor:
@@ -79,14 +95,22 @@ assignMissing(x, missings)
 ## 4. Real-valued variable
 set.seed(234234)
 x <- rnorm(10)
+x
 missings <- "< 0"
 assignMissing(x, missings)
 missings <- "> -0.2"
 assignMissing(x, missings)
-missings <- "c(0.1, 0.7)"
+## values above 0.1 and below 0.7 are missing
+missings <- "(0.1,0.7)"
 assignMissing(x, missings)
+## Note that in floating point numbers, it is probably
+## futile to specify specific values for missings. Even if we
+## type out values to 7 decimals, nothing gets excluded
+assignMissing(x, "-0.4879708;0.1435791")
+## Can mark a range, however
+assignMissing(x, "(-0.487971,-0.487970);(0.14357, 0.14358)")
+x
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
-

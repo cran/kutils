@@ -50,4 +50,3 @@ n2NA(x = gg, nothings = c("\\\\."), zapspace = FALSE)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

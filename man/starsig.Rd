@@ -50,4 +50,3 @@ starsig(0.0009, alpha = alpha.ex, symbols = symb.ex)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

@@ -16,7 +16,7 @@ makeKeylist(key, sep = c(character = "\\\\|", logical = "\\\\|", integer =
 \value{
 A list with one element per variable name, along with some
     attributes like class_old and class_new. The class is set as
-    well, "keylist".
+    well, "keylist"
 }
 \description{
 The return value is a list, with one element per "name_old" to
@@ -26,7 +26,6 @@ list. Attributes including the classes of the old and new
 variables are included.
 }
 \author{
-Paul Johnson
+Paul Johnson <pauljohn@ku.edu>
 }
 \keyword{internal}
-

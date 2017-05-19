@@ -44,4 +44,3 @@ scatterplot will suffice.
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

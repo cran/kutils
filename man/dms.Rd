@@ -16,4 +16,3 @@ While harmless, this is untidy. Clean it up.
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

@@ -16,6 +16,5 @@ matrix indicating nesting relationships
 Receives a list of models and orders them by best guess at intended nesting
 }
 \author{
-Ben Kite
+Ben Kite <bakite@ku.edu>
 }
-

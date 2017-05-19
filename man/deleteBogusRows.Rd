@@ -46,4 +46,3 @@ mydf2 <- deleteBogusRows(mydf, n = "all")
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

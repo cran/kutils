@@ -50,4 +50,3 @@ colnames(mydf)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

@@ -75,4 +75,3 @@ mydf.keylong <- keyImport(mydf.keylong.path)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

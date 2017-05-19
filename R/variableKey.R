@@ -11,18 +11,20 @@
 ##' an integer, and then coerces as integer. Otherwise, it returns
 ##' NULL. And issues a warning.
 ##'
-##' First, calculate absolute value of differences between
-##' \code{x} and \code{as.integer(x)}. Second, compare the sum of those
-##' differences is smaller than \code{tol}, then x can reasonably
-##' be coerced to an integer.
+##' First, calculate absolute value of differences between \code{x}
+##' and \code{as.integer(x)}. Second, find out if the sum of those
+##' differences is smaller than \code{tol}. If so, then x can
+##' reasonably be coerced to an integer.
 ##'
-##' Be careful with the return. The correct return value for variables that
-##' should not be coerced as integer is uncertain at this point. We've tested
-##' various strategies, sometimes returning FALSE, NULL, or just the original
-##' variable.
+##' Be careful with the return. The correct return value for variables
+##' that should not be coerced as integer is uncertain at this
+##' point. We've tested various strategies, sometimes returning FALSE,
+##' NULL, or just the original variable.
 ##' @param x a numeric variable
 ##' @param tol Tolerance value. Defaults to Machine$double.eps. See
 ##'     details.
+##' @param vmax Maximum value allowed for an integer. Defaults to
+##'     Machine$integer.max.
 ##' @param digits Digits value passed to the zapsmall
 ##'     function. Defaults to 7.
 ##' @param verbose Default FALSE: print warnings about x
@@ -45,7 +47,9 @@
 ##' x3 <- factor(x1, labels = c(LETTERS[1:6]))
 ##' x3int <- safeInteger(x3)
 ##'
-safeInteger <- function(x, tol = .Machine$double.eps, digits = 7, verbose = FALSE)
+safeInteger <- function(x, tol = .Machine$double.eps,
+                        digits = 7, vmax = .Machine$integer.max,
+                        verbose = FALSE)
 {
     if(!is.numeric(x)) {
         if (verbose) {
@@ -53,6 +57,14 @@ safeInteger <- function(x, tol = .Machine$double.eps, digits = 7, verbose = FALS
             warning(messg)
         }
         return(NULL)
+    }
+
+    if(max(x, na.rm = TRUE) > vmax){
+        messg <- paste0("Values in x exceed the maximum integer value of ",
+                        vmax, ". ", "safeInteger cannot be used safely ",
+                        "for this variable. Original value is returned.")
+        warning(messg)
+        return(x)
     }
 
     if(is.integer(x)){
@@ -64,7 +76,8 @@ safeInteger <- function(x, tol = .Machine$double.eps, digits = 7, verbose = FALS
             return(xnew)
         } else {
             if (verbose) {
-                messg <- paste("asInteger x:", paste(head(x), collapse=", "), "... is not close enough to an integer")
+                messg <- paste("asInteger x:", paste(head(x), collapse=", "),
+                               "... is not close enough to an integer")
                 warning(messg)
             }
             return(NULL)
@@ -75,69 +88,82 @@ safeInteger <- function(x, tol = .Machine$double.eps, digits = 7, verbose = FALS
 }
 NULL
 
-
-##' Scrub a variable's missings away
+##' Set missing values
 ##'
 ##' The missings values have to be carefully written, depending on the
 ##' type of variable that is being processed.
+##'
+##' Version 0.95 of kutils introduced a new style for specification of
+##' missing values.
+##'
 ##' @param x A variable
-##' @param missings A string with a vector of values or R expressions.
-##'     These are done differently for integer, numeric, factor, and
-##'     character variables.  \enumerate{ \item For integer variables,
-##'     use a character string representing part of an R expression
-##'     such "> 8", ">= 8", "< 7", or "<= 7", or a character string
-##'     enclosing a range, a two valued vector, as in "c(8,9)". Any
-##'     strings that do not begin with ">", "<", or "c" will be
-##'     ignored. To reset particular values as missing one-by-one, use
-##'     the variable key.
+##' @param missings A string vector of semi-colon separated values,
+##'     ranges, and/or inequalities.  For strings and factors, only an
+##'     enumeration of values (or factor levels) to be excluded is
+##'     allowed. For numeric variables (integers or floating point
+##'     variables), one can specify open and double-sided intervals as
+##'     well as particular values to be marked as missing. One can
+##'     append particular values and ranges by
+##'     "1;2;3;(8,10);[22,24];> 99;< 2". The double-sided interval is
+##'     represented in the usual mathematical way, where hard
+##'     bracketes indicate "closed" intervals and parentheses indicate
+##'     open intervals.\enumerate{
 ##'
-##' \item For numerics, use an inequality such as "> 99". The only
-##'    other alternative we have allowed is a character string that
-##'    represents a range such as "c(99, 101)", to mean that values
-##'    greater than OR equal to 99 and less than OR equal to 101 will
-##'    be set as missing.
+##' \item "(a,b)" means values of x greater than a and smaller than b
+##'     will be set as missing.
 ##'
-##' \item For factors, include a vector of levels to be
-##'         marked as missing and removed from the list of levels.
+##' \item "[a,b]" is a closed interval, one which includes the
+##'     endpoints, so a <= x <= b will be set as NA
 ##'
-##' \item For character variables, a character vector of
-##'         values to be marked as missing.
-##' }
-##'
-##' One of the concerns is that comparison of real-valued numerics is
-##' not dependable.  Exact comparisons with == are
-##' unreliable, so don't ask for them.
-##'
+##' \item "(a,b]" and "[a,b)" are acceptable.
+##' \item "< a"  indicates all values smaller than a will be missing
+##' \item  "<= a" means values smaller than or equal to a will be
+##'     excluded
+##' \item "> a" and ">= a" have comparable
+##'     interpretations.
+##' \item "8;9;10" It is possible to mark off specific values by providing an enumeration. Be aware, however, that this is useful only for integer variables.  As demonstrated in the example, for floating point numbers, one must specify intervals.
+##' \item For factors and character variables, the argument missings can be written either as
+##' "lo;med;hi" or "c('lo','med','hi')" }
+##' @param sep A separator symbol, ";" (semicolon) by default
 ##' @return A cleaned column in which R's NA symbol replaces values
 ##'     that should be missing
 ##' @export
 ##' @importFrom utils head
-##' @author Paul Johnson
+##' @author Paul Johnson <pauljohn@@ku.edu>
 ##' @examples
 ##' ## 1.  Integers.
-##' ## must be very sure these are truly integers, or else fails
-##' x <- seq.int(2L, 22L, by = 2L)
+##' x <- seq.int(-2L, 22L, by = 2L)
+##' ## Exclude scores 8, 10, 18
+##' assignMissing(x, "8;10;18")
 ##' ## Specify range, 4 to 12 inclusive
-##' missings <- "c(4, 12)"
+##' missings <- "[4,12]"
 ##' assignMissing(x, missings)
+##' ## Not inclusive
+##' assignMissing(x,  "(4,12)")
+##' ## Set missing for any value smaller that 7
+##' assignMissing(x, "< 7")
+##' assignMissing(x, "<= 8")
+##' assignMissing(x, "> 11")
+##' assignMissing(x, "< -1;2;4;(7, 9);> 20")
 ##'
-##' missings <- " < 7"
-##' assignMissing(x, missings)
-##'
-##' missings <- " > 11"
-##' assignMissing(x, missings)
 ##'
 ##' ## 2. strings
 ##' x <- c("low", "low", "med", "high")
-##' missings <- "c(\"low\", \"high\")"
+##' missings <- "low;high"
 ##' assignMissing(x, missings)
-##' missings <- c("med", "doesnot exist")
+##' missings <- "med;doesnot exist"
 ##' assignMissing(x, missings)
+##' ## Test alternate separator
+##' assignMissing(x, "low|med", sep = "|")
 ##'
-##' ## 3. factors (same as strings inside assignMissing)
+##' ## 3. factors (same as strings, really)
 ##' x <- factor(c("low", "low", "med", "high"), levels = c("low", "med", "high"))
+##' missings <- "low;high"
+##' assignMissing(x, missings)
+##' ## Previous same as
 ##' missings <- c("low", "high")
 ##' assignMissing(x, missings)
+##'
 ##' missings <- c("med", "doesnot exist")
 ##' assignMissing(x, missings)
 ##' ## ordered factor:
@@ -148,16 +174,27 @@ NULL
 ##' ## 4. Real-valued variable
 ##' set.seed(234234)
 ##' x <- rnorm(10)
+##' x
 ##' missings <- "< 0"
 ##' assignMissing(x, missings)
 ##' missings <- "> -0.2"
 ##' assignMissing(x, missings)
-##' missings <- "c(0.1, 0.7)"
+##' ## values above 0.1 and below 0.7 are missing
+##' missings <- "(0.1,0.7)"
 ##' assignMissing(x, missings)
-assignMissing <- function(x, missings = NULL){
-
+##' ## Note that in floating point numbers, it is probably
+##' ## futile to specify specific values for missings. Even if we
+##' ## type out values to 7 decimals, nothing gets excluded
+##' assignMissing(x, "-0.4879708;0.1435791")
+##' ## Can mark a range, however
+##' assignMissing(x, "(-0.487971,-0.487970);(0.14357, 0.14358)")
+##' x
+assignMissing <- function(x, missings = NULL, sep = ";"){
     if (is.character(missings)) missings <- zapspace(missings)
-    missings <-  na.omit(missings)
+    missings <- unlist(strsplit(missings, split = sep, fixed = TRUE))
+    missings <- na.omit(missings)
+    missings <- zapspace(missings)
+    missings <- gsub("-", " -", missings,  fixed = TRUE)
     ## If no NA  missings to remove, then return
     if (is.null(missings) | length(missings) == 0) return(x)
 
@@ -169,46 +206,25 @@ assignMissing <- function(x, missings = NULL){
         levels(x)[which(levels(x) %in% missings)] <- NA
         return(x)
     }
-    if (is.integer(x)){
-        if(substr(missings, 1, 1) %in% c(">", "<")){
-            conditional <- paste(quote(x), missings)
-            xcheck <- eval(parse(text = conditional))
-            x[xcheck] <- NA
-        } else if (substr(missings, 1, 1) == "c"){
-            misvec <- as.integer(eval(parse(text = missings)))
-            if (length(misvec) != 2) stop("Missings interval should have 2 numeric values")
-            if (any(is.na(misvec))) stop("Missings interval should not have any NA values")
-            misvec <- sort(misvec)
-            x[x >= misvec[1] & x <= misvec[2]] <- NA
-        } else {
-            messg("Error in assignMissings")
-            print(messg)
-            messg <- "Here are the first 20 values of the variable being recoded"
-            print(messg)
-            print(head(x, 20))
-            messg <- "Here is the missing value string that was supplied"
-            print(messg)
-            print(missings)
-            messg <- paste0("The missing string was not understandable")
-            stop(messg)
-        }
-        return(x)
-    }
-    if (is.double(x)) {
-        if(substr(missings, 1, 1) %in% c(">", "<")){
-            conditional <- paste(quote(x), missings)
-            xcheck <- eval(parse(text = conditional))
-            x[xcheck] <- NA
-        } else if (substr(missings, 1, 1) == "c"){
-            misvec <- eval(parse(text = missings))
-            if (length(misvec) != 2) stop("Missings interval should have 2 numeric values")
-            if (!is.numeric(misvec)) stop("Missings vector must be numeric")
-            if (any(is.na(misvec))) stop("Missings interval should not have any NA values")
-            misvec <- sort(misvec)
-            x[x >= misvec[1] & x <= misvec[2]] <- NA
-        } else {
-            messg <- paste0("missings for variable ", deparse(substitute(x)), " not understandable")
-            stop(messg)
+
+    ## 20170203: TODO following is hard coded to look at first character,
+    ## if space first, fails, used zapspace to address above, but that's
+    ## stupid bandaid, better regex work would be solid.
+    if (is.numeric(x)){
+        ## is  numeric includes integer and double and numeric
+        ## separate the elements that inequality signs
+        hasineq <- missings[substr(missings, 1, 1) %in% c(">", "<", "(", "[")]
+        hasnoineq <- setdiff(missings, hasineq)
+        hasnoineq <- if (length(hasnoineq) > 0) paste("x == ", hasnoineq)
+
+        ## (9 ->   x > 9
+        ## [9 ->   x >= 9
+        ins <- c(">", "<" , "(",     "[",     ")",     "]",  ",")
+        outs <- c("x >", "x <", "x >", "x >= ", " > x", " >= x", " & ")
+        ranges <- mgsub(ins, outs, hasineq, fixed = TRUE)
+
+        for(rr in c(ranges, hasnoineq)){
+            eval(parse(text = paste0("x[", rr, "] <- NA")))
         }
         return(x)
     }
@@ -350,17 +366,18 @@ is.data.frame.simple <- function(dframe){
 ##' @param x a variable, either character or factor
 ##' @param value_old a vector of old values for which we are checking
 ##' @param xname character string to use for x's name when printing output
+##' @param diagnostic prints messages about variables if TRUE
 ##' @keywords internal
 ##' @return NULL
 ##' @author Paul Johnson <pauljohn@@ku.edu>
-checkValues <- function(x, value_old, xname){
+checkValues <- function(x, value_old, xname, diagnostic = FALSE){
     if (!is.factor(x) && !is.character(x)) return(NULL)
     ## if value_old is length 1 and is equal to NA, don't bother
     if(all(value_old %in% c("NA", NA))) return(NULL)
     xobs <- unique(x)
     keynotinobs <- value_old[!value_old %in% xobs]
     keynotinobs <- na.omit(keynotinobs)
-    if (length(keynotinobs) > 0){
+    if (diagnostic && length(keynotinobs) > 0){
         messg <- paste("Data Check (variable", xname, ":)\n",
                      "Key values were not observed in the input data: ",
                      paste(keynotinobs, collapse = ", "), "\n")
@@ -368,7 +385,7 @@ checkValues <- function(x, value_old, xname){
     }
     tobsnotinkey <- xobs[!xobs %in% value_old]
     tobsnotinkey <- na.omit(tobsnotinkey)
-    if (length(tobsnotinkey) > 0) {
+    if (diagnostic && length(tobsnotinkey) > 0) {
         messg <- paste("Data Check (variable", xname, ":)\n",
                        "These values in the input data were not in value_old: ",
                        paste(tobsnotinkey, collapse = ", "), "\n")
@@ -439,7 +456,7 @@ checkValues <- function(x, value_old, xname){
 ##' @export
 ##' @importFrom utils write.csv
 ##' @importFrom methods as
-##' @author Paul Johnson
+##' @author Paul Johnson <pauljohn@@ku.edu>
 ##' @examples
 ##' set.seed(234234)
 ##' N <- 200
@@ -584,7 +601,7 @@ keyTemplate <- function(dframe, long = FALSE, sort = FALSE,
 ##' @param outdir directory path
 ##' @return NULL
 ##' @keywords internal
-##' @author Paul Johnson
+##' @author Paul Johnson <pauljohn@@ku.edu>
 smartSave <- function(obj, file, outdir){
     fp <- file
     if (!is.null(outdir) && missing(outdir))
@@ -632,6 +649,10 @@ smartRead <- function(file, ...){
             xlsxargz <- modifyList(xlsxargs, dotsforxlsx)
             names(xlsxargz)[which(names(xlsxargz) == "file")] <- "xlsxFile"
             key <- do.call("read.xlsx", xlsxargz)
+            ## Force columns to be of type "character"
+            for(i in colnames(key)){
+                if (class(key[ , i]) != "character") key[ , i] <- as.character(key[ , i])
+            }
         } else if (length(grep("csv$", tolower(file))) > 0){
             csvargs <- list(file = file, stringsAsFactors = FALSE, colClasses = "character")
             csvargz <- modifyList(csvargs, dotsforcsv)
@@ -817,15 +838,31 @@ keyImport <- function(file, ignoreCase = TRUE,
     }
 
     key.orig <- key
+    attr(key, "na.strings") <- na.strings
     if (!long) key <- wide2long(key, sep)
+    key$missings <- gsub("<-", "< -", key$missings, fixed = TRUE)
+
     ## protect against user-inserted spaces (leading or trailing)
     key$name_old <- zapspace(key$name_old)
     key$name_new <- zapspace(key$name_new)
 
+    ## Make a list of variables to remove based on name_new
+    remove <- key$name_old[key$name_new %in% c("", NA)]
+    key <- key[!key$name_old %in% remove,]
+
+    if (length(unique(remove)) == 1){
+        warning(paste0("There was 1 variable removed from the key due to a missing value in the name_new column."))
+    }
+    if (length(unique(remove)) > 1){
+        warning(paste0("There were ", length(unique(remove)), " variables removed from the key due to a missing value in the name_new column."))
+    }
+
+
     ## if this is long key, following is safe. How about wide key?
     key$value_old <- n2NA(zapspace(key$value_old))
     key$value_new <- n2NA(zapspace(key$value_new))
-    key$value_new[key$value_new %in% na.strings] <- NA
+    MISSSymbol <- "."
+    key[key$value_new %in% na.strings, "value_new"] <- MISSSymbol
 
     ## Delete repeated rows:
     dups <- duplicated(key)
@@ -840,13 +877,18 @@ keyImport <- function(file, ignoreCase = TRUE,
         warning(messg)
     }
 
-    attr(key, "ignoreCase") <- ignoreCase
+    na.strings <- MISSSymbol
     if (long){
         class(key) <- c("keylong", "data.frame")
+        attr(key, "ignoreCase") <- ignoreCase
+        attr(key, "na.strings") <- na.strings
+        key[key$value_new %in% MISSSymbol, "value_new"] <- NA
         return(key)
     } else {
         keywide <- long2wide(key)
         class(keywide) <- c("key", "data.frame")
+        attr(keywide, "ignoreCase") <- ignoreCase
+        attr(keywide, "na.strings") <- na.strings
         return(keywide)
     }
     stop("keyImport should not reach this point")
@@ -868,8 +910,8 @@ keyImport <- function(file, ignoreCase = TRUE,
 ##' @keywords internal
 ##' @return A list with one element per variable name, along with some
 ##'     attributes like class_old and class_new. The class is set as
-##'     well, "keylist".
-##' @author Paul Johnson
+##'     well, "keylist"
+##' @author Paul Johnson <pauljohn@@ku.edu>
 makeKeylist <- function(key,
                         sep = c(character = "\\|", logical = "\\|",
                               integer = "\\|", factor = "[\\|<]",
@@ -892,7 +934,7 @@ makeKeylist <- function(key,
     } else if (inherits(key, "keylong")){
         long <- TRUE
     }
-
+    na.strings <- attr(key, "na.strings")
     ## TODO: if name_new is missing or empty, remove that from key
     name_old.new <- paste0(key[ , "name_old"], ".", key[ , "name_new"])
 
@@ -909,8 +951,9 @@ makeKeylist <- function(key,
             keyds$value_new.orig <- keyds$value_new
             val_old <- unlist(strsplit2(keyds$value_old.orig, sep[keyds$class_old]))
             val_new <- unlist(strsplit2(keyds$value_new.orig, sep[keyds$class_new]))
-            recodes <- unlist(strsplit2(keyds$recodes, ";", fixed = TRUE))
-            missings <- unlist(strsplit2(keyds$missings, ";", fixed = TRUE))
+            val_new[val_new %in% c(".", na.strings)] <- NA
+            recodes <- zapspace(unlist(strsplit2(keyds$recodes, ";", fixed = TRUE)))
+            missings <- zapspace(keyds$missings)
             list(name_old = keyds$name_old, name_new = keyds$name_new,
                  class_old = keyds$class_old, class_new = keyds$class_new,
                  value_old = val_old, value_new = val_new,
@@ -950,8 +993,9 @@ makeKeylist <- function(key,
             class_new <- unique2(keyds$class_new)
             recodes <- unique(na.omit(n2NA(zapspace(keyds$recodes))))
             recodes <- if(length(recodes) > 0) unlist(strsplit(recodes, split=";", fixed = TRUE))
-            missings <- unlist(na.omit(n2NA(zapspace(keyds$missings))))
-            missings <- if(length(missings) > 0) unlist(strsplit(missings, split= ";", fixed = TRUE))
+            ##missings <- unlist(na.omit(n2NA(zapspace(keyds$missings))))
+            ##missings <- if(length(missings) > 0) unlist(strsplit(missings, split= ";", fixed = TRUE))
+            missings <- paste(na.omit(n2NA(zapspace(keyds$missings))), collapse = ";")
             value_new <- keyds$value_new
             ## value_new[value_new %in% na.strings] <- NA
             list(name_old = name_old, name_new = name_new,
@@ -994,6 +1038,7 @@ NULL
 ##'     will be ignored.
 ##' @param debug Default FALSE. If TRUE, emit some warnings.
 ##' @return A recoded version of dframe
+##' @author Paul Johnson <pauljohn@@ku.edu>
 ##' @export
 ##' @importFrom plyr mapvalues
 ##' @examples
@@ -1070,9 +1115,7 @@ keyApply <- function(dframe, key, diagnostic = TRUE,
         xnew <- dframe[ , v$name_old]
 
         if (length(v$missings) > 0){
-            for(m in v$missings){
-                xnew <- assignMissing(xnew, m)
-            }
+            xnew <- assignMissing(xnew, v$missings)
         }
 
         ## Be simple. If they have "recodes" in key, apply them.
@@ -1096,7 +1139,7 @@ keyApply <- function(dframe, key, diagnostic = TRUE,
                     mytext <- paste0("xnew <- ", class_new.key, "(xnew, levels = v$value_old)")
                     eval(parse(text = mytext))
                     newlevels <- v$value_new
-                    checkValues(xnew, v$value_old, dfname_old.orig[v$name_old])
+                    checkValues(xnew, v$value_old, dfname_old.orig[v$name_old], diagnostic)
                     names(newlevels) <- v$value_old
                     levels(xnew) <- newlevels[levels(xnew)]
                     mytext <- paste0("xlist[[\"", v$name_new, "\"]] <- xnew")
@@ -1105,6 +1148,11 @@ keyApply <- function(dframe, key, diagnostic = TRUE,
                     messg <- "keyApply: value_old and value_new are not equal in length"
                     stop(messg)
                 }
+            } else { ## This was added to handle blank value_old cell for factor variables
+                mytext <- paste0("xnew <- ", class_new.key, "(xnew)")
+                eval(parse(text = mytext))
+                mytext <- paste0("xlist[[\"", v$name_new, "\"]] <- xnew")
+                eval(parse(text = mytext))
             }
         } else if(class_new.key %in% c("integer", "numeric") && class_old.key %in% c("ordered", "factor")){
             mytext <- paste0("xvals <- as.", class_new.key, "(v$value_new)")
@@ -1117,7 +1165,7 @@ keyApply <- function(dframe, key, diagnostic = TRUE,
             ## Then process value_old to value_new.  Relying heavily on plyr::mapvalues
             xnew <- zapspace(xnew)
             if (length(v$value_old) == length(v$value_new)){
-                checkValues(xnew, v$value_old, dfname_old.orig[v$name_old])
+                checkValues(xnew, v$value_old, dfname_old.orig[v$name_old], diagnostic)
                 ## Only change xnew if there are value_old and differences with value_new
                 ## 20161107: could eliminate same-value old, new pairs, to be efficient,
                 ## but this applies them all.
@@ -1237,7 +1285,7 @@ keyDiagnostic <- function(dfold, dfnew, keylist, max.values = 20,
 ##'     specified for each variable class.
 ##' @return A long format variable key
 ##' @export
-##' @author Paul Johnson
+##' @author Paul Johnson <pauljohn@@ku.edu>
 ##' @examples
 ##' mydf.path <- system.file("extdata", "mydf.csv", package = "kutils")
 ##' mydf <- read.csv(mydf.path, stringsAsFactors=FALSE)
@@ -1263,10 +1311,10 @@ wide2long <- function(key, sep = c(character = "\\|", logical = "\\|",
         if (length(value_new) == 0) value_new <- as.character("")
         values <- cbind(value_old, value_new)
         values <- unique(values)
-        missings <- na.omit(unlist(strsplit(x$missings, ";")))
-        missings <- c(missings, rep("", NROW(values) - length(missings)))
-        recodes <- na.omit(unlist(strsplit(x$recodes, ";")))
-        recodes <- c(recodes, rep("", NROW(values) - length(recodes)))
+        ## missings <- na.omit(unlist(strsplit(x$missings, ";")))
+        missings <- c(x$missings, rep("", NROW(values) - length(x$missings)))
+        ## recodes <- na.omit(unlist(strsplit(x$recodes, ";")))
+        recodes <- c(x$recodes, rep("", NROW(values) - length(x$recodes)))
 
         zz <- data.frame(name_old = x$name_old,
                          name_new = x$name_new,
@@ -1279,18 +1327,15 @@ wide2long <- function(key, sep = c(character = "\\|", logical = "\\|",
         ##zz <- lapply(zz, function(obj) if (length(obj) == 0) "" else x)
         zz
     }
-
-
     ## keysplit
     name_old.new <- paste0(key[ , "name_old"], ".", key[ , "name_new"])
     name_old.new <- factor(name_old.new, levels = unique(name_old.new))
     ks <- split(key, name_old.new, drop = TRUE)
-
     ## build a "long stanza" for each variable
     ksl <- lapply(ks, makeOneVar)
 
     keylong <- do.call(rbind, lapply(ksl, as.data.frame, stringsAsFactors = FALSE))
-
+    attr(keylong, "na.strings") <- attr(key, "na.strings")
     class(keylong) <- c("keylong", "data.frame")
     keylong
 }
@@ -1311,10 +1356,10 @@ wide2long <- function(key, sep = c(character = "\\|", logical = "\\|",
 ##' mydf <- read.csv(mydf.path, stringsAsFactors=FALSE)
 ##' ## A wide key we are trying to match:
 ##' mydf.key <- keyTemplate(mydf, long = FALSE, sort = TRUE)
-##' mydf.key["x4", "missings"] <- "c(999)"
-##' ## A long ke we will convert next
+##' mydf.key["x4", "missings"] <- "999"
+##' ## A long key we will convert next
 ##' mydf.keylong <- keyTemplate(mydf, long = TRUE, sort = TRUE)
-##' mydf.keylong["11", "missings"] <- "c(999)"
+##' mydf.keylong["11", "missings"] <- "999"
 ##' mydf.long2wide <- long2wide(mydf.keylong)
 ##' ## Tune the rownames to match style of long key
 ##' rownames(mydf.key) <- paste0(mydf.key$name_old, ".", mydf.key$name_new)
@@ -1337,11 +1382,14 @@ long2wide <- function(keylong){
         values <- cbind(value_old = x$value_old, value_new = x$value_new)
         values <- unique(values)
 
-        ## Cleans up fact that NA -> "NA" in paste statement.
+        ## 20170130: Was worried that NA and "NA" become indistinguisable
+        ## All values marked as R missing NA will be re-set as "." in the
+        ## short key
         printvals <- function(x, collapse){
-            x <- ifelse(is.na(x), "", x)
+            x <- ifelse(is.na(x), ".", x)
             paste(x, collapse = collapse)
         }
+
 
         list(name_old = unique(x$name_old),
              name_new = unique(x$name_new),
@@ -1357,6 +1405,7 @@ long2wide <- function(keylong){
 
     key <- do.call("rbind", lapply(keywide, data.frame, stringsAsFactors = FALSE))
     class(key) <- c("key", "data.frame")
+    attr(key, "na.strings") <- attr(keylong, "na.strings")
     key
 }
 
@@ -1560,6 +1609,7 @@ keyUpdate <- function(key, dframe, append = TRUE,
         row.names(output) <- seq(1, nrow(output), 1)
         return(output)
     }
+    attr(output, "na.strings") <- attr(key, "na.strings")
     output
 }
 
@@ -1605,10 +1655,53 @@ keyDiff <- function(oldkey, newkey){
 }
 
 ##' Print the "changes" component of a keyDiagnostic object
-##' 
+##'
 ##' @method print keyDiagnostic
 ##' @export
 ##' @param x A keyDiagnostic object
 ##' @param ... Other arguments passed through to print
 ##' @author Ben Kite <bakite@@ku.edu>
 print.keyDiagnostic <- function(x, ...) print(x[["changes"]], ...)
+
+
+##' Checks a variable key for possible errors.
+##'
+##' @param key variable key object or a file path to a key
+##' @keywords internal
+##' @author Ben Kite <bakite@@ku.edu
+keyChecker <- function(key){
+    if (is.character(key)){
+        key <- smartRead(key)
+    }
+    if (prod(c("name_old", "name_new", "class_old", "class_new", "value_old", "value_new") %in% names(key)) != 1L){
+        stop ("At a minimum a variable key needs to have the following columns: name_old, name_new, class_old, class_new, value_old, value_new")
+    }
+    ## Deduce if this is a long key
+    name_old.new <- paste0(key[ , "name_old"], ".", key[ , "name_new"])
+    if (max(table(name_old.new)) > 1){
+        long <- TRUE
+    } else {
+        long <- FALSE
+    }
+    if (long){
+        if (identical(key, wide2long(long2wide(key)))){
+            stop ("There is an error with this key. The structure changes when being transformed from long to wide, and then back to long.")
+        }
+    } else {
+        if (identical(key, long2wide(wide2long(key)))){
+            stop ("There is an error with this key. The structure changes when being transformed from wide to long, and then back to wide.")
+        }
+    }
+    if (!long){
+        xx <- strsplit(key$value_old, split = "[|<]", fixed = FALSE)
+        xx.l <- sapply(xx, length)
+        yy <- strsplit(key$value_new, "[|<]", fixed = FALSE)
+        yy.l <- sapply(yy, length)
+        inconsistent <- xx.l != yy.l
+        issues <- key[inconsistent, "name_old"]
+        if (length(issues) > 0){
+            stop (paste0("The following variables have inconsistencies in the number of values listed between the value_old and value_new columns: ", issues))
+        }
+    }
+    print("No errors with this key were detected.")
+}

@@ -5,7 +5,8 @@
 \title{If a numeric variable has only integer values, then
 make it an integer.}
 \usage{
-safeInteger(x, tol = .Machine$double.eps, digits = 7, verbose = FALSE)
+safeInteger(x, tol = .Machine$double.eps, digits = 7,
+  vmax = .Machine$integer.max, verbose = FALSE)
 }
 \arguments{
 \item{x}{a numeric variable}
@@ -15,6 +16,9 @@ details.}
 
 \item{digits}{Digits value passed to the zapsmall
 function. Defaults to 7.}
+
+\item{vmax}{Maximum value allowed for an integer. Defaults to
+Machine$integer.max.}
 
 \item{verbose}{Default FALSE: print warnings about x}
 }
@@ -32,15 +36,15 @@ an integer, and then coerces as integer. Otherwise, it returns
 NULL. And issues a warning.
 }
 \details{
-First, calculate absolute value of differences between
-\code{x} and \code{as.integer(x)}. Second, compare the sum of those
-differences is smaller than \code{tol}, then x can reasonably
-be coerced to an integer.
+First, calculate absolute value of differences between \code{x}
+and \code{as.integer(x)}. Second, find out if the sum of those
+differences is smaller than \code{tol}. If so, then x can
+reasonably be coerced to an integer.
 
-Be careful with the return. The correct return value for variables that
-should not be coerced as integer is uncertain at this point. We've tested
-various strategies, sometimes returning FALSE, NULL, or just the original
-variable.
+Be careful with the return. The correct return value for variables
+that should not be coerced as integer is uncertain at this
+point. We've tested various strategies, sometimes returning FALSE,
+NULL, or just the original variable.
 }
 \examples{
 x1 <- c(1, 2, 3, 4, 5, 6)
@@ -62,4 +66,3 @@ x3int <- safeInteger(x3)
 Paul Johnson <pauljohn@ku.edu> and Ben Kite
     <bakite@ku.edu>
 }
-

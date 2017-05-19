@@ -77,4 +77,3 @@ updatePackages(libnew = NULL)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-

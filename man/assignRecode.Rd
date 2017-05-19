@@ -44,4 +44,3 @@ xsrt <- assignRecode(x, recode = str3)
 \author{
 Paul Johnson <pauljohn@ku.edu>
 }
-
