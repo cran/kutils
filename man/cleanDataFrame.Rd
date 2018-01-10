@@ -4,7 +4,7 @@
 \alias{cleanDataFrame}
 \title{Check and Clean data.frame for usage with variable key functions}
 \usage{
-cleanDataFrame(dframe, safeNumericToInteger = TRUE)
+cleanDataFrame(dframe, safeNumericToInteger = TRUE, trimws = "both")
 }
 \arguments{
 \item{dframe}{A data frame}
@@ -13,18 +13,22 @@ cleanDataFrame(dframe, safeNumericToInteger = TRUE)
 which appear to be integers as integers? If a column is
 numeric, it might be safe to treat it as an integer.  In many
 csv data sets, the values coded c(1, 2, 3) are really
-integers, not floats c(1.0, 2.0, 3.0). See
-\code{safeInteger}.}
+integers, not floats c(1.0, 2.0, 3.0). See \code{safeInteger}.}
+
+\item{trimws}{Defaults as "both", in meaning of \code{which}
+argument in \code{trimws} function.  Set as NULL if character
+variables must not be trimmed to eliminate white
+space. Otherwise, value should be one of \code{c("left",
+"right", "both")}.}
 }
 \value{
 A checked and cleaned data frame
 }
 \description{
 Checks that the data.frame is made up of simple individual
-columns. Checks numeric columns to find out if they are
-acceptable to treat as integers. If they are acceptable to
-treat as integers, then convert those numeric to integer class
-variables.
+columns. Checks numeric columns to find out if they are acceptable
+to treat as integers. If they are acceptable to treat as integers,
+then convert those numeric to integer class variables.
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

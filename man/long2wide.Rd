@@ -4,10 +4,15 @@
 \alias{long2wide}
 \title{convert a key object from long to wide format}
 \usage{
-long2wide(keylong)
+long2wide(keylong, na.strings = c("\\\\.", "", "\\\\s+", "N/A"),
+  missSymbol = ".")
 }
 \arguments{
 \item{keylong}{A variable key in the long format}
+
+\item{na.strings}{Strings to be treated as missings in value_new}
+
+\item{missSymbol}{Default is ".", character to insert in value when R NA is found.}
 }
 \value{
 A wide format variable key
@@ -25,11 +30,18 @@ mydf.key <- keyTemplate(mydf, long = FALSE, sort = TRUE)
 mydf.key["x4", "missings"] <- "999"
 ## A long key we will convert next
 mydf.keylong <- keyTemplate(mydf, long = TRUE, sort = TRUE)
-mydf.keylong["11", "missings"] <- "999"
+mydf.keylong[mydf.keylong[ , "name_old"] == "x4" &
+    mydf.keylong[ , "value_old"] == "999", "missings"] <- "999"
 mydf.long2wide <- long2wide(mydf.keylong)
-## Tune the rownames to match style of long key
-rownames(mydf.key) <- paste0(mydf.key$name_old, ".", mydf.key$name_new)
 all.equal(mydf.key, mydf.long2wide)
+
+mydf.keylong.path <- system.file("extdata", "mydf.key_long.csv", package = "kutils")
+mydf.keylong <- keyImport(mydf.keylong.path)
+mydf.keywide <- long2wide(mydf.keylong)
+mydf.keylong2 <- wide2long(mydf.keywide)
+## Is error if following not TRUE
+all.equal(mydf.keylong2, mydf.keylong)
+
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

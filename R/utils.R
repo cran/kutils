@@ -28,6 +28,54 @@ dms <- function(name) gsub("(/)\\1+", "/", name)
 NULL
 
 
+##' Removes redundant words from beginnings of character strings
+##'
+##' In Qualtrix data, we sometimes find repeated words in column names.
+##' This changes a vector c("Philadelphia_Philadelphia_3", "Denver_Denver_4")
+##' to c("Philadelphia_3", "Denver_4")
+##' 
+##' See \url{https://stackoverflow.com/questions/43711240/r-regular-expression-match-omit-several-repeats}
+##' @param x Character vector
+##' @param sep Delimiter. A regular expression indicating the point at
+##'     which to split the strings before checking for
+##'     duplicates. Default will look for repeat separated by comma,
+##'     underscore, or one space character.
+##' @param  n Limit on number of duplicates to remove. Default, NULL,
+##'      means delete all duplicates at the beginning of a string.
+##' @export
+##' @author Paul Johnson <pauljohn@@ku.edu>
+##' @examples
+##' x <- c("Philadelphia_Philadelphia_3", "Denver_Denver_4",
+##'         "Den_Den_Den_Den_Den_Den_Den_5")
+##' deduper(x)
+##' deduper(x, n = 2)
+##' deduper(x, n = 3)
+##' deduper(x, n = 4)
+##' x <- c("Philadelphia,Philadelphia_3", "Denver Denver_4")
+##' ## Shows comma also detected by default
+##' deduper(x)
+##' ## Works even if delimiter is inside matched string,
+##' ## or separators vary
+##'  x <- c("Den_5_Den_5_Den_5,Den_5 Den_5")
+##' deduper(x)
+##' ## generate vector
+##' x <- replicate(10, paste(sample(letters, 5), collapse = ""))
+##' n <- c(paste0("_", sample(1:10, 5)), rep("", 5))
+##' x <- paste0(x, "_", x, n, n)
+##' x
+##' deduper(x)
+##'
+##' @return Cleaned up vector.
+deduper <- function(x, sep = ",_\\s-", n = NULL) {
+    gsub(paste0("^(.*?)(?:[", sep, "]\\1){1,", n, "}"),
+         "\\1", x, perl = TRUE)
+}
+NULL
+
+
+
+
+
 ##' How many stars would we need for this p value?
 ##'
 ##' Regression table makers need to know how many stars
@@ -49,7 +97,7 @@ NULL
 ##'     values smaller than 0.01 get two stars, and so forth.  Must be
 ##'     same number of elements as alpha. These need not be asterixes,
 ##'     could be any character strings that users desire. See example.
-##' @return a character vector of asterixes, same length as pval
+##' @return a character vector of symbols (eg asterixes), same length as pval
 ##' @author Paul Johnson <pauljohn@@ku.edu>
 ##' @export
 ##' @examples
@@ -71,8 +119,9 @@ starsig <-
         messg <- "alpha vector must have same number of elements as symbols vector"
         stop(messg)
     }
+    if(is.vector(pval) && !is.numeric(pval)) pval <- as.numeric(pval)
     nstars <- sapply(pval, function(x) sum(abs(x) < alpha))
-    sapply(nstars, function(y) symbols[y])
+    sapply(nstars, function(x) if(!is.na(x) && x > 0) symbols[x] else " ")
 }
 NULL
 
@@ -111,6 +160,117 @@ removeMatches <- function(x, y, padNA = FALSE){
     }
     x
 }
+NULL
+
+##' Use new information to update a vector. Similar in concept to
+##' R's modify list
+##'
+##' Original purpose was to receive 2 named vectors, x and y, and copy
+##' "updated" named values from y into x. If x or y are not named,
+##' however, this will do something useful.
+##' \itemize{
+##' \item Both vectors are named: values in x for which y names match will be
+##'     updated with values from y. If \code{augment} is true, then named
+##'     values in y that are not present in x will be added to x.
+##' \item If neither vector is named: returns a new vector with x as the values
+##'     and y as the names. Same as returning \code{names(x) <- y}.
+##' \item If x is not named, y is named: replaces elements in x with values of y
+##'     where suitable (x matches names(y)). For matches, returns x = y[x]
+##'     if names(y) include x.
+##' \item If x is named, y is not named: returns y, but with names from x. Lengths
+##'     of x and y must be identical.
+##' \item If y is NULL or not provided, x is returned unaltered.
+##' }
+##' @param x vector to be updated, may be named or not.
+##' @param y possibly a named vector. If unnamed, must match
+##'     length of x. If named, and length is shorter than x, then
+##'     name-value pairs in x will be replaced with name-value pairs
+##'     with y. If names in y are not in x, the augment argument
+##'     determines the result.
+##' @param augment If TRUE, add new items in x from y. Otherwise,
+##'     ignore named items in y that are not in x.
+##' @param warnings Defaults as FALSE. Show warnings about augmentation
+##'     of the target vector.
+##' @export
+##' @return an updated vector
+##' @author Paul Johnson
+##' @examples
+##' x <- c(a = 1, b = 2, c = 3)
+##' y <- c(b = 22)
+##' modifyVector(x, y)
+##' y <- c(c = 7, a = 13, e = 8)
+##' ## If augment = TRUE, will add more elements to x
+##' modifyVector(x, y, augment = TRUE)
+##' modifyVector(x, y)
+##' x <- c("a", "b", "c")
+##' y <- c("income", "education", "sei")
+##' ## Same as names(x) <- y
+##' modifyVector(x, y)
+##' x <- c("a", "b", "c")
+##' y <- c(a = "happy")
+##' modifyVector(x, y)
+##' y <- c(a = "happy", g = "glum")
+##' ## Will give error unless augment = TRUE
+##' modifyVector(x, y, augment = TRUE)
+modifyVector <- function(x, y, augment = FALSE, warnings = FALSE){
+    if (missing(x) || is.null(x)) stop("modifyVector: x should not be null")
+    if (missing(y) || is.null(y)) return(x)
+    ## neither has names, so values of y are names for x
+    if (is.null(names(x)) && is.null(names(y))){
+        if (length(x) == length(y)){
+            names(x) = y
+        } else{
+            MESSG <- paste("if neither x nor y has names,",
+                           "then x and y must be of same length")
+            stop(MESSG)
+        }
+        return(x)
+    }
+    
+    ## x has names, but y does not,  y is new values of x
+    ## but x keeps old names
+    if (!is.null(names(x)) && is.null(names(y))){
+        if (length(x) == length(y)){
+            x.names <- names(x)
+            x <- y
+            names(x) <- x.names
+        } else{
+            MESSG <- paste("if y has no names,",
+                           "x and y must be of same length")
+            stop(MESSG)
+        }
+        return(x)
+    }
+    
+    ## x has no names, but y does.  Assume user meant
+    ## to replace x *values* by y *names* and values. 
+    if (is.null(names(x)) && !is.null(names(y))){
+        ## x has no names, so we will give x its values
+        ## as its names. 
+        names(x) <- x
+        return(modifyVector(x, y, augment))
+    }
+    
+    ## x and y both have names, y may be different in length
+    x.names <- names(x)
+    y.names <- names(y)
+    inboth <- intersect(y.names, x.names)
+    yunique <- y[!y.names %in% x.names]
+    
+    x[inboth] <- y[inboth]
+    
+    if(augment){
+        x <- c(x, yunique)
+    } else {
+        if(length(yunique) > 0 && warnings){
+            MESSG <- paste("if augment = FALSE, elements in y",
+                           "with names not in names(x) will be discarded")
+            warning(MESSG)
+        }
+    }            
+    x
+}
+NULL
 
 
 ##' apply a vector of replacements, one after the other.
@@ -292,4 +452,46 @@ padW0 <- function (x, n = 0) {
     res[xismiss] <- NA
     res
 }
+
+
+##' Write CSV files with quotes same as MS Excel 2013 or newer
+##'
+##' R's write.csv inserts quotes around all elements in a character
+##' vector (if quote = TRUE).  In contrast, MS Excel CSV export no
+##' longer inserts quotation marks on all elements in character
+##' variables, except when the cells include commas or quotation
+##' marks.  This function generates CSV files that are, so far as we
+##' know, exactly the same "quoted style" as MS Excel CSV export
+##' files.
+##'
+##' This works by manually inserting quotation marks where necessary and
+##' turning FALSE R's own method to insert quotation marks.
+##' @param x a data frame
+##' @param file character string for file name
+##' @param row.names Default FALSE for row.names
+##' @importFrom utils write.table
+##' @return the return from write.table, using revised quotes
+##' @export
+##' @author Paul Johnson
+##' @examples
+##' set.seed(234)
+##' x1 <- data.frame(x1 = c("a", "b,c", "b", "The \"Washington, DC\""),
+##'       x2 = rnorm(4), stringsAsFactors = FALSE)
+##' x1
+##' fn <- tempfile(pattern = "testcsv", fileext = ".csv")
+##' writeCSV(x1, file = fn)
+##' readLines(fn)
+##' x2 <- read.table(fn, sep = ",", header = TRUE, stringsAsFactors = FALSE)
+##' all.equal(x1,x2)
+writeCSV <- function(x, file, row.names = FALSE){
+    xischar <- colnames(x)[sapply(x, is.character)]
+    for(jj in xischar){
+        x[ , jj] <- gsub('"', '""', x[ , jj], fixed = TRUE)
+        needsquotes <- grep('[\",]', x[ ,jj])
+        x[needsquotes, jj] <- paste0("\"", x[needsquotes, jj], "\"")
+    }
+    write.table(x, file = file, sep = ",", quote = FALSE,
+                row.names = row.names)
+}
+NULL
 

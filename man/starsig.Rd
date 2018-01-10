@@ -18,7 +18,7 @@ same number of elements as alpha. These need not be asterixes,
 could be any character strings that users desire. See example.}
 }
 \value{
-a character vector of asterixes, same length as pval
+a character vector of symbols (eg asterixes), same length as pval
 }
 \description{
 Regression table makers need to know how many stars

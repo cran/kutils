@@ -2,16 +2,20 @@
 % Please edit documentation in R/variableKey.R
 \name{makeKeylist}
 \alias{makeKeylist}
-\title{Convert the variable key into a keylist structure for use in
-keyApply}
+\title{Convert the variable key into a list of long keys, one for each variable.}
 \usage{
 makeKeylist(key, sep = c(character = "\\\\|", logical = "\\\\|", integer =
-  "\\\\|", factor = "[\\\\|<]", ordered = "[\\\\|<]", numeric = "\\\\|"))
+  "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric = "\\\\|"),
+  na.strings = c("\\\\.", "", "\\\\s+", "N/A"))
 }
 \arguments{
 \item{key}{A key object or a file name, csv, xlsx or rds.}
 
 \item{sep}{Separator regular expressions}
+
+\item{na.strings}{Strings that will be treated as NA. This will be
+used only if the key object does not have an na.strings
+attribute.}
 }
 \value{
 A list with one element per variable name, along with some
@@ -19,11 +23,13 @@ A list with one element per variable name, along with some
     well, "keylist"
 }
 \description{
-The return value is a list, with one element per "name_old" to
-"name_new" variable combination.  If the key has one old variable
-being recoded 6 ways, that begets 6 elements in the resulting
-list. Attributes including the classes of the old and new
-variables are included.
+A keylist element is a long key for one new variable. The new
+variables are named by "name_old.name_new" for uniqueness.
+}
+\details{
+If the key has one old variable being recoded 6 ways, that begets
+6 elements in the resulting list. Attributes including the classes
+of the old and new variables are included.
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

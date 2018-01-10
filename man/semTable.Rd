@@ -4,57 +4,113 @@
 \alias{semTable}
 \title{Creates Structural Equation Modeling Tables}
 \usage{
-semTable(object, file = NULL, params = "all", fit = c("chi-square", "cfi",
-  "tli", "rmsea"), names_fit = fit, standardized = FALSE,
-  names_upper = TRUE, single_spaced = TRUE, type = "latex",
-  group = NULL, longtable = FALSE)
+semTable(object, file = NULL, paramSets = "all", paramSetLabels,
+  columns = c(est = "Estimate", se = "SE", z = "z", p = "p"), columnLabels,
+  fits = c("chisq", "cfi", "tli", "rmsea"), fitLabels = toupper(fits),
+  varLabels = NULL, groups = NULL, type = "latex", longtable = FALSE,
+  alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
-\item{object}{A lavaan object returned by cfa() or sem().}
+\item{object}{A lavaan object (e.g., returned by cfa() or sem()),
+or a named list of lavaan objects, e.g., \code{list("Model A"
+= obj1, "Model B" = obj2)}. Results will be displayed side by
+side.}
 
-\item{file}{Character string for file name.  Default is NULL,
-meaning no output file.}
+\item{file}{Base name for output file. Specify "mymodel" to get
+output files "mymodel.tex", "mymodel.html", or "mymodel.csv",
+depending on the value of \code{type}.}
 
-\item{params}{Parameters to be included. Valid values are
-"loadings", "slopes", "intercepts", "means", "residuals",
-"covariances", "latentvariances", "latentmeans" and
-"thresholds". Defaults to "all" which includes all available
-parameters (but excludes "means"). See Details.}
+\item{paramSets}{Parameter sets to be included for each fitted
+object.  Valid values of the vector are \code{"all"} or a any
+of the following: \code{c("loadings", "slopes", "intercepts",
+"residualvariances", "residualcovariances", "latentmeans",
+"latentvariances", "latentcovariances", "thresholds",
+"constructed", "fits")}. Default is "all", any of the
+estimates present in the fitted model that are listed in the
+previous sentence will be included in the output. For the sake
+of simplicity, we now allow one vector here, which applies to
+all models in the object list.}
 
-\item{fit}{A vector of fit measures that to be included in the
-note. Listing "chi-square" will do special formatting to the
-chi-square value in the note. Any other measures listed must
-correspond to measures found in fitMeasures(object).}
+\item{paramSetLabels}{Named vector, used to supply alternative
+pretty printing labels for parameter sets. The default values
+are \code{c("loadings"= "Factor Loadings", "slopes" =
+"Regression Slopes", "intercepts" = "Intercepts", "means"=
+"Means", "residualvariances" = "Residual Variances",
+"residualcovariances" = "Residual Covariances", "variances" =
+"Variances", "latentvariances" = "Latent Variances",
+"latentcovariances" = "Latent Covariances", "latentmeans" =
+"Latent Intercepts", "thresholds" = "Thresholds",
+"constructed" = "Constructed", "fits" = "Fit Indices")}.  The
+paramSetLabels argument must be a named vector that overrides
+some or all of the default names.}
 
-\item{names_fit}{Names for the fit measures requested by the fit
-parameter.  Must have same number of elements as fit.  For
-example, fit = c("cfi.scaled", "tli.scaled"), names_fit =
-c("CFI", "TLI").}
+\item{columns}{A vector naming estimates to appear for each model.
+The allowed columns are "est", "se", "z", "p", "rsquare",
+"estse", "eststars", "estsestars". The first 5 have the usual
+meanings, while "estse" (can also be written \code{"est(se)"})
+displays as, for example "1.21(0.23)", and the last 2 are to
+include "significance stars".  \code{"eststars"} shows as
+"1.21***" and \code{"estsestars"} (or \code{"est(se)stars"})
+displays as "1.21(0.23)**". See parameter \code{alpha}. One
+may request different columns for each model by providing a
+named list of vectors.  Use model names in the list,
+\code{list("Model A" = c("est", "se"), "Model B" = c("estse",
+"p"))}.}
 
-\item{standardized}{Should standarized results be presented along
-with unstandardized?  Default is FALSE. See Details.}
+\item{columnLabels}{A named vector of "pretty labels" for the
+headings in the table. The default labels are \code{c("est" =
+"Estimate", se = "Std. Err.", z = "z", p = "p", rsquare =
+"R Square", estse = "Estimate(Std.Err."), eststars =
+"Estimate", estsestars = "Estimate(Std.Err.)")}.}
 
-\item{names_upper}{Should the names of the model fit parameters be
-forced to be uppercase.  The default is TRUE.  This will also
-affect whatever is specified in names_fit.}
+\item{fits}{Summary indicators to be included. May be a list, one
+for each model provided, otherwise the same fit indicators
+will be presented for each model. Any of the fit indicators
+provided by \code{lavaan::fitMeasures(object)} are allowed:
+\code{c("npar", "fmin", "chisq", "df", "pvalue",
+"baseline.chisq", "baseline.df", "baseline.pvalue", "cfi",
+"tli", "nnfi", "rfi", "nfi", "pnfi", "ifi", "rni", "logl",
+"unrestricted.logl", "aic", "bic", "ntotal", "bic2", "rmsea",
+"rmsea.ci.lower", "rmsea.ci.upper", "rmsea.pvalue", "rmr",
+"rmr_nomean", "srmr", "srmr_bentler", "srmr_bentler_nomean",
+"srmr_bollen", "srmr_bollen_nomean", "srmr_mplus",
+"srmr_mplus_nomean", "cn_05", "cn_01", "gfi", "agfi", "pgfi",
+"mfi", "ecvi")}. The return for "chisq" will include markup
+for degrees of freedom and p value. If user specifies
+\code{NULL}, or if "fits" is excluded from \code{paramSets},
+all fit indicators are omitted.}
 
-\item{single_spaced}{Default = TRUE. If a double-spaced table is
-needed, set single_spaced = FALSE.}
+\item{fitLabels}{Labels for some or all of the fit measures
+requested by the fits parameter, e.g. \code{c(rmsea =
+"Root Mean Square Error of Approximation", cli = "CLI")}. The
+default labels are the upper-case fits names (except for
+"chisq", where a Greek letter is supplied when possible).}
 
-\item{type}{Type of output table ("latex" or "html"). Defaults to
-"latex".}
+\item{varLabels}{Named vector of labels to replace variable names
+in column 1 of SEM table.}
 
-\item{group}{Group for which parameters should be
-reported. Provide the value in the data that indicates the
-desired group. Only necessary for multiple group
-models. Defaults to NULL.}
+\item{groups}{Specify some group names for inclusion in the
+model. If \code{object} is just one SEM, but there are several
+groups within it, the parameters for each group will be
+displayed side by side.  All groups will be displayed by
+default.  User should specify a vector of group names here to
+select some groups for display.}
 
-\item{longtable}{Should a latex longtable be generated? Defaults
-to FALSE, which makes the table tabular. Ignored if type =
-"html".}
+\item{type}{Choose "latex", "html", "csv", or a vector including
+any or all of these. If several are specified, ie,
+\code{c("latex", "html", "csv")}, a list of 3 sets of markup
+will be returned.}
+
+\item{longtable}{If TRUE, use longtable for LaTeX
+documents. Default is FALSE.}
+
+\item{alpha}{Thresholds for p-values that determine number of
+stars.  Defaults as \code{c(0.05, 0.01, 0.001)} for
+\code{c("*", "**", "***")}.}
 }
 \value{
-SEM table of desired type.
+Markup for SEM table, or a list of markup character
+    strings, one for each value of \code{type}.
 }
 \description{
 Creates LaTeX markup for structural equation modeling output
@@ -63,91 +119,273 @@ Association(APA). Input objects should be created by the
 "\code{lavaan}" package.
 }
 \details{
-The argument params determines the inclusion of estimate sections.
+The argument paramSets determines the inclusion of estimate sections.
+One can specify "all", which means that all types of parameters that
+we can find in the fitted model are presented.  Otherwise, a subset
+of parameter sets can be chosen by the user.
 \itemize{
 \item "loadings" are the factor loadings in the model.
 \item "slopes" are the regression slopes in the model.
-\item "intercepts" are
-the observed variable intercepts.
-\item "means" are the observed
-variable means.
-\item "residuals" are the observed
-variable residual variances.
-\item "covariances" are the observed
-variable covariances.
-\item "latentvariances" are the latent
-variable variances and covariances.
-\item "latentmeans" are the latent variable
-means (or intercepts).
+\item "intercepts" are the estimated constants in the measurement
+     models.
+\item "residualvariances" are the observed variable residual variances.
+\item "residualcovariances" are the observed covariances among
+residuals of observed variables.
+\item "latentvariances" are the variances of unobserved variables.
+\item "latentcovariances" are the covariances between unobserved variables.
+\item "latentmeans" are means of unobserved variables
 \item "thresholds" arise in latent
 response variates (non-numeric indicator data).
+\item "constructed" are parameters that are calculated from a formula
+      in the model specification, such as an indirect path c=a*b.
+\item "fits" the summary indicators of the mismatch between
+the theoretical and observed covariance matrices, such as
+RMSEA, CLI, TFI. While the fits are not technically parameters, they
+are displayed in the same block style as parameters
 }
 
-The stantardized parameter regulates the number of columns to be
-included.  standardized=FALSE implies there will be four columns:
-\enumerate{
-\item the estimate
-\item the standard error
-\item the z-value, and
-\item the p-value.
-}
-
-When standardized = TRUE, the columns are:
-\enumerate{
-\item the parameter estimates,
-\item the standard errors,
-\item standardized parameter estimates, and
-\item standardized standard errors.
-}
-
-The standardized parameters are obtained by updating the output
-with the options std.lv = TRUE and std.ov = TRUE.  If these
-options were used when originally creating output, setting
-standardized = TRUE will yield two identical sets of two columns.
+The columns parameter is used to specify different columns,
+while columnLabels will alter the displayed labels for them.
 }
 \examples{
 \donttest{
 ## These run longer than 5 seconds
 ## CFA model
 require(lavaan)
+
+tempdir <- tempdir()
+## The example from lavaan's docs
 HS.model <- ' visual  =~ x1 + x2 + x3
-textual =~ x4 + x5 + x6
-speed   =~ x7 + x8 + x9'
-output1 <- cfa(HS.model, data = HolzingerSwineford1939, std.lv = TRUE)
-semTable(output1, fit = "rmsea",
-standardized = TRUE, type = "latex")
-## Basic SEM model
-regmodel <- "x1 ~ x2 + x3
-x1 ~1"
-output1a <- sem(regmodel, data = HolzingerSwineford1939, std.lv = TRUE)
-semTable(output1a, fit = "rmsea", type = "html")
-#### Example with file output
-##semTable(output1, file = "exampleTable.html", fit = "rmsea",
-##standardized = TRUE, params = c("loadings", "latentvariances"),
-##type = "html")
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9'
+fit1 <- cfa(HS.model, data = HolzingerSwineford1939,
+            std.lv = TRUE, meanstructure = TRUE)
+fit1.t1 <- semTable(fit1, columns = c("est", "estse"),
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"))
+if (interactive()) testtable("fit1.t1", tempdir)
+fit1.t2 <- semTable(fit1, fits = c("chisq", "rmsea"),
+               columns = c("est", "se"), columnLabels = c(se = "S.E."),
+               file = file.path(tempdir, "fit1.t2"))
+if (interactive()) testtable("fit1.t2", tempdir)
+fit1.t3 <- semTable(fit1, fits = c("chisq", "rmsea"),
+               columns = c("estsestars"),
+               columnLabels = c("estsestars" = "Est(SE)"),
+               file = file.path(tempdir, "fit1.t3"))
+if (interactive()) testtable("fit1.t3", tempdir)
+fit1.t4 <- semTable(fit1, fits = c("chisq", "rmsea"),
+               columns = c("eststars", "p"),
+               columnLabels = c("eststars" = "Est(SE)"),
+               file = file.path(tempdir, "fit1.t4"),
+               varLabels = c(x1 = "happy 1", x2 = "happy 2", x3 = "happy 3"))
+if (interactive()) testtable("fit1.t4", tempdir)
+
+## 2 groups
+fit1.g <- cfa(HS.model, data = HolzingerSwineford1939, std.lv = TRUE, group = "school")
+fit1.gt1 <- semTable(fit1.g, columns = c("estsestars", "p"),
+               columnLabels = c(estsestars = "Est w/stars", p = "p-value"),
+               file = file.path(tempdir, "fit1.gt1"))
+if (interactive()) testtable("fit1.gt1", tempdir)
+## Now name particular group by name
+fit1.gt2 <- semTable(fit1.g, columns = c("estsestars", "p"),
+               columnLabels = c(estsestars = "Est w/stars", p = "p-value"),
+               file = file.path(tempdir, "fit1.gt2"), groups = "Pasteur")
+if (interactive()) testtable("fit1.gt2", tempdir)
+## Name particular group by number
+fit1.gt3 <- semTable(fit1.g, columns = c("estsestars", "p"),
+               columnLabels = c(estsestars = "Est w/stars", p = "p-value"),
+               file = file.path(tempdir, "fit1.gt3"), groups = 1)
+if (interactive()) testtable("fit1.gt3", tempdir)
+
+## Fit same model with standardization
+fit1.std <- update(fit1, std.lv = TRUE, std.ov = TRUE, meanstructure = TRUE) 
+## include 2 models in table request
+fit1.t2 <- semTable(list("Ordinary" = fit1, "Standardized" = fit1.std),
+                    file = file.path(tempdir, "fit1.2.1"))
+semTable(list("Ordinary" = fit1, "Standardized" = fit1.std),
+    columns = list("Ordinary" = c("est", "se"), "Standardized" = c("est")),
+    columnLabels = c(est = "Est", se = "SE"), file = file.path(tempdir, "fit1.2.2"))
+if (interactive()) testtable("fit1.2.2", tempdir)
+
+fit1.t2 <- semTable(fit1, fits = c("chisq", "rmsea"))
+cat(fit1.t2)
+fit1.t3 <- semTable(fit1, fits = c("chisq", "rmsea", "tli"),
+               columns = c("est", "se"))
+cat(fit1.t3)
+
+## Can create file if desired
+cat(fit1.t3, file = file.path(tempdir, "fit1.t3.tex"))
+
+## Basic SEM
+regmodel1 <- 'visual  =~ x1 + x2 + x3
+             textual =~ x4 + x5 + x6
+             speed   =~ x7 + x8 + x9
+             visual ~ textual + speed
+'
+
+fit2 <- sem(regmodel1, data = HolzingerSwineford1939, std.lv = TRUE,
+            meanstructure = TRUE)
+
+fit2.std <- update(fit2, std.lv = TRUE, std.ov = TRUE, meanstructure = TRUE) 
+
+fit2.t <- semTable(list("Ordinary" = fit2, "Standardized" = fit2.std), fits = "rmsea",
+                   columns = list("Ordinary" = c("est", "se", "p"),
+                                   "Standardized" = c("estsestars")),
+                   columnLabels = c("est" = "Est", "se" = "Std.Err.", "p" = "p",
+                                    "estsestars" = "Standardized Est."),
+                   paramSets = c("loadings", "slopes", "latentcovariances"),
+                   file = file.path(tempdir, "fit2.t1"), type = c("latex", "csv"))
+
+cat(fit2.t[["latex"]])
+cat(fit2.t[["csv"]])
+
+fit2.t <- semTable(list("Ordinary" = fit2, "Standardized" = fit2.std),
+              type = c("html", "latex"),
+              file = file.path(tempdir, "fit2.t"),
+              varLabels = c(x1 = "happy 1", x2 = "happy 2", x3 = "happy 3"))
+
+if (interactive()) browseURL(file.path(tempdir, "fit2.t.html"))
+if (interactive()) testtable("fit2.t", tempdir)
+
+
+regmodel2 <- 'visual  =~ x1 + x2 + x3
+              textual =~ x4 +  x6
+              speed   =~  x8 + x9
+              visual ~ textual 
+'
+fit3 <- sem(regmodel2, data = HolzingerSwineford1939, std.lv = TRUE,
+            meanstructure = TRUE)
+
+fit3.t1 <-  semTable(fit3, type = c("latex", "html", "csv"),
+                     columns = c("estsestars", "rsquare"), 
+                     file = file.path(tempdir, "fit3.1"))
+
+cat(fit3.t1[["latex"]])
+if (interactive()) testtable("fit3.1", tempdir)
+
+fit3.std <- update(fit2, std.lv = TRUE, std.ov = TRUE)
+
+fit3.std.t1 <- semTable(list("Mod 1" = fit2, "Mod 1 std" = fit2.std, "Mod 2" = fit3,
+              "Mod 3 std" = fit3.std), columns = c("estsestars"), type = c("html"),
+               file = file.path(tempdir, "fit3.std.t1"))
+cat(fit3.std.t1)
+if(interactive()) browseURL(file.path(tempdir, "fit3.std.t1.html"))
+
+fit3 <- sem(regmodel1, data = HolzingerSwineford1939, group = "school")
+## if specify 2 types, get a list of them back
+fit3.t1 <- semTable(fit3, type = c("latex", "html"))
+cat(fit3.t1[["latex"]])
+cat(fit3.t1[["html"]])
+fit3.t2 <- semTable(fit3, columns = c("est", "se"),
+                     columnLabels = c(est = "Est.", se = "S.E."))
+cat(fit3.t2)
+
+fit3.t2 <- semTable(fit3, fits = c("chisq", "rmsea", "cfi"))
+cat(fit3.t2)
+
+fit3.t2 <- semTable(fit3, columns = c("estsestars"),
+            fits = c("chisq", "rmsea", "cfi"), type = "html",
+            file = file.path(tempdir, "fit3.t2"))
+cat(fit3.t2)
+if(interactive()) browseURL(file.path(tempdir, "fit3.t2.html"))
+ 
+fit3.t2 <- semTable(fit3, fits = c("rmsea", "cfi"))
+cat(fit3.t2)
 
 model <- "factor =~ .7*y1 + .7*y2 + .7*y3 + .7*y4
-y1 | -1*t1 + 1*t2
-y2 | -.5*t1 + 1*t2
-y3 | -.2*t1 + 1*t2
-y4 | -1*t1 + 1*t2
-"
+                 y1 | -1*t1 + 1*t2
+                 y2 | -.5*t1 + 1*t2
+                 y3 | -.2*t1 + 1*t2
+                 y4 | -1*t1 + 1*t2"
 dat <- simulateData(model, sample.nobs = 300)
-testmodel <- "ExampleFactor =~ y1 + y2 + y3 + y4"
-output2 <- cfa(testmodel, data = dat, ordered = colnames(dat),
-    std.lv = FALSE)
-semTable(output2,
-    params = c("loadings", "thresholds", "residuals"),
-    fit = c("tli", "chi-square"),
-    names_fit = c("TLI", "chi-square"), type = "html")
 
-## Example with file output
-## semTable(output, file = "catTable.tex",
-##    params = c("loadings", "thresholds", "residuals"),
-##    fit = c("tli", "chi-square"),
-##    names_fit = c("TLI", "chi-square"), type = "latex")
+testmodel <- "ExampleFactor =~ y1 + y2 + y3 + y4"
+
+fit4 <- cfa(testmodel, data = dat, ordered = colnames(dat),
+            std.lv = FALSE)
+
+fit4.t1 <- semTable(fit4, paramSets = c("loadings", "thresholds",
+    "residualvariances"), fits = c("tli", "chisq"),
+    fitLabels = c(tli = "TLI", chisq = "chisq"), type = "html")
+
+fit4.t2 <- semTable(fit4, fits = c("rmsea", "cfi", "chisq"),
+              fitLabels = c(rmsea = "Root M.SQ.E.A", cfi = "CompFitIdx", chisq = "chisq"),
+              type = "latex")
+
+## Model 5 - Mediation model with equality constraints
+model5 <-
+    '
+    # latent variable definitions
+    ind60 =~ x1 + x2 + x3
+    dem60 =~ y1 + e*y2 + d*y3 + y4
+    dem65 =~ y5 + e*y6 + d*y7 + y8
+    # regressions
+    dem60 ~ a*ind60
+    dem65 ~ c*ind60 + b*dem60
+    # residual correlations
+    y1 ~~ y5
+    y2 ~~ y4 + y6
+    y3 ~~ y7
+    y4 ~~ y8
+    y6 ~~ y8
+
+    # indirect effect (a*b)
+    ## := operator defines new parameters
+    ab := a*b
+
+    ## total effect
+    total := c + (a*b)
+    '
+
+fit5 <- sem(model5, data=PoliticalDemocracy)
+fit5boot <- sem(model5, data=PoliticalDemocracy, se = "bootstrap", bootstrap = 100)
+
+semTable(list("Democracy" = fit5), columns = c("estsestars", "rsquare"),
+           file = file.path(tempdir, "fit5.1"), type = c("html", "latex"))
+if(interactive()) browseURL(file.path(tempdir, "fit5.1.html"))
+
+semTable(list("Democracy" = fit5, "Bootstrapped SE" = fit5boot),
+         columns = c("estsestars", "rsquare"),
+         file = file.path(tempdir, "fit5.2"), type = c("latex", "html", "csv"),
+         longtable = TRUE)
+
+semTable(list("Democracy" = fit5, "Bootstrapped SE" = fit5boot),
+         columns = c("estsestars", "rsquare"),
+         paramSets = c("loadings", "slopes", "residualvariances", "constructed"),
+         file = file.path(tempdir, "fit5.3"), type = c("latex", "html", "csv"),
+         longtable = TRUE)
+if(interactive()) browseURL(file.path(tempdir, "fit5.3.html"))
+
+## Model 5b - Revision of Model 5s
+model5b <-
+    '
+    # Cut some indicators from the measurement model
+    ind60 =~ x1 + x2 
+    dem60 =~ y1 + e*y2 + d*y3 + y4
+    dem65 =~ y5 + e*y6 + d*y7 
+    # regressions
+    dem60 ~ a*ind60
+    dem65 ~ c*ind60 + b*dem60
+    # cut out the residual correlations
+    # indirect effect (a*b)
+    ## := operator defines new parameters
+    ab := a*b
+
+    ## total effect
+    total := c + (a*b)
+    '
+
+fit5b <- sem(model5b, data=PoliticalDemocracy, se = "bootstrap",
+bootstrap = 100)
+semTable(list("Model 5" = fit5boot, "Model 5b" = fit5b),
+         columns = c("estsestars", "rsquare"),
+         file = file.path(tempdir, "fit5.5"),
+          type = c("latex", "html", "csv"),
+         longtable = TRUE)
+testtable("fit5.5", tempdir)
+
+list.files(tempdir)
 }
 }
 \author{
-Ben Kite <bakite@ku.edu>
+Ben Kite <bakite@ku.edu> Paul Johnson <pauljohn@ku.edu>
 }

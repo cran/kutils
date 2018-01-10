@@ -2,15 +2,17 @@
 % Please edit documentation in R/variableKey.R
 \name{keyImport}
 \alias{keyImport}
-\title{Import a file and clean up for use as variable key}
+\title{Import a file (or key object). Will check and if possible clean up
+for use as variable key}
 \usage{
-keyImport(file, ignoreCase = TRUE, sep = c(character = "\\\\|", logical =
-  "\\\\|", integer = "\\\\|", factor = "[\\\\|<]", ordered = "[\\\\|<]", numeric
-  = "\\\\|"), na.strings = c(".", "", "\\\\s", "NA", "N/A"), ...,
-  keynames = NULL)
+keyImport(key, ignoreCase = TRUE, sep = c(character = "\\\\|", logical =
+  "\\\\|", integer = "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric =
+  "\\\\|"), na.strings = c("\\\\.", "", "\\\\s+", "N/A"), missSymbol = ".",
+  ..., keynames = NULL)
 }
 \arguments{
-\item{file}{A file name, ending in csv, xlsx or rds.}
+\item{key}{A file name, ending in csv, xlsx or rds, or a key
+object.}
 
 \item{ignoreCase}{In the use of this key, should we ignore
 differences in capitalization of the "name_old" variable?
@@ -19,41 +21,41 @@ capitalization. Columns named "var01" and "Var01" and "VAR01"
 probably should receive the same treatment, even if the key
 has name_old equal to "Var01".}
 
-\item{sep}{Defaults are specified, don't change this unless you
-know what you are doing. In wide keys, what separators are
-used between values?  This should be a named vector which
-declares separators that are used in the key. In our defaults,
-the separator for classes character, logical, integer, and
-numeric is the pipe, "|", while for factor and ordered
-variables, the separator may be either pipe or less than.  Use
+\item{sep}{Character separator in \code{value_old} and
+\code{value_new} strings in a wide key. Default is are "|".
+It is also allowed to use "<" for ordered variables. Use
 regular expressions in supplying separator values.}
 
-\item{na.strings}{Values in the value_new column which will be
-treated as NA in the key. The defaults are ".", "", "\\s"
-(white space), "NA", and "N/A".  These will prevent a new
-value like "" or " " from being created, so if one intends to
-insert white space, the na.strings vector must be specified.}
+\item{na.strings}{Values that should be converted to missing data.
+This is relevant in \code{name_new} as well as
+\code{value_new}. In spreadsheet cells, we treat "empty"
+cells, or values like "." or "N/A", as missing with defaults
+".", "", "\\s" (white space), and "N/A". Change that if those are
+not to be treated as missings.}
+
+\item{missSymbol}{Defaults to period "." as missing value indicator.}
 
 \item{...}{additional arguments for read.csv or read.xlsx.}
 
-\item{keynames}{Don't use this unless you are very careful. In
-    our current scheme, the column names in a key should be
-    c("name_old", "name_new", "class_old", "class_new",
-    "value_old", "value_new", "missings", "recodes"). If your key
-    does not use those column names, it is necessary to provide
-    keynames in a format "our_name"="your_name". For example,
-    keynames = c(name_old = "oldvar", name_new = "newname", class_old =
-    "vartype", class_new = "class", value_old = "score", value_new
-    = "val")
-.}
+\item{keynames}{Don't use this unless you are very careful. In our
+current scheme, the column names in a key should be
+c("name_old", "name_new", "class_old", "class_new",
+"value_old", "value_new", "missings", "recodes"). If your key
+does not use those column names, it is necessary to provide
+keynames in a format "our_name"="your_name". For example,
+keynames = c(name_old = "oldvar", name_new = "newname",
+class_old = "vartype", class_new = "class", value_old =
+"score", value_new = "val").}
 }
 \value{
-key object
+key object, should be same "wide" or "long" as the input
+    Missing symbols in value_old and value_new converted to ".".
 }
 \description{
 After the researcher has updated the key by filling in new names
-and values, we import that key file. This function imports the
-file by its name, after deducing the file type from the suffix.
+and values, we import that key file. This function can import the
+file by its name, after deducing the file type from the suffix, or
+it can receive a key object.
 }
 \details{
 This can be either a wide or long format key file.
@@ -62,15 +64,50 @@ This cleans up variables in following ways.  1) \code{name_old}
 and \code{name_new} have leading and trailing spaces removed 2)
 \code{value_old} and \code{value_new} have leading and trailing
 spaces removed, and if they are empty or blank spaces, then new
-values are set as NA.  3) if \code{value_old} and \code{value_new}
-are identical, the values are removed from the key.
+values are set as NA.
+
+Policy change concerning empty "value_new" cells in input keys
+(20170929).
+
+There is confusion about what ought to happen in a wide key when
+the user leaves value_new as empty or missing. Literally, this
+means all values are converted to missing, which does not seem
+reasonable. Hence, when a key is wide, and value_new is one of the
+na.strings elements, we assume the value_new is to be copied
+from value_old. That is to say, if value_new is not supplied,
+the values remain same as in old data.
+
+In a long key, the behavior is different.  Since the user can
+specify each value for a variable in a separate row, the na.strings
+appearing in value_new are treated as missing scores in the new
+data set to be created.
 }
 \examples{
 mydf.key.path <- system.file("extdata", "mydf.key.csv", package = "kutils")
 mydf.key <-  keyImport(mydf.key.path)
-
+## Create some dupes
+mydf.key <- rbind(mydf.key, mydf.key[c(1,7), ])
+mydf.key2 <- keyImport(mydf.key)
+mydf.key2
+## create some empty value_new cells
+mydf.key[c(3, 5, 7) , "value_new"] <- ""
+mydf.key3 <- keyImport(mydf.key)
+mydf.key3
 mydf.keylong.path <- system.file("extdata", "mydf.key_long.csv", package = "kutils")
 mydf.keylong <- keyImport(mydf.keylong.path)
+
+## testDF is a slightly more elaborate version created for unit testing:
+testdf.path <- system.file("extdata", "testDF.csv", package = "kutils")
+testdf <- read.csv(testdf.path, header = TRUE)
+keytemp <- keyTemplate(testdf, long = TRUE)
+## A "hand edited key file"
+keyPath <- system.file("extdata", "testDF-key.csv", package="kutils")
+key <- keyImport(keyPath)
+keydiff <- keyDiff(keytemp, key)
+key2 <- rbind(key, keydiff$neworaltered)
+key2 <- unique(key)
+if(interactive())View(key2)
+
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

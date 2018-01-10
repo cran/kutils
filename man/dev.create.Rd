@@ -19,13 +19,13 @@ dev.new. This is suitable for Windows, Linux, and
 Macintosh operating systems.
 }
 \details{
-The argument in dev.new named noRStudioGD seems to aimed at same
-puroose. But it does not do what I want and documentation is too
+The argument in dev.new named noRStudioGD seems to be aimed at same
+purpose. But it does not do what I want and documentation is too
 sparse.
 }
 \examples{
 \donttest{
-dev.create(height = 7, width = 3)
+if(interactive()) dev.create(height = 7, width = 3)
 dev.off()
 }
 }

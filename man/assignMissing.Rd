@@ -33,9 +33,12 @@ assignMissing(x, missings = NULL, sep = ";")
     excluded
 \item "> a" and ">= a" have comparable
     interpretations.
-\item "8;9;10" It is possible to mark off specific values by providing an enumeration. Be aware, however, that this is useful only for integer variables.  As demonstrated in the example, for floating point numbers, one must specify intervals.
-\item For factors and character variables, the argument missings can be written either as
-"lo;med;hi" or "c('lo','med','hi')" }}
+\item "8;9;10" Mark off specific values by
+an enumeration. Be aware, however, that this is
+useful only for integer variables.  As demonstrated in the
+example, for floating point numbers, one must specify intervals.
+\item For factors and character variables, the argument missings
+can be written either as "lo;med;hi" or "c('lo','med','hi')" }}
 
 \item{sep}{A separator symbol, ";" (semicolon) by default}
 }

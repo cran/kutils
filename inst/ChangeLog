@@ -1,3 +1,326 @@
+2018-01-02  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/peek.R (projects, semTable): eliminate setwd and device creator
+
+2017-12-27  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/mergeCheck.R: new function for inspecting merges
+
+	* ../R/importQualtrics.R (importQualtrics): add XLSX file handling
+
+2017-12-20  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/importQualtrix.R (importQualtrics): new function to ease
+	qualtrix imports.
+
+	* ../R/anonomize.R: new function to de-identify name columns
+
+	* ../R/utils.R (getFiles): remove getFiles, which was copied
+	from crmda package.
+
+2017-12-14  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/likert.R (likert): return the percentages in the list as
+	floating point numbers, not as characters.
+
+2017-12-04  Paul Johnson  <pauljohn@delllap-16>
+
+	* unitTests/runit.VariableKey.R (test.keysClassFix): unitTests on
+	keysClassFix fail if class_new or class_old is FALSE, whole
+	function does not make sense if we make that restriction.
+
+	* ../R/variableKey.R (keyImport): factor separator now only "|",
+	no longer either "|" or "<". For ordered variables, both still
+	allowed.
+	(cleanDataFrame): trimws on character and factor levels, otherwise
+	key must include " Strongly Disagree" and "Strongly Disagree". The
+	trimws argument has to be added to keyTemplate, keyImport, and
+	keyApply. Default will be "both".
+
+	* ../R/likert.R (likert): add ... argument, then deal with exclude
+	and useNA in function. Not 100% working because useNA="ifany" is
+	not correctly managed.
+
+2017-12-01  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/likert.R (print.likert): likert returns now a list, this
+	prints first item.
+
+2017-11-30  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keySave): varlab corrected for CSV files
+
+2017-10-23  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (semTable): trow is now just results, does not
+	embed markup. Except for Row 1, which needs fixing.
+
+2017-10-21  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (frnd): frnd: new formatC(round wrapper
+	used to shorten code, replace all longer uses of format(round.
+	(observedMeanMaker): abbreviate trows stanzas
+	(roundSubtable): a common series of roundings is extracted from
+	the maker functions.
+
+2017-11-16  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (buildParamSetSubtable): if NA in merged table,
+	change to "-"
+	(markupConvert): change indentation in column 1 to right, other
+	columns to centered.
+
+2017-11-13  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R: varLabels works, tested in examples
+
+2017-11-12  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (modifyVector): Clarify documentation, alter
+	so that if y is NULL, then return x unaltered.
+
+2017-11-10  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (testview): New function to compile and show
+	tex tables.
+	(buildSubtableForParamSet): if fits=NULL, then make sure it does
+	not print.
+	(buildSubtableForParamSet): working on group labels problem
+
+2017-11-09  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (insertParamTypes): constructed parameters,
+	cut out most of fixParamSets, omit constrained rows
+
+2017-11-06  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (starsig): correct "character(0)" return when
+	no stars were called for!
+	(starsig): if pval is a vector, but not numeric, us as.numeric.
+	protects against columns set "as character" by formatC
+
+2017-11-05  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (buildSubtableForParamSet): Lots of
+	pussy-footing about changing the way labels are supplied and
+	information is passed among vectors.
+	(createEstSE): fix parameter rsquare for multi group
+
+	* ../R/utils.R (modifyVector): new utility vector to replace
+	named vector value selectively, also some other special feature
+	shown in examples.
+
+2017-11-03  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (extractModelSummary): multi-group fixes, treat
+	2 groups as 2 objects, rownames must be unique by group
+	(createEstSE): insert group.labels as new column, makes
+	multi-group work easier lalter on
+
+
+2017-11-02  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (extractParameters): error b/c colNames is list,
+	not vector anymore.
+	(markupConvert): \tabularnewline should always insert \n with it.
+	Results in "double spaced" tables, not problem in LaTeX output,
+	need to see if that is problem in other output formats.
+	(loadingMaker): fix the factor gotcha, where a character is
+	converted to a factor and R re-alphabetizes it.
+	(markupConvert): HTML markup fiddle, _BOC_BOM becomes
+	"_BOM". silly fiddle.
+
+2017-11-01  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (loadingMaker): now works with "slopes" and
+	"loadings" parameter sets, deleting slopeMaker
+	(parTableMaker): one table maker function, replaces
+	interceptMaker, observedMeanMaker, thresholdMaker, residualvarianceMaker,
+	residualcovarianceMaker, latentvarianceMaker,
+	latentcovarianceMaker, latentMeanMaker
+	(convertMarkupo): DANGER, _BOMC_ definition changed, now does not
+	have & at front. DANGER, DANGER.
+
+2017-10-30  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (cleanParamSets):  Reduce this:
+	      if (length(which(parameters$rhs %in% latents &
+                             parameters$lhs %in% latents &
+                             parameters$op == "~~")) > 0)
+              to if(any(params ...))
+
+
+
+2017-10-27  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (extractParameters): add trows class and
+	trowsList class to mark the items within the parameter tables.
+
+2017-10-26  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (getParamTable): new function to create
+	parameters object, call rounding function here, no need within
+	each stanza rename "cols" as "colNames", introduce "est(se)" as a
+	legal column name.
+	(parseParamTable): variables and latents cannot be global variables,
+	must be attributes of parameter table, in order to allow for more
+	than one model in this function
+	(parseParamTable): handles params here, each model can have separate
+	(latentMeanMaker): drop "gotcha" hit me again, chosing 1 column
+	from trows
+
+2017-10-25  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/semTable.R (markupTable): insert parameters as named
+	argument in the maker functions
+>>>>>>> cleanupSemTable.R
+
+2017-10-06  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyApply): mapvalues insert warn_missing =
+	FALSE on factor changes.
+	(keyDiff): drop = FALSE inside row chooser, avoiding drop gotcha
+	(makeOneVar): in makeKeyList, warnings about coercion of "." to
+	integer were causing errors, so silence them by rephrasing coercion.
+	(makeKeylist): Do not set NA's strings as ".", but rather R NA
+	symbol. Hoping to quiet coercion errors & warnings.
+
+	* ../R/runit.VariableKey.R: test.long2wide, test.wide2long, and
+	keyUpdate.  keyUpdate has hard coded "right answers" :(
+
+2017-10-05  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keySave): rename "smartSave" -> "keySave"
+	and "smartRead" -> "keyRead". Export both functions.
+	(sortStanza): new function
+	(naLast): new function. Put values that are missing last.
+	(sortStanza): Drop Gotcha Again! How many times...
+
+2017-10-04  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (checkCoercion): new function, implements
+	idea previously sketched as checkValue_new
+	(long2wide): na.strings and missSymbol args added, change
+	behavior of value_new when full new_value column is empty. No
+	longer creates ".|.|.|", now just "."
+	(isNA): new function, regular expression matching, for convenience
+	of data checking.
+
+	* ../R/variableKey.R (keyTemplate): re-trace data creation,
+	include RECOMPILE to flag to re-generate package files.
+	* ../R/variableKey.R (makeKeylist): completely worked over, avoids
+	duplication of effort using wide2long().
+	* ../R/variableKey.R (keyUpdate): rework
+
+2017-09-29  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyImport): replace if (wide) code
+	with wide2long, then trust the long key work. Cuts risk of error
+	in half.
+
+2017-09-28  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (shortenValues): in keyTemplate, was error
+	that caused redundant key lines. Hopefully corrected by
+	unique(xismissing)
+	(assignMissing): add treatment of logical variables.
+
+	* unitTests/runit.VariableKey.R (## test.keyDiff): testing
+	keyDiff fails now because i've restructured keyDiff output,
+	so comment this out.
+
+	* ../R/variableKey.R (keyDiff): recode around making a diff
+	structure composed of 2 data frames: "deleted" is lines
+	removed from oldkey and "neworaltered" are lines in newkey
+	that were not present in oldkey.
+
+2017-09-27  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyDiff): print message to user should be
+	an attribute.  output is a list of 2 data frames, one for deleted
+	lines from the old key and one for added or altered lines in new
+	key.
+
+	* unitTests/runit.VariableKey.R (test.keyClassFix): hard-coded
+	values needed revision to match current format of keys.
+
+	* ../R/variableKey.R (smartSave): Using workbook was probably
+	unnecessary, but does work now. Problem about finding sheet
+	names solved by "getWorkspaceNames" function in openxlsx.
+	(keyUpdate): Replace this line-dependent code, which caused
+	example to fail when data failed:
+	key1.long[c(5, 6, 7), "value_new"] <- c(10, "female", "male")
+
+2017-09-26  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (assignMissing): if missings=NULL, return x.
+	(smartSave): na.strings new argument, "." default, will only
+	affect long keys
+	(smartRead): na.strings new argument, "." or space will be R
+	symbol NA.
+	(keyTemplate): delete the outdir argument. Was dumb!
+	(smartSave): use Excel Workbook.
+
+2017-10-24  Paul Johnson  <pauljohn@delllap-16>
+
+	* semTable.R (markupTable): Insert EOC BOC EOR syntax into numeric table
+
+2017-09-25  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyLookup): new function to find name_new
+	or name_old values in key
+	(keyTemplateSPSS): new function to build keys for SPSS data transitions
+
+2017-09-21  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (getFiles): file copy wrapper for theme files,
+	identical to same in crmda/utils
+
+2017-09-19  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (writeCSV): new function to create CSV
+	files with same quotation marks as Excel
+	(writeCSV): tidy up csv commentary
+
+	* ../R/variableKey.R (all.equal.keylong): all.equal methods for
+	keys, handle sorting of rows to make data.frames identical,
+	does not check attributes to avoid errors about row name and
+	varlab differences.
+	(varlabTemplate): varlab is now a named vector attribute. Stored
+	on disk differently, see smartRead and smartSave.
+
+2017-09-18  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (smartRead): tryCatch failed when varlab was
+	not a sheet.
+
+2017-09-11  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (varlabTemplate): correct Roxygen
+
+2017-07-11  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/utils.R (deduper): new function to clean strings
+
+	* ../R/variableKey.R (keyImport): Logicals: change value_new from
+	1/0 to TRUE/FALSE. This fixes a problem caused by LibreOffice
+	storing TRUE/FALSE as 1/0.
+
+2017-07-10  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyDiagnostic): nametrunc-fiddle, make name
+	old longer, change keyDiag logic on name_new missing.
+
+2017-06-27  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R (keyApply): fix error in creation of factors
+	because of numeric -> factor error (wrong levels)
+
+2017-06-21  Paul Johnson  <pauljohn@delllap-16>
+
+	* ../R/variableKey.R: new functions keyCheck, keysPoolCheck,
+	keyClassfix.
+
 2017-02-03  Paul Johnson  <pauljohn@delllap-16>
 
 	* ../R/variableKey.R (assignMissing): zapspace for spaces

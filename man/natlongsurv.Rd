@@ -36,6 +36,9 @@
   \item	R7477800	COUNT ELIGIBLE HOUSEHOLD CHILDREN
   \item	R7610300	REGION OF RESIDENCE
 }}
+\source{
+National Longitudinal Surveys public-use data set (Bureau of Labor Statistics, 2018).
+}
 \usage{
 data(natlongsurv)
 }
@@ -56,8 +59,8 @@ data(natlongsurv)
 peek(natlongsurv, ask = FALSE, file = paste0(tempdir(), "/","peek.pdf"))
 }
 \references{
-\url{https://www.nlsinfo.org/investigator}
+Bureau of Labor Statistics. 2018.  NLS Original Cohort: Mature and Young Women, US National Longitudinal Surveys Public Use Data Sets \url{https://www.bls.gov/nls/nlsorig.htm}.
 }
 \author{
-US Bureau of Labor Statistics
+Paul Johnson <pauljohn@ku.edu>
 }

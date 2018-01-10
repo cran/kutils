@@ -28,9 +28,10 @@ A vector with "nothing" values replaced by R's NA symbol.
 }
 \description{
 By "nothing", we mean white space or other indications of
-nothingness.  Character strings that are used for missing
-values. Those things, which are given default values in the
-argument nothings, will be changed to NA.
+nothingness.  Goal is to find character strings that users
+might insert in a key to indicate missing values. Those things,
+which are given default values in the argument nothings, will be
+changed to NA.
 }
 \details{
 Using regular expression matching, any value that has nothing
@@ -40,7 +41,8 @@ missing value), an empty string, or white space, meaning " ", or
 any number of spaces, or a tab.
 }
 \examples{
-gg <- c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first", ".", " . ")
+gg <- c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first", ".",
+       " . ")
 n2NA(x = gg)
 n2NA(x = gg, zapspace = FALSE)
 n2NA(x = gg, nothings = c("\\\\s"), zapspace = FALSE)

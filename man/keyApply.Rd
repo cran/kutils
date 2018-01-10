@@ -5,12 +5,13 @@
 \title{Apply variable key to data frame (generate recoded data frame)}
 \usage{
 keyApply(dframe, key, diagnostic = TRUE, safeNumericToInteger = TRUE,
-  ignoreCase = TRUE, debug = FALSE)
+  trimws = "both", ignoreCase = TRUE, drop = TRUE, debug = FALSE)
 }
 \arguments{
 \item{dframe}{An R data frame}
 
-\item{key}{A variable key object, of class either "key" or "keylong"}
+\item{key}{A variable key object, of class either "key" or
+"keylong"}
 
 \item{diagnostic}{Default TRUE: Compare the old and new data
 frames carefully with the keyDiagnostic function.}
@@ -21,10 +22,26 @@ numeric, it might be safe to treat it as an integer.  In many
 csv data sets, the values coded c(1, 2, 3) are really
 integers, not floats c(1.0, 2.0, 3.0). See \code{safeInteger}.}
 
+\item{trimws}{Default is "both", can change to "left", "right", or
+set as NULL to avoid any trimming.}
+
 \item{ignoreCase}{Default TRUE. If column name is capitalized
 differently than name_old in the key, but the two are
 otherwise identical, then the difference in capitalization
 will be ignored.}
+
+\item{drop}{Default TRUE. True implies drop = c("vars",
+"vals"). TRUE applies to both variables ("vars") and values
+("vals"). "vars" means that a column will be omitted from data
+if it is not in the key "name_old". Similarly, if anything
+except "." appears in value_old, then setting drop="vals"
+means omission of a value from key "value_old" causes
+observations with those values to become NA.  This is the
+original variable key behavior.  The drop argument allows
+"partial keys", beginning with kutils version 1.12. drop =
+FALSE means that neither values nor variables are omitted.
+Rather than TRUE, one can specify either drop = "vars", or
+drop = "vals".}
 
 \item{debug}{Default FALSE. If TRUE, emit some warnings.}
 }

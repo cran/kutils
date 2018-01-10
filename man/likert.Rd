@@ -4,24 +4,45 @@
 \alias{likert}
 \title{Percentage tables for Likert Scale variables}
 \usage{
-likert(vlist, data, labels, outdir, fn, rows = TRUE)
+likert(data, vlist, columnlabels, valuelabels, rows = FALSE, digits = 2,
+  ...)
 }
 \arguments{
-\item{vlist}{A vector of variable names}
+\item{data}{A data frame. Function will try to include all
+variables in data, unless vlist is provided.}
 
-\item{data}{A data frame}
+\item{vlist}{A vector of column names in data that should be
+displayed}
 
-\item{labels}{A vector of values to replace existing levels}
+\item{columnlabels}{Column labels, optional to beautify variable
+names. If not supplied, column names will be used as column
+labels. Provide either 1) A named vector that replaces one or
+more columns, \code{c(oldname1 = "newlabel1", oldname2 =
+"newlabel2")} where oldnames are in colnames(data), or 2) a
+vector of same length as vlist (or data if vlist is not
+supplied) that will replace them one for one.}
 
-\item{outdir}{Output directory}
+\item{valuelabels}{A vector of values to beautify existing
+levels. If not supplied, factor levels will be used as row
+labels}
 
-\item{fn}{file name for output: not used yet. See example for one way to save result.}
+\item{rows}{Should output be transposed. This may help if there
+are many variables that need to fit on the page.  Percentages
+will appear on the rows, rather than columns.}
 
-\item{rows}{Currently unused indicator for whether output should
-be transposed.}
+\item{digits}{Number of decimals to display in percentages}
+
+\item{...}{Arguments to pass to R's table function. We suggest
+\code{useNA = "always"} to add missing value information and
+\code{exclude = original.value.label} to exclude values
+observed. Currently, \code{useNA = "ifany"} does not work as
+expected, the number of missings will be displayed, even if
+there are none.}
 }
 \value{
-character vector
+A list, including a frequency table (called "freqTab"),
+    column counts ("counts"), column sums ("sums"), and
+    column percents ("pcts").
 }
 \description{
 Creates a table with columns for allowed values and rows for
@@ -31,21 +52,38 @@ variables.
 vvector <- c("Strongly Disagree", "Disagree", "Neutral",
               "Agree", "Strongly Agree")
 set.seed(2342234)
-N <- 142
+N <- 28
 scales <-
-    data.frame(Vegas = factor(sample(1:5, N, replace = TRUE), labels = vvector),
-               NewYork = factor(sample(1:5, N, replace = TRUE), labels = vvector),
-               Paris = factor(sample(1:5, N, replace = TRUE), labels = vvector),
-               Berlin = factor(sample(1:5, N, replace = TRUE), labels = vvector))
+    data.frame(Vegas = factor(sample(1:5, N, replace = TRUE),
+        levels = 1:5, labels = vvector),
+               NewYork = factor(sample(1:5, N, replace = TRUE),
+        levels = 1:5, labels = vvector),
+               Paris = factor(sample(1:5, N, replace = TRUE),
+        levels = 1:5, labels = vvector),
+               Berlin = factor(sample(1:5, N, replace = TRUE),
+        levels = 1:5, labels = vvector))
 
-(mySummary1 <- likert(c("Vegas", "NewYork", "Paris"), scales))
+likert(scales)
 
-(mySummary2 <- likert(c("Vegas", "NewYork", "Paris"), scales,
-                    labels = c("SD", "D", "N", "A", "SA")))
+likert(scales, exclude = "Disagree")
 
- ## Example of how one might write this in a file. The fn argument is not currently
- ## enabled, but the following will work.
- ## print(xtable::xtable(mySummary1, digits = 0), type = "html", file = "varCount-1.html")       
+likert(scales, exclude = "Strongly Disagree", useNA = "ifany")
+
+(mySummary1 <- likert(data = scales, vlist = c("Vegas", "NewYork", "Paris")))
+mySummary1[["pcts"]]
+
+(mySummary2 <- likert(scales, vlist = c("Vegas", "NewYork", "Paris"),
+                    valuelabels = c("SD", "D", "N", "A", "SA")))
+(mySummary3 <- likert(scales, vlist = c("Vegas", "NewYork", "Paris"),
+                    valuelabels = c("Strongly Disagree" = "Strong Disagreement")))
+
+(mySummary5 <- likert(scales, vlist = c("Vegas", "NewYork", "Paris"),
+      valuelabels = c("SD", "D", "N", "A", "SA"),
+      columnlabels = c("Vegas" = "Sin City"), rows = TRUE))
+
+ ## Example of how one might write this in a file. 
+ ## print(xtable::xtable(mySummary1[[1]], digits = 1),
+ ##       type = "html", file = "varCount-1.html")       
   
 }
 \author{

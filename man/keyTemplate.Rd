@@ -5,7 +5,8 @@
 \title{Create variable key template}
 \usage{
 keyTemplate(dframe, long = FALSE, sort = FALSE, file = NULL,
-  outdir = getwd(), max.levels = 15, safeNumericToInteger = TRUE)
+  max.levels = 15, missings = NULL, missSymbol = ".",
+  safeNumericToInteger = TRUE, trimws = "both", varlab = FALSE)
 }
 \arguments{
 \item{dframe}{A data frame}
@@ -16,47 +17,65 @@ keyTemplate(dframe, long = FALSE, sort = FALSE, file = NULL,
 variables be sorted alphabetically? Otherwise, they appear in
 the order in which they were included in the original dataset.}
 
-\item{file}{DEFAULT NULL, meaning no file is produced. The primary
-purpose of this function is to create the output file, so
-users should write a text string for the output file's base
-name.  We planned for 3 storage formats, comma separate
-variables, MS Excel XLSX format, or R's RDS.  To designate
-which format will be used, the user should specify a file name
-that ends in a suffix ".csv", ".rds", or ".xlsx". If
-spreadsheet output in an XLSX file is requested, user should
-make sure the openxlsx package is installed.}
+\item{file}{DEFAULT NULL, meaning no file is produced. Choose a
+file name ending in either "csv" (for comma separated
+variables), "xlsx" (compatible with Microsoft Excel), or "rds"
+(R serialization data). The file name will be used to select
+among the 3 storage formats. XLSX output requires the openxlsx
+package.}
 
-\item{outdir}{The output directory for the new variable key files.
-Default is current working directory.}
+\item{max.levels}{How high is the limit on the number of values
+for discrete (integer, character, and Date) variables?
+Default = 15. If observed number exceeds max.levels, we
+conclude the author should not assign new values in the key
+and only the missing value will be included in the key as a
+"placeholder". This does not affect variables declared as
+factor or ordered variables, for which all levels are included
+in all cases.}
 
-\item{max.levels}{This is to regulate the enumeration of values
-for integer, character, and Date variables. When enumerating
-existing values for a variable, what is the maximum number of
-levels that should be included in the key? Default = 15. This
-does not affect variables declared as factor or ordered
-variables, for which all levels are included in all cases.}
+\item{missings}{Values in exising data which should be treated as
+missing in the new key. Character string in format acceptable
+to the \code{assignMissing} function. Can be a string with
+several missing indicators"1;2;3;(8,10);[22,24];> 99;< 2".}
+
+\item{missSymbol}{Default ".".  A character string used to
+represent missing values in the key that is created.  Relevant
+(mostly) for the key's \code{value_new} column. Default is the
+period, ".". Because R's symbol \code{NA} can be mistaken for
+the character string \code{"NA"}, we use a different
+(hopefully unmistakable) symbol in the key.}
 
 \item{safeNumericToInteger}{Default TRUE: Should we treat values
 which appear to be integers as integers? If a column is
 numeric, it might be safe to treat it as an integer.  In many
 csv data sets, the values coded c(1, 2, 3) are really
-integers, not floats c(1.0, 2.0, 3.0). See
-\code{safeInteger}.}
+integers, not floats c(1.0, 2.0, 3.0). See \code{safeInteger}.}
+
+\item{trimws}{Default is "both", user can change to "left", "right", or
+set as NULL to avoid any trimming.}
+
+\item{varlab}{A key can have a companion data structure for
+variable labels. Default is FALSE, but the value may also be
+TRUE or a named vector of variable labels, such as
+\code{c("x1" = "happiness", "x2" = "wealth")}. The labels
+become an attribute of the key object. See Details for
+information on storage of varlabs in saved key files.}
 }
 \value{
 A key in the form of a data frame. May also be saved on
-    disk.
+    disk if the file argument is supplied. The key may have an
+    attribute "varlab", variable labels.
 }
 \description{
 A variable key is a human readable document that describes the
 variables in a data set. A key can be revised and re-imported by R
-so as to guide the re-importation and recoding of data. This might
+to recode data. This might
 also be referred to as a "programmable codebook."  This function
 inspects a data frame, takes notice of its variable names, their
 classes, and legal values, and then it creates a table summarizing
 that information. The aim is to create a document that principal
 investigators and research assistants can use to keep a project
-well organize.  Please see the vignette in this package.
+well organized.  Please see the vignette in this package.
 }
 \details{
 The variable key can be created in two formats.  The original
@@ -72,6 +91,18 @@ generate the intended result.
 After a key is created, it should be re-imported into R with the
 \code{kutils::keyImport} function.  Then the key structure can
 guide the importation and recoding of the data set.
+
+Concerning the varlab attribute. Run \code{attr(key, "varlab"} to
+review existing labels, if any.
+
+Storing the variable labels in files requires some care because
+the \code{rds}, \code{xlsx}, and \code{csv} formats have different
+capabilities.  The \code{rds} storage format saves all attributes without
+difficulty. In contrast, because \code{csv} and \code{xlsx} do not save
+attributes, the varlabs are stored as separate character
+matrices. For \code{xlsx} files, the varlab object is saved as a second
+sheet in \code{xlsx} file, while in \code{csv} a second file suffixed
+"-varlab.csv" is created.
 }
 \examples{
 set.seed(234234)
@@ -91,29 +122,56 @@ mydf <- data.frame(x5 = rnorm(N),
 mydf$x4[sample(1:N, 10)] <- 999
 mydf$x5[sample(1:N, 10)] <- -999
 
-## Should be same as content of
-## write.csv(mydf, file = "../inst/extdata/mydf.csv", row.names = FALSE)
-mydf.templ <- keyTemplate(mydf, file = "mydf.templ.csv")
-mydf.templ_long <- keyTemplate(mydf, long = TRUE, file = "mydf.templlong.csv")
-## write.csv(mydf.templ, file = "../inst/extdata/mydf.templ.csv", row.names = FALSE)
-## write.csv(mydf.templ_long, file = "../inst/extdata/mydf.templ_long.csv", row.names = FALSE)
-## smartSave(mydf.templ, file = "mydf.templ.xlsx", outdir = ".")
-## smartSave(mydf.templ_long, file = "mydf.templ_long.xlsx", outdir = ".")
+## This puts copy in temp working directory, unless package build flag
+## is set
+RECOMPILE <- FALSE
+dn <- if(!RECOMPILE) tempdir() else "../inst/extdata"
+write.csv(mydf, file = file.path(dn, "mydf.csv"), row.names = FALSE)
+mydf.templ <- keyTemplate(mydf, file = file.path(dn, "mydf.templ.csv"),
+                          varlab = TRUE)
+mydf.templ_long <- keyTemplate(mydf, long = TRUE,
+                            file = file.path(dn, "mydf.templlong.csv"),
+                            varlab = TRUE)
+
+mydf.templx <- keyTemplate(mydf, file = file.path(dn, "mydf.templ.xlsx"),
+                            varlab = TRUE)
+mydf.templ_longx <- keyTemplate(mydf, long = TRUE,
+                             file = file.path(dn, "mydf.templ_long.xlsx"),
+                             varlab = TRUE)
+## Check the varlab attribute
+attr(mydf.templ, "varlab")
+mydf.tmpl2 <- keyTemplate(mydf,
+                         varlab = c(x5 = "height", x4 = "age",
+                         x3 = "intelligence", x1 = "Name"))
+## Check the varlab attribute
+attr(mydf.tmpl2, "varlab")
 
 ## Try with the national longitudinal study data
 data(natlongsurv)
-natlong.templ <- keyTemplate(natlongsurv, file = "natlongsurv.templ.csv",
-                           max.levels = 15, sort = TRUE)
+natlong.templ <- keyTemplate(natlongsurv,
+                          file = file.path(dn, "natlongsurv.templ.csv"),
+                          max.levels = 15, varlab = TRUE, sort = TRUE)
 
 natlong.templlong <- keyTemplate(natlongsurv, long = TRUE,
-                   file = "natlongsurv.templ_long.csv", sort = TRUE)
+                   file = file.path(dn, "natlongsurv.templ_long.csv"), sort = TRUE)
+if(interactive()) View(natlong.templlong)
+natlong.templlong2 <- keyTemplate(natlongsurv, long = TRUE,
+                      missings = "<0", max.levels = 50, sort = TRUE,
+                      varlab = TRUE)
+if(interactive()) View(natlong.templlong2)
 
-\donttest{
-if (require(openxlsx)){
-   openxlsx::write.xlsx(natlong.templ, file = "natlongsurv.templ.xlsx")
-   openxlsx::write.xlsx(natlong.templlong, file = "natlongsurv.templ_long.xlsx")
-}
-}
+natlong.templwide2 <- keyTemplate(natlongsurv, long = FALSE,
+                      missings = "<0", max.levels = 50, sort = TRUE)
+if(interactive()) View(natlong.templwide2)
+
+all.equal(wide2long(natlong.templwide2), natlong.templlong2)
+
+head(keyTemplate(natlongsurv, file = file.path(dn, "natlongsurv.templ.xlsx"),
+             max.levels = 15, varlab = TRUE, sort = TRUE), 10)
+head(keyTemplate(natlongsurv, file = file.path(dn, "natlongsurv.templ.xlsx"),
+             long = TRUE, max.levels = 15, varlab = TRUE, sort = TRUE), 10)
+
+list.files(dn)
 
 }
 \author{

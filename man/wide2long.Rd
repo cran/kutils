@@ -5,7 +5,7 @@
 \title{Convert a key object from wide to long format}
 \usage{
 wide2long(key, sep = c(character = "\\\\|", logical = "\\\\|", integer =
-  "\\\\|", factor = "[\\\\|<]", ordered = "[\\\\|<]", numeric = "\\\\|"))
+  "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric = "\\\\|"))
 }
 \arguments{
 \item{key}{A variable key in the wide format}
@@ -28,7 +28,6 @@ mydf.path <- system.file("extdata", "mydf.csv", package = "kutils")
 mydf <- read.csv(mydf.path, stringsAsFactors=FALSE)
 ## Target we are trying to match:
 mydf.keylong <- keyTemplate(mydf, long = TRUE, sort = FALSE)
-## View(mydf.keylong)
 
 mydf.key <- keyTemplate(mydf)
 mydf.keywide2long <- wide2long(mydf.key)

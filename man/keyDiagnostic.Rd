@@ -4,7 +4,7 @@
 \alias{keyDiagnostic}
 \title{Diagnose accuracy of result from applying variable key to data}
 \usage{
-keyDiagnostic(dfold, dfnew, keylist, max.values = 20, nametrunc = 8,
+keyDiagnostic(dfold, dfnew, keylist, max.values = 20, nametrunc = 18,
   wide = 200, confidential = FALSE)
 }
 \arguments{
@@ -20,26 +20,30 @@ variable}
 
 \item{nametrunc}{Truncate column and row names. Needed if there
 are long factor labels and we want to fit more information on
-table. Default = 6.}
+table. Default = 18 for new name, old name is 10 more
+characters (18 + 10 = 28).}
 
 \item{wide}{Number of characters per row in printed
 output. Suggest very wide screen, default = 200.}
 
-\item{confidential}{Should numbers in table be rounded to nearest "10"
-to comply with security standard enforced by some American research
-departments.}
+\item{confidential}{Should numbers in table be rounded to nearest
+"10" to comply with security standard enforced by some
+American research departments.}
 }
 \description{
 Compare the old and new data frames, checking for accuracy of
 calculations in various ways.
 }
 \details{
-The simplest thing is to crosstabulate new variable versus old variable to
-see the mismatch.  For tables of up to 10 values or so, that will be satisfactory.
+CAUTION: This can print WIDE matrices.  Because the on-screen
+output will be WIDE, make the display window WIDE!
+
+Crosstabulate new variable versus old variable to see the coding
+mismatches.  For tables of up to 10 values or so, that will be
+satisfactory.
 
 For numeric variables, it appears there is no good thing to do
-except possibly to re-apply any transformations. Maybe a simple
-scatterplot will suffice.
+except possibly to re-apply any transformations.
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

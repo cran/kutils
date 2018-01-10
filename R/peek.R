@@ -217,7 +217,21 @@ peek <-
     ## Focus on most likely objections by getting names unique to
     ## hist and removing them from the bar portion, and
     ## names unique to bar and removing from the hist portion
-    names.par <- names(par())
+    ## This, however, causes a spurious device, so have to hard code parms
+    ## names.par <- names(par())
+
+    names.par <- c("xlog", "ylog", "adj", "ann", "ask", "bg", "bty",
+                   "cex", "cex.axis", "cex.lab", "cex.main",
+                   "cex.sub", "cin", "col", "col.axis", "col.lab",
+                   "col.main", "col.sub", "cra", "crt", "csi", "cxy",
+                   "din", "err", "family", "fg", "fig", "fin", "font",
+                   "font.axis", "font.lab", "font.main", "font.sub",
+                   "lab", "las", "lend", "lheight", "ljoin", "lmitre",
+                   "lty", "lwd", "mai", "mar", "mex", "mfcol", "mfg",
+                   "mfrow", "mgp", "mkh", "new", "oma", "omd", "omi",
+                   "page", "pch", "pin", "plt", "ps", "pty", "smo",
+                   "srt", "tck", "tcl", "usr", "xaxp", "xaxs", "xaxt",
+                   "xpd", "yaxp", "yaxs", "yaxt", "ylbias")
     names.hist <- removeMatches(names(formals(hist.default)), "...")
     names.barplot <- removeMatches(names(formals(barplot.default)), "...")
     names.barplot.unique <- names.barplot[!names.barplot %in% names.hist]
@@ -285,15 +299,16 @@ peek <-
         do.call("pdf", pdfargz)
     } else {
         do.call("dev.create", dotsForDevice)
+        ##do.call("dev.new", dotsForDevice)
     }
-    
-    if (is.null(file) || isTRUE(ask)) devAskNewPage(TRUE)
     
     for (i in names(colTypes)){
         if (colTypes[i] == "numeric" ){
             quickhist(i)
+            if (is.null(file) || isTRUE(ask)) devAskNewPage(TRUE)
         } else {
             quickbar(i)
+            if (is.null(file) || isTRUE(ask)) devAskNewPage(TRUE)
         }
     }
     if(!is.null(file)) dev.off()
@@ -313,8 +328,8 @@ peek <-
 ##' dev.new. This is suitable for Windows, Linux, and
 ##' Macintosh operating systems.
 ##'
-##' The argument in dev.new named noRStudioGD seems to aimed at same
-##' puroose. But it does not do what I want and documentation is too
+##' The argument in dev.new named noRStudioGD seems to be aimed at same
+##' purpose. But it does not do what I want and documentation is too
 ##' sparse.
 ##' @param ... Currently, height and width parameters that would be
 ##'     suitable with dev.new
@@ -323,7 +338,7 @@ peek <-
 ##' @export
 ##' @examples
 ##' \donttest{
-##' dev.create(height = 7, width = 3)
+##' if(interactive()) dev.create(height = 7, width = 3)
 ##' dev.off()
 ##' }
 dev.create <- function(...){
