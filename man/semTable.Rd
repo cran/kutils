@@ -7,8 +7,9 @@
 semTable(object, file = NULL, paramSets = "all", paramSetLabels,
   columns = c(est = "Estimate", se = "SE", z = "z", p = "p"), columnLabels,
   fits = c("chisq", "cfi", "tli", "rmsea"), fitLabels = toupper(fits),
-  varLabels = NULL, groups = NULL, type = "latex", longtable = FALSE,
-  alpha = c(0.05, 0.01, 0.001))
+  varLabels = NULL, groups = NULL, type = "latex", table.float = FALSE,
+  caption = NULL, label = NULL, longtable = FALSE, alpha = c(0.05, 0.01,
+  0.001))
 }
 \arguments{
 \item{object}{A lavaan object (e.g., returned by cfa() or sem()),
@@ -16,9 +17,11 @@ or a named list of lavaan objects, e.g., \code{list("Model A"
 = obj1, "Model B" = obj2)}. Results will be displayed side by
 side.}
 
-\item{file}{Base name for output file. Specify "mymodel" to get
-output files "mymodel.tex", "mymodel.html", or "mymodel.csv",
-depending on the value of \code{type}.}
+\item{file}{Base name for output file. Depending on \code{type},
+suffixes "tex", "html" and "csv" may be added. That is,
+specify "mymodel" to get output files "mymodel.tex",
+"mymodel.html", or "mymodel.csv", depending on the value of
+\code{type}.}
 
 \item{paramSets}{Parameter sets to be included for each fitted
 object.  Valid values of the vector are \code{"all"} or a any
@@ -89,20 +92,31 @@ default labels are the upper-case fits names (except for
 \item{varLabels}{Named vector of labels to replace variable names
 in column 1 of SEM table.}
 
-\item{groups}{Specify some group names for inclusion in the
-model. If \code{object} is just one SEM, but there are several
-groups within it, the parameters for each group will be
-displayed side by side.  All groups will be displayed by
-default.  User should specify a vector of group names here to
-select some groups for display.}
+\item{groups}{All groups will be printed, unless a subset is
+requested here. Estimates for all groups will be displayed
+side by side. If ONLY SOME groups should be included, then
+specify groups as either names of fit objects or as integers
+for elements of the groups vector.}
 
 \item{type}{Choose "latex", "html", "csv", or a vector including
 any or all of these. If several are specified, ie,
 \code{c("latex", "html", "csv")}, a list of 3 sets of markup
 will be returned.}
 
+\item{table.float}{If TRUE, create a LaTeX floating table object
+in which the tabular created here will reside. Default is
+FALSE.}
+
+\item{caption}{Caption for table (if table.float=TRUE) or
+longtable output. Ignored otherwise.}
+
+\item{label}{LaTeX label for this object (for
+cross-references). Only used if table.float = TRUE or
+longtable = TRUE.}
+
 \item{longtable}{If TRUE, use longtable for LaTeX
-documents. Default is FALSE.}
+documents. Default is FALSE. If true, \code{table} argument is
+ignored.}
 
 \item{alpha}{Thresholds for p-values that determine number of
 stars.  Defaults as \code{c(0.05, 0.01, 0.001)} for
@@ -161,23 +175,46 @@ HS.model <- ' visual  =~ x1 + x2 + x3
 fit1 <- cfa(HS.model, data = HolzingerSwineford1939,
             std.lv = TRUE, meanstructure = TRUE)
 fit1.t1 <- semTable(fit1, columns = c("est", "estse"),
-                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"))
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"),
+                    varLabels = c("x1" = "hello"))
 if (interactive()) testtable("fit1.t1", tempdir)
-fit1.t2 <- semTable(fit1, fits = c("chisq", "rmsea"),
-               columns = c("est", "se"), columnLabels = c(se = "S.E."),
-               file = file.path(tempdir, "fit1.t2"))
+## Now demonstrate variable labels
+vl <- c(visual = "Visual", textual = "Textual", speed = "Speed",
+       x1 = "V1", x2 = "V2", x3 = "V3")
+fit1.t2 <- semTable(fit1, columns = c("est", "estse"),
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t2"),
+                    varLabels = vl)
 if (interactive()) testtable("fit1.t2", tempdir)
-fit1.t3 <- semTable(fit1, fits = c("chisq", "rmsea"),
+## floating table
+fit1.t3 <- semTable(fit1, columns = c("est", "estse"),
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t3"),
+                    varLabels = vl, table.float = TRUE,
+                    caption = "Holzinger Swineford 1939",
+                    label = "tab:hs1939")
+if (interactive()) testtable("fit1.t3", tempdir)
+fit1.t4 <- semTable(fit1, columns = c("est", "estse"),
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t3"),
+                    varLabels = vl, longtable = TRUE,
+                    caption = "Holzinger Swineford 1939",
+                    label = "tab:hs1939")
+if (interactive()) testtable("fit1.t4", tempdir)
+fit1.t5 <- semTable(fit1, fits = c("chisq", "rmsea"),
+               columns = c("est", "se"), columnLabels = c(se = "S.E."),
+               file = file.path(tempdir, "fit1.t5"))
+if (interactive()) testtable("fit1.t5", tempdir)
+fit1.t6 <- semTable(fit1, fits = c("chisq", "rmsea"),
                columns = c("estsestars"),
                columnLabels = c("estsestars" = "Est(SE)"),
-               file = file.path(tempdir, "fit1.t3"))
-if (interactive()) testtable("fit1.t3", tempdir)
-fit1.t4 <- semTable(fit1, fits = c("chisq", "rmsea"),
+               file = file.path(tempdir, "fit1.t6"))
+if (interactive()) testtable("fit1.t6", tempdir)
+vl <- c(x1 = "happy 1", x2 = "happy 2", x3 = "happy 3",
+        visual = "Seeing", textual = "Thumb Texting")
+fit1.t7 <- semTable(fit1, fits = c("chisq", "rmsea"),
                columns = c("eststars", "p"),
                columnLabels = c("eststars" = "Est(SE)"),
-               file = file.path(tempdir, "fit1.t4"),
-               varLabels = c(x1 = "happy 1", x2 = "happy 2", x3 = "happy 3"))
-if (interactive()) testtable("fit1.t4", tempdir)
+               file = file.path(tempdir, "fit1.t7"),
+               varLabels = vl, longtable = TRUE)
+if (interactive()) testtable("fit1.t7", tempdir)
 
 ## 2 groups
 fit1.g <- cfa(HS.model, data = HolzingerSwineford1939, std.lv = TRUE, group = "school")

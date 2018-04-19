@@ -21,9 +21,12 @@ means delete all duplicates at the beginning of a string.}
 Cleaned up vector.
 }
 \description{
-In Qualtrix data, we sometimes find repeated words in column names.
-This changes a vector c("Philadelphia_Philadelphia_3", "Denver_Denver_4")
-to c("Philadelphia_3", "Denver_4")
+In Qualtrix data, we sometimes find repeated words in column
+names. For whatever reason, the variable names have repeated words
+like "Philadelphia_Philadelphia_3".  This function changes a
+vector c("Philadelphia_Philadelphia_3", "Denver_Denver_4") to
+c("Philadelphia_3", "Denver_4"). It is non destructive, so that
+other values will not be altered.
 }
 \details{
 See \url{https://stackoverflow.com/questions/43711240/r-regular-expression-match-omit-several-repeats}

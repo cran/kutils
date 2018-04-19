@@ -4,8 +4,8 @@
 \alias{markupConvert}
 \title{Convert marked-up characters to latex, html, or csv}
 \usage{
-markupConvert(marked, type = c("latex", "html", "csv"), longtable = FALSE,
-  file = NULL, columns)
+markupConvert(marked, type = c("latex", "html", "csv"), table.float = FALSE,
+  longtable = FALSE, caption = NULL, label = NULL, file = NULL, columns)
 }
 \arguments{
 \item{marked}{A character string}
@@ -13,7 +13,13 @@ markupConvert(marked, type = c("latex", "html", "csv"), longtable = FALSE,
 \item{type}{Output type, can be a vector or any one of "latex",
 "html", and "csv".}
 
+\item{table.float}{TRUE if you want insertion of '\\begin{table}'}
+
 \item{longtable}{should a tabular or a longtable object be created?}
+
+\item{caption}{A caption to use if either longtable or table is TRUE}
+
+\item{label}{A LaTeX label for cross-references}
 
 \item{file}{A file stub, to which ".tex", ".html", or ".csv" can be added}
 

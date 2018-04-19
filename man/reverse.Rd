@@ -9,7 +9,9 @@ reverse(x, eol = c("Skip", "DNP"))
 \arguments{
 \item{x}{a factor variable}
 
-\item{eol}{values to be kept at the end of the list}
+\item{eol}{values to be kept at the end of the list. Does not
+accept regular expresssions, just literal text strings
+representing values.}
 }
 \value{
 a new factor variable with reversed values
@@ -48,6 +50,26 @@ yr1
 ## Unintended side-effect, but interesting.
 yr2 <- reverse(y, eol = "C")
 yr2
+## What about a period as a value (SAS missing)
+z <- factor(c("a", "b", "c", "b", "c", "."))
+reverse(z)
+z <- factor(c(".", "a", "b", "c", "b", "c", "."))
+reverse(z)
+## How about R NA's
+z <- factor(c(".", "a", NA, "b", "c", "b", NA, "c", "."))
+z
+reverse(z)
+z <- ordered(c(".", "a", NA, "b", "c", "b", NA, "c", "."))
+z
+str(z)
+## Put "." at end of list
+zr <- reverse(z, eol = ".")
+zr
+str(zr)
+z <- ordered(c(".", "c", NA, "e", "a", "c", NA, "e", "."),
+         levels = c(".", "c", "e", "a"))
+reverse(z, eol = ".")
+reverse(z, eol = c("a", "."))
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>
