@@ -2,7 +2,7 @@
 % Please edit documentation in R/variableKey.R
 \name{all.equal.keylong}
 \alias{all.equal.keylong}
-\title{An all.equal method for variable wide keys}
+\title{An all.equal method for variable long keys}
 \usage{
 \method{all.equal}{keylong}(target, current, ..., check.attributes = FALSE)
 }

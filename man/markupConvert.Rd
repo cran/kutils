@@ -2,7 +2,7 @@
 % Please edit documentation in R/semTable.R
 \name{markupConvert}
 \alias{markupConvert}
-\title{Convert marked-up characters to latex, html, or csv}
+\title{Convert marked-up semTable structures to latex, html, or csv}
 \usage{
 markupConvert(marked, type = c("latex", "html", "csv"), table.float = FALSE,
   longtable = FALSE, caption = NULL, label = NULL, file = NULL, columns)
@@ -10,8 +10,7 @@ markupConvert(marked, type = c("latex", "html", "csv"), table.float = FALSE,
 \arguments{
 \item{marked}{A character string}
 
-\item{type}{Output type, can be a vector or any one of "latex",
-"html", and "csv".}
+\item{type}{Output type, latex", "html", or "csv".}
 
 \item{table.float}{TRUE if you want insertion of '\\begin{table}'}
 
@@ -29,7 +28,14 @@ markupConvert(marked, type = c("latex", "html", "csv"), table.float = FALSE,
 a list of marked up character objects
 }
 \description{
-The conversion key tables are included in the code of the function
+The conversion key tables are included in the code of the function.
+}
+\details{
+The semTable uses a customized markup framework that uses character
+sequences that begin and end with underscores, such as "_BOMC2_ for
+"begin of multi-column entity that will use 2 columns". These
+special markups need to be converted into "tex", "html", or "csv"
+formats.
 }
 \author{
 Paul Johnson

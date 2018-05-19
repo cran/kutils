@@ -2,7 +2,7 @@
 % Please edit documentation in R/variableKey.R
 \name{keyTemplate}
 \alias{keyTemplate}
-\title{Create variable key template}
+\title{Create variable key template (in memory or in a file)}
 \usage{
 keyTemplate(dframe, long = FALSE, sort = FALSE, file = NULL,
   max.levels = 15, missings = NULL, missSymbol = ".",
@@ -69,24 +69,24 @@ A key in the form of a data frame. May also be saved on
 \description{
 A variable key is a human readable document that describes the
 variables in a data set. A key can be revised and re-imported by R
-to recode data. This might
-also be referred to as a "programmable codebook."  This function
-inspects a data frame, takes notice of its variable names, their
-classes, and legal values, and then it creates a table summarizing
-that information. The aim is to create a document that principal
+to recode data. This might also be referred to as a
+"programmable codebook."  This function inspects a data frame,
+takes notice of its variable names, their classes, and legal
+values, and then it creates a table summarizing that
+information. The aim is to create a document that principal
 investigators and research assistants can use to keep a project
 well organized.  Please see the vignette in this package.
 }
 \details{
-The variable key can be created in two formats.  The original
-style of the variable key has one row per variable. It has a style
-for compact notation about current values and required recodes.
-That is more compact, probably easier for experts to use, but
-perhaps more complicated for non-programmers. The long style
-variable key has one row per value per variable.  Thus, in a
-larger project, the long style key can be quite voluminous. However,
-in a larger project, the long style key seems to be more likely to
-generate the intended result.
+The variable key can be created in two formats, wide and long.
+The original style of the variable key, wide, has one row per
+variable. It has a style for compact notation about current values
+and required recodes.  That is more compact, probably easier for
+experts to read, but perhaps more difficult to edit. The long
+style variable key has one row per value per variable.  Thus, in a
+larger project, the long key can have many rows. However, in a
+larger project, the long style key is easier to edit with a spread
+sheet program.
 
 After a key is created, it should be re-imported into R with the
 \code{kutils::keyImport} function.  Then the key structure can
@@ -122,10 +122,9 @@ mydf <- data.frame(x5 = rnorm(N),
 mydf$x4[sample(1:N, 10)] <- 999
 mydf$x5[sample(1:N, 10)] <- -999
 
-## This puts copy in temp working directory, unless package build flag
-## is set
-RECOMPILE <- FALSE
-dn <- if(!RECOMPILE) tempdir() else "../inst/extdata"
+## Note: If we change this example data, we need to save a copy in
+## "../inst/extdata" for packacing
+dn <- tempdir()
 write.csv(mydf, file = file.path(dn, "mydf.csv"), row.names = FALSE)
 mydf.templ <- keyTemplate(mydf, file = file.path(dn, "mydf.templ.csv"),
                           varlab = TRUE)

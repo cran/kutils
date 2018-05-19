@@ -46,7 +46,7 @@ drop = "vals".}
 \item{debug}{Default FALSE. If TRUE, emit some warnings.}
 }
 \value{
-A recoded version of dframe
+A new data.frame object, with renamed and recoded variables
 }
 \description{
 This is the main objective of the variable key system.

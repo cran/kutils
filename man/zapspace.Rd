@@ -17,7 +17,10 @@ If x is a character vector, return is a character vector
 \description{
 This eliminates any characters matched by the regular expression
 `\\s` if they appear at the beginning of a string or at its
-end. It does not alter spaces in the interior of a string
+end. It does not alter spaces in the interior of a string. This
+was created when I was not aware of R's \code{trimws} and the purpose
+is the same. On our TODO list, we intend to eliminate this function
+and replace its use with \code{trimws}
 }
 \examples{
 gg <- c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first")

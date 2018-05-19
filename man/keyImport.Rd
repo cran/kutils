@@ -2,8 +2,7 @@
 % Please edit documentation in R/variableKey.R
 \name{keyImport}
 \alias{keyImport}
-\title{Import a file (or key object). Will check and if possible clean up
-for use as variable key}
+\title{Import/validate a key object or import/validate a key from a file.}
 \usage{
 keyImport(key, ignoreCase = TRUE, sep = c(character = "\\\\|", logical =
   "\\\\|", integer = "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric =
@@ -11,8 +10,8 @@ keyImport(key, ignoreCase = TRUE, sep = c(character = "\\\\|", logical =
   ..., keynames = NULL)
 }
 \arguments{
-\item{key}{A file name, ending in csv, xlsx or rds, or a key
-object.}
+\item{key}{A key object (class key or keylong) or a file name
+character string (ending in csv, xlsx or rds).}
 
 \item{ignoreCase}{In the use of this key, should we ignore
 differences in capitalization of the "name_old" variable?
@@ -30,10 +29,11 @@ regular expressions in supplying separator values.}
 This is relevant in \code{name_new} as well as
 \code{value_new}. In spreadsheet cells, we treat "empty"
 cells, or values like "." or "N/A", as missing with defaults
-".", "", "\\s" (white space), and "N/A". Change that if those are
-not to be treated as missings.}
+".", "", "\\s" (white space), and "N/A". Change that if those
+are not to be treated as missings.}
 
-\item{missSymbol}{Defaults to period "." as missing value indicator.}
+\item{missSymbol}{Defaults to period "." as missing value
+indicator.}
 
 \item{...}{additional arguments for read.csv or read.xlsx.}
 
@@ -55,7 +55,7 @@ key object, should be same "wide" or "long" as the input
 After the researcher has updated the key by filling in new names
 and values, we import that key file. This function can import the
 file by its name, after deducing the file type from the suffix, or
-it can receive a key object.
+it can receive a key object from memory.
 }
 \details{
 This can be either a wide or long format key file.

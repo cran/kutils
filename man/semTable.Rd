@@ -8,8 +8,8 @@ semTable(object, file = NULL, paramSets = "all", paramSetLabels,
   columns = c(est = "Estimate", se = "SE", z = "z", p = "p"), columnLabels,
   fits = c("chisq", "cfi", "tli", "rmsea"), fitLabels = toupper(fits),
   varLabels = NULL, groups = NULL, type = "latex", table.float = FALSE,
-  caption = NULL, label = NULL, longtable = FALSE, alpha = c(0.05, 0.01,
-  0.001))
+  caption = NULL, label = NULL, longtable = FALSE, print.results = TRUE,
+  alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
 \item{object}{A lavaan object (e.g., returned by cfa() or sem()),
@@ -17,11 +17,9 @@ or a named list of lavaan objects, e.g., \code{list("Model A"
 = obj1, "Model B" = obj2)}. Results will be displayed side by
 side.}
 
-\item{file}{Base name for output file. Depending on \code{type},
-suffixes "tex", "html" and "csv" may be added. That is,
-specify "mymodel" to get output files "mymodel.tex",
-"mymodel.html", or "mymodel.csv", depending on the value of
-\code{type}.}
+\item{file}{Base name for output file. This function will
+insert suffix, either "tex", "html" and "csv". That is,
+specify "mymodel," NOT  "mymodel.tex".}
 
 \item{paramSets}{Parameter sets to be included for each fitted
 object.  Valid values of the vector are \code{"all"} or a any
@@ -98,10 +96,7 @@ side by side. If ONLY SOME groups should be included, then
 specify groups as either names of fit objects or as integers
 for elements of the groups vector.}
 
-\item{type}{Choose "latex", "html", "csv", or a vector including
-any or all of these. If several are specified, ie,
-\code{c("latex", "html", "csv")}, a list of 3 sets of markup
-will be returned.}
+\item{type}{Choose "latex", "html", or "csv"}
 
 \item{table.float}{If TRUE, create a LaTeX floating table object
 in which the tabular created here will reside. Default is
@@ -115,16 +110,21 @@ cross-references). Only used if table.float = TRUE or
 longtable = TRUE.}
 
 \item{longtable}{If TRUE, use longtable for LaTeX
-documents. Default is FALSE. If true, \code{table} argument is
-ignored.}
+documents. Default is FALSE. If true, \code{table.float}
+argument is ignored.}
+
+\item{print.results}{If TRUE, marked up result will be displayed
+within the session. Otherwise, result is returned silently and
+user can use \code{cat} to dislay it. Don't use \code{print}
+because it inserts unwanted decorations.}
 
 \item{alpha}{Thresholds for p-values that determine number of
 stars.  Defaults as \code{c(0.05, 0.01, 0.001)} for
 \code{c("*", "**", "***")}.}
 }
 \value{
-Markup for SEM table, or a list of markup character
-    strings, one for each value of \code{type}.
+Markup for SEM table. Includes an attribute "markedResults", which
+    can be converted to other markup formats by the function markupConvert.
 }
 \description{
 Creates LaTeX markup for structural equation modeling output
@@ -213,8 +213,11 @@ fit1.t7 <- semTable(fit1, fits = c("chisq", "rmsea"),
                columns = c("eststars", "p"),
                columnLabels = c("eststars" = "Est(SE)"),
                file = file.path(tempdir, "fit1.t7"),
-               varLabels = vl, longtable = TRUE)
+               varLabels = vl, longtable = TRUE, type = "latex")
+
 if (interactive()) testtable("fit1.t7", tempdir)
+# Change output format to csv
+cat(markupConvert(attr(fit1.t7, "markedResults"), type = "csv"))
 
 ## 2 groups
 fit1.g <- cfa(HS.model, data = HolzingerSwineford1939, std.lv = TRUE, group = "school")
@@ -243,17 +246,16 @@ semTable(list("Ordinary" = fit1, "Standardized" = fit1.std),
     columnLabels = c(est = "Est", se = "SE"), file = file.path(tempdir, "fit1.2.2"))
 if (interactive()) testtable("fit1.2.2", tempdir)
 
-fit1.t2 <- semTable(fit1, fits = c("chisq", "rmsea"))
+fit1.t2 <- semTable(fit1, fits = c("chisq", "rmsea"), print.results = FALSE)
 cat(fit1.t2)
 fit1.t3 <- semTable(fit1, fits = c("chisq", "rmsea", "tli"),
                columns = c("est", "se"))
-cat(fit1.t3)
 
-## Can create file if desired
+## Can create file with cat
 cat(fit1.t3, file = file.path(tempdir, "fit1.t3.tex"))
 
 ## Basic SEM
-regmodel1 <- 'visual  =~ x1 + x2 + x3
+regmodel1 <- 'visual  =~ x1 + x2 + x3 
              textual =~ x4 + x5 + x6
              speed   =~ x7 + x8 + x9
              visual ~ textual + speed
@@ -269,19 +271,22 @@ fit2.t <- semTable(list("Ordinary" = fit2, "Standardized" = fit2.std), fits = "r
                                    "Standardized" = c("estsestars")),
                    columnLabels = c("est" = "Est", "se" = "Std.Err.", "p" = "p",
                                     "estsestars" = "Standardized Est."),
-                   paramSets = c("loadings", "slopes", "latentcovariances"),
-                   file = file.path(tempdir, "fit2.t1"), type = c("latex", "csv"))
+                   paramSets = c("loadings", "intercepts", "slopes", "latentcovariances"),
+                   file = file.path(tempdir, "fit2.t1"), type = "latex")
 
-cat(fit2.t[["latex"]])
-cat(fit2.t[["csv"]])
+if (interactive()) testtable("fit2.t1", tempdir)
+
+# Change output format to csv
+cat(markupConvert(attr(fit2.t, "markedResults"), type = "csv"))
+cat(markupConvert(attr(fit2.t, "markedResults"), type = "html"))
 
 fit2.t <- semTable(list("Ordinary" = fit2, "Standardized" = fit2.std),
-              type = c("html", "latex"),
+              type = c("html"),
               file = file.path(tempdir, "fit2.t"),
-              varLabels = c(x1 = "happy 1", x2 = "happy 2", x3 = "happy 3"))
+              varLabels = c(x1 = "happy 1", x2 = "happy 2", x3 = "happy 3"),
+              print.results = FALSE)
 
 if (interactive()) browseURL(file.path(tempdir, "fit2.t.html"))
-if (interactive()) testtable("fit2.t", tempdir)
 
 
 regmodel2 <- 'visual  =~ x1 + x2 + x3
@@ -292,41 +297,36 @@ regmodel2 <- 'visual  =~ x1 + x2 + x3
 fit3 <- sem(regmodel2, data = HolzingerSwineford1939, std.lv = TRUE,
             meanstructure = TRUE)
 
-fit3.t1 <-  semTable(fit3, type = c("latex", "html", "csv"),
+fit3.t1 <-  semTable(fit3, type = c("latex"),
                      columns = c("estsestars", "rsquare"), 
-                     file = file.path(tempdir, "fit3.1"))
+                     file = file.path(tempdir, "fit3.1"),
+                     print.results = FALSE)
 
-cat(fit3.t1[["latex"]])
+cat(fit3.t1)
 if (interactive()) testtable("fit3.1", tempdir)
 
 fit3.std <- update(fit2, std.lv = TRUE, std.ov = TRUE)
 
 fit3.std.t1 <- semTable(list("Mod 1" = fit2, "Mod 1 std" = fit2.std, "Mod 2" = fit3,
-              "Mod 3 std" = fit3.std), columns = c("estsestars"), type = c("html"),
-               file = file.path(tempdir, "fit3.std.t1"))
-cat(fit3.std.t1)
+              "Mod 3 std" = fit3.std), columns = c("estsestars"), type = "html",
+               file = file.path(tempdir, "fit3.std.t1"), print.results = FALSE)
 if(interactive()) browseURL(file.path(tempdir, "fit3.std.t1.html"))
 
 fit3 <- sem(regmodel1, data = HolzingerSwineford1939, group = "school")
 ## if specify 2 types, get a list of them back
-fit3.t1 <- semTable(fit3, type = c("latex", "html"))
-cat(fit3.t1[["latex"]])
-cat(fit3.t1[["html"]])
+fit3.t1 <- semTable(fit3, type = "latex")
 fit3.t2 <- semTable(fit3, columns = c("est", "se"),
                      columnLabels = c(est = "Est.", se = "S.E."))
-cat(fit3.t2)
 
-fit3.t2 <- semTable(fit3, fits = c("chisq", "rmsea", "cfi"))
+fit3.t2 <- semTable(fit3, fits = c("chisq", "rmsea", "cfi"), print.results = FALSE)
 cat(fit3.t2)
 
 fit3.t2 <- semTable(fit3, columns = c("estsestars"),
             fits = c("chisq", "rmsea", "cfi"), type = "html",
             file = file.path(tempdir, "fit3.t2"))
-cat(fit3.t2)
 if(interactive()) browseURL(file.path(tempdir, "fit3.t2.html"))
  
 fit3.t2 <- semTable(fit3, fits = c("rmsea", "cfi"))
-cat(fit3.t2)
 
 model <- "factor =~ .7*y1 + .7*y2 + .7*y3 + .7*y4
                  y1 | -1*t1 + 1*t2
@@ -376,21 +376,26 @@ model5 <-
 fit5 <- sem(model5, data=PoliticalDemocracy)
 fit5boot <- sem(model5, data=PoliticalDemocracy, se = "bootstrap", bootstrap = 100)
 
-semTable(list("Democracy" = fit5), columns = c("estsestars", "rsquare"),
-           file = file.path(tempdir, "fit5.1"), type = c("html", "latex"))
-if(interactive()) browseURL(file.path(tempdir, "fit5.1.html"))
+fit5.t1 <- semTable(list("Democracy" = fit5), columns = c("estsestars", "rsquare"),
+           file = file.path(tempdir, "fit5.1t"), type = "html",
+           print.results = FALSE)
+if(interactive()) browseURL(file.path(tempdir, "fit5.t1.html"))
+
+## convert same object to LaTeX, save file, then test
+cat(markupConvert(attr(fit5.t1, "markedResults"), type = "latex"),
+         file = file.path(tempdir, "fit5.t1.tex"))
+if (interactive()) testtable("fit5.t1", tempdir)
 
 semTable(list("Democracy" = fit5, "Bootstrapped SE" = fit5boot),
          columns = c("estsestars", "rsquare"),
-         file = file.path(tempdir, "fit5.2"), type = c("latex", "html", "csv"),
+         file = file.path(tempdir, "fit5.2"), type = "latex",
          longtable = TRUE)
 
 semTable(list("Democracy" = fit5, "Bootstrapped SE" = fit5boot),
          columns = c("estsestars", "rsquare"),
          paramSets = c("loadings", "slopes", "residualvariances", "constructed"),
-         file = file.path(tempdir, "fit5.3"), type = c("latex", "html", "csv"),
+         file = file.path(tempdir, "fit5.3"), type = "latex",
          longtable = TRUE)
-if(interactive()) browseURL(file.path(tempdir, "fit5.3.html"))
 
 ## Model 5b - Revision of Model 5s
 model5b <-
@@ -416,9 +421,9 @@ bootstrap = 100)
 semTable(list("Model 5" = fit5boot, "Model 5b" = fit5b),
          columns = c("estsestars", "rsquare"),
          file = file.path(tempdir, "fit5.5"),
-          type = c("latex", "html", "csv"),
+          type = "latex",
          longtable = TRUE)
-testtable("fit5.5", tempdir)
+if(interactive()) testtable("fit5.5", tempdir)
 
 list.files(tempdir)
 }
