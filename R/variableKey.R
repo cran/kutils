@@ -60,7 +60,7 @@ safeInteger <- function(x, tol = .Machine$double.eps,
         return(NULL)
     }
 
-    if(max(x, na.rm = TRUE) > vmax){
+    if(max(x, na.rm = TRUE) > vmax) {
         messg <- paste0("Values in x exceed the maximum integer value of ",
                         vmax, ". ", "safeInteger cannot be used safely ",
                         "for this variable. Original value is returned.")
@@ -1094,10 +1094,10 @@ NULL
 ##'     regular expressions in supplying separator values.
 ##' @param na.strings Values that should be converted to missing data.
 ##'     This is relevant in \code{name_new} as well as
-##'     \code{value_new}. In spreadsheet cells, we treat "empty"
-##'     cells, or values like "." or "N/A", as missing with defaults
-##'     ".", "", "\\s" (white space), and "N/A". Change that if those
-##'     are not to be treated as missings.
+##'     \code{value_new}. In spreadsheet cells, we treat "empty" cells
+##'     (the string ""), or values like "." or "N/A", as missing with
+##'     defaults ".", "", "\\s" (white space), and "N/A". Change that
+##'     if those are not to be treated as missings.
 ##' @param ... additional arguments for read.csv or read.xlsx.
 ##' @param keynames Don't use this unless you are very careful. In our
 ##'     current scheme, the column names in a key should be
@@ -1153,20 +1153,64 @@ keyImport <- function(key, ignoreCase = TRUE,
 
     legalClasses = c("integer", "numeric", "double", "factor",
                      "ordered", "character", "logical")
-    if(!is.null(keynames)){
-        keynames.std <- c(name_old = "name_old",
-                          name_new = "name_new",
-                          class_old = "class_old",
-                          class_new = "class_new",
-                          value_old = "value_old",
-                          value_new = "value_new",
-                          missings = "missings",
-                          recodes = "recodes")
-        keynames.std[names(keynames)] <- keynames
-        key <- colnamesReplace(key, newnames = names(keynames.std), oldnames = keynames.std)
-    }
-    ## TODO: omit blank rows
+    keynames.std <- c("name_old",
+                      "name_new",
+                      "class_old",
+                      "class_new",
+                      "value_old",
+                      "value_new",
+                      "missings",
+                      "recodes")
 
+    if(!is.null(keynames)){
+        ## User supplied keynames, so reverse their keynames
+        ## to put corrected names onto the  key
+        colnames(key) <- mapvalues(colnames(key), from = keynames,
+                                   to = names(keynames), warn_missing=FALSE)
+    }
+    ## Use partial matching to try to fix column names that editor
+    ## may have altered accidentally. 
+    ## If key does not include all of the expected
+    ## names, this uses partial matching to replace the existing
+    ## unrecognized names.
+    if (any(!keynames.std %in% colnames(key))) { 
+        key.oldnames <- colnames(key)
+        ## Filter out oldnames that don't pmatch, rm the NAs
+        key.oldnames.pmatches <- na.omit(key.oldnames[pmatch(key.oldnames, keynames.std)])
+        keynames.std.pmatches <- keynames.std[pmatch(key.oldnames.pmatches, keynames.std)]
+        colnames(key) <- mapvalues(colnames(key),
+                                   from = key.oldnames.pmatches,
+                                   to = keynames.std.pmatches)
+    }
+    ## Now, what to do if columns are missing?
+    ## if no "name_old" "class_old", "value_old", then quit
+    ## if "name_new", "class_new", "value_new" missing, then copy from old.
+    ## if "missings" and "recodes" are missing, create new full of ""
+    ## TODO: omit blank rows
+    cols.required <- c("name_old", "class_old", "value_old")
+    cols.copyable <- c("name_new", "class_new", "value_new")
+    cols.blankable <- c("missings", "recodes")
+    if(any(!cols.required %in% colnames(key))){
+        MESSG <- paste0("Key is missing columns: ",
+                 paste0(cols.required[!cols.required %in% colnames(key)], collapse = " "))
+        stop(MESSG)
+    }
+    if(any(!cols.copyable %in% colnames(key))){
+        cols.missing <- cols.copyable[!cols.copyable %in% colnames(key)]
+        for(i in cols.missing) {
+            j <- gsub("new$", "old", i)
+            key[ , i] <- key[ ,j]
+        }
+    }
+    if(any(!cols.blankable %in% colnames(key))){
+        cols.missing <- cols.blankable[!cols.blankable %in% colnames(key)]
+        for(i in cols.missing) {
+            key[ , i] <- ""
+        }
+    }
+
+    
+   
     uniquifyNameNew <- function(key, long = FALSE){
         ## wide key easy!
         if(!long){
@@ -1368,7 +1412,7 @@ makeKeylist <- function(key,
     ## fails if there is more than one unique nonmissing value
     unique.one <- function(x){
         y <- unique(na.omit(n2NA(zapspace(x))))
-        if (length(y) > 1){
+        if (length(y) != 1){
             messg <- paste("Value of", deparse(substitute(x)), "not unique")
             stop (messg)
         }
@@ -1929,13 +1973,21 @@ long2wide <- function(keylong, na.strings = c("\\.", "", "\\s+",  "N/A"),
     kls <- split(keylong, name_old.new, drop = TRUE)
 
     makeOneWide <- function(x){
-        sep_old <- if(unique(x$class_old) == "ordered") "<" else "|"
-        sep_new <- if(unique(x$class_new) == "ordered") "<" else "|"
+        sep_old <- if("ordered" %in% unique(x$class_old)) "<" else "|"
+        sep_new <- if("ordered" %in% unique(x$class_new)) "<" else "|"
         ## Replace "" with NA, then get rid of NAs
-        missings <- n2NA(unique(x$missings))
-        missings <- na.omit(missings)
-        recodes <- n2NA(unique(x$recodes))
-        recodes <- na.omit(recodes)
+        if(is.null(x$missings) || all(is.na(x$missings))){
+            missings <- ""
+        } else {
+            missings <- n2NA(unique(x$missings))
+            missings <- if (all(is.na(missings))) "" else na.omit(missings)
+        }
+        if(is.null(x$recodes) || all(is.na(x$recodes))) {
+            recodes <- ""
+        } else{
+            recodes <- n2NA(unique(x$recodes))
+            recodes <- if (all(is.na(recodes))) "" else na.omit(recodes)
+        }
         values <- cbind(value_old = x$value_old, value_new = x$value_new)
         values <- unique(values)
         values <- sortStanza(values)
@@ -2162,8 +2214,9 @@ keyUpdate <- function(key, dframe, append = TRUE,
     keynew2$class_new <- ifelse(keynew2$name_old %in% name.old.new[ , "name_old"],
                                 class.old.new[keynew2$name_old, "class_new"],
                                 keynew2$class_new)
-
-    output <- rbind(key, keynew2)
+    ## 20181127
+    ## output <- rbind(key, keynew2)
+    output <- keysPool(list(key, keynew2))
     ## User expects key returned in same format, keylong or key
     if(!long) {
         output <- long2wide(output)
@@ -2603,7 +2656,8 @@ keyCheck <- function(key,
 keysPool <- function(keylong = NULL, keysplit = NULL,
                         classes = list(c("logical", "integer"),
                                        c("integer", "numeric"),
-                                       c("ordered", "factor")),
+                                       c("ordered", "factor"),
+                                       c("factor", "character")),
                         colnames = c("class_old","class_new"),
                         textre = "TEXT$")
 {

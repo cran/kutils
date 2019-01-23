@@ -4,8 +4,8 @@
 \alias{compareLavaan}
 \title{Prepare a table to compare fit measures of confirmatory factor analyses (CFA)}
 \usage{
-compareLavaan(models, fitmeas = c("chisq", "df", "pvalue", "rmsea", "cfi",
-  "tli", "srmr", "aic", "bic"), nesting = NULL, scaled = TRUE,
+compareLavaan(models, fitmeas = c("chisq", "df", "pvalue", "rmsea",
+  "cfi", "tli", "srmr", "aic", "bic"), nesting = NULL, scaled = TRUE,
   chidif = TRUE, digits = 3, ...)
 }
 \arguments{

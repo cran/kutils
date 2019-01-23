@@ -5,11 +5,12 @@
 \title{Creates Structural Equation Modeling Tables}
 \usage{
 semTable(object, file = NULL, paramSets = "all", paramSetLabels,
-  columns = c(est = "Estimate", se = "SE", z = "z", p = "p"), columnLabels,
-  fits = c("chisq", "cfi", "tli", "rmsea"), fitLabels = toupper(fits),
-  varLabels = NULL, groups = NULL, type = "latex", table.float = FALSE,
-  caption = NULL, label = NULL, longtable = FALSE, print.results = TRUE,
-  alpha = c(0.05, 0.01, 0.001))
+  columns = c(est = "Estimate", se = "SE", z = "z", p = "p"),
+  columnLabels, fits = c("chisq", "cfi", "tli", "rmsea"),
+  fitLabels = toupper(fits), varLabels = NULL, groups = NULL,
+  type = "latex", table.float = FALSE, caption = NULL,
+  label = NULL, longtable = FALSE, print.results = TRUE,
+  centering = "siunitx", alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
 \item{object}{A lavaan object (e.g., returned by cfa() or sem()),
@@ -17,9 +18,8 @@ or a named list of lavaan objects, e.g., \code{list("Model A"
 = obj1, "Model B" = obj2)}. Results will be displayed side by
 side.}
 
-\item{file}{Base name for output file. This function will
-insert suffix, either "tex", "html" and "csv". That is,
-specify "mymodel," NOT  "mymodel.tex".}
+\item{file}{Base name for output file. This function will insert
+suffix, either "tex", "html" and "csv".}
 
 \item{paramSets}{Parameter sets to be included for each fitted
 object.  Valid values of the vector are \code{"all"} or a any
@@ -118,13 +118,17 @@ within the session. Otherwise, result is returned silently and
 user can use \code{cat} to dislay it. Don't use \code{print}
 because it inserts unwanted decorations.}
 
+\item{centering}{Default "siunitx". For method used in previous
+editions, replace with "none".}
+
 \item{alpha}{Thresholds for p-values that determine number of
 stars.  Defaults as \code{c(0.05, 0.01, 0.001)} for
 \code{c("*", "**", "***")}.}
 }
 \value{
-Markup for SEM table. Includes an attribute "markedResults", which
-    can be converted to other markup formats by the function markupConvert.
+Markup for SEM table. Includes an attribute
+    "markedResults", which can be converted to other markup
+    formats by the function markupConvert.
 }
 \description{
 Creates LaTeX markup for structural equation modeling output
@@ -174,10 +178,23 @@ HS.model <- ' visual  =~ x1 + x2 + x3
               speed   =~ x7 + x8 + x9'
 fit1 <- cfa(HS.model, data = HolzingerSwineford1939,
             std.lv = TRUE, meanstructure = TRUE)
-fit1.t1 <- semTable(fit1, columns = c("est", "estse"),
+## Try a LaTeX file first
+fit1.t1 <- semTable(fit1, columns = c("estse", "p"),
                     fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"),
-                    varLabels = c("x1" = "hello"))
-if (interactive()) testtable("fit1.t1", tempdir)
+                    varLabels = c("x1" = "hello"), type = "latex", print.results = FALSE)
+## If you have a working version of pdflatex in your system path, 
+if (interactive()) testtable("fit1.t1.tex", tempdir)
+fit1.t1 <- semTable(fit1, columns = c("estse", "p"),
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1.html"),
+                    varLabels = c("x1" = "hello"), type = "html", print.results = FALSE)
+## Use file attribute to get full file name
+browseURL(attr(fit1.t1, "file"))
+## Try CSV output next
+fit1.t1 <- semTable(fit1, columns = c("estse", "p"),
+                    fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"),
+                    varLabels = c("x1" = "hello"), type = "csv", print.results = FALSE)
+## Go inspect this file with a spread sheet program:
+attr(fit1.t1, "file")
 ## Now demonstrate variable labels
 vl <- c(visual = "Visual", textual = "Textual", speed = "Speed",
        x1 = "V1", x2 = "V2", x3 = "V3")
@@ -220,7 +237,8 @@ if (interactive()) testtable("fit1.t7", tempdir)
 cat(markupConvert(attr(fit1.t7, "markedResults"), type = "csv"))
 
 ## 2 groups
-fit1.g <- cfa(HS.model, data = HolzingerSwineford1939, std.lv = TRUE, group = "school")
+fit1.g <- cfa(HS.model, data = HolzingerSwineford1939,
+                        std.lv = TRUE, group = "school", estimator = "MLR")
 fit1.gt1 <- semTable(fit1.g, columns = c("estsestars", "p"),
                columnLabels = c(estsestars = "Est w/stars", p = "p-value"),
                file = file.path(tempdir, "fit1.gt1"))

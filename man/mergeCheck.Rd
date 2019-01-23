@@ -4,8 +4,8 @@
 \alias{mergeCheck}
 \title{First draft of function to diagnose problems in merges and key variables}
 \usage{
-mergeCheck(x, y, by, by.x = by, by.y = by, incomparables = c(NULL, NA,
-  NaN, Inf, "\\\\s+", ""))
+mergeCheck(x, y, by, by.x = by, by.y = by, incomparables = c(NULL,
+  NA, NaN, Inf, "\\\\s+", ""))
 }
 \arguments{
 \item{x}{data frame}

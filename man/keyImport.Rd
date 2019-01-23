@@ -4,10 +4,10 @@
 \alias{keyImport}
 \title{Import/validate a key object or import/validate a key from a file.}
 \usage{
-keyImport(key, ignoreCase = TRUE, sep = c(character = "\\\\|", logical =
-  "\\\\|", integer = "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric =
-  "\\\\|"), na.strings = c("\\\\.", "", "\\\\s+", "N/A"), missSymbol = ".",
-  ..., keynames = NULL)
+keyImport(key, ignoreCase = TRUE, sep = c(character = "\\\\|", logical
+  = "\\\\|", integer = "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]",
+  numeric = "\\\\|"), na.strings = c("\\\\.", "", "\\\\s+", "N/A"),
+  missSymbol = ".", ..., keynames = NULL)
 }
 \arguments{
 \item{key}{A key object (class key or keylong) or a file name
@@ -27,10 +27,10 @@ regular expressions in supplying separator values.}
 
 \item{na.strings}{Values that should be converted to missing data.
 This is relevant in \code{name_new} as well as
-\code{value_new}. In spreadsheet cells, we treat "empty"
-cells, or values like "." or "N/A", as missing with defaults
-".", "", "\\s" (white space), and "N/A". Change that if those
-are not to be treated as missings.}
+\code{value_new}. In spreadsheet cells, we treat "empty" cells
+(the string ""), or values like "." or "N/A", as missing with
+defaults ".", "", "\\s" (white space), and "N/A". Change that
+if those are not to be treated as missings.}
 
 \item{missSymbol}{Defaults to period "." as missing value
 indicator.}

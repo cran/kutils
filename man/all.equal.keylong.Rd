@@ -4,7 +4,8 @@
 \alias{all.equal.keylong}
 \title{An all.equal method for variable long keys}
 \usage{
-\method{all.equal}{keylong}(target, current, ..., check.attributes = FALSE)
+\method{all.equal}{keylong}(target, current, ...,
+  check.attributes = FALSE)
 }
 \arguments{
 \item{target}{A long variable key}

@@ -4,21 +4,32 @@
 \alias{importQualtrics}
 \title{Import Qualtrics survey files, apply clean column names}
 \usage{
-importQualtrics(file, namerow = 1, skip = 3, questrow = NULL,
-  dropTEXT = TRUE, stringsAsFactors = FALSE)
+importQualtrics(file, namerow = 1, questionrow = 2, importidrow = 3,
+  skip = 3, dropTEXT = TRUE, stringsAsFactors = FALSE)
 }
 \arguments{
-\item{file}{Character string with file name of a CSV or XLSX file
-from Qualtrics.}
+\item{file}{file name (including path if in another directory) of
+a CSV or XLSX file from Qualtrics.}
 
-\item{namerow}{Default 1, the information to be used as column
-names (the HEADER information in R's read.table function)}
+\item{namerow}{Row number for variable names.  Default 1, the
+information to be used as column names (same as HEADER row in
+R's read.table function)}
 
-\item{skip}{Number of rows to omit because they are not data}
+\item{questionrow}{Row number to be treated as the questions in the
+survey. Default is 2. If questions do not seem to be present
+in this row, there will be a warning.}
 
-\item{questrow}{Row number to be treated as the questions in the
-survey. Usually 2. Default is NULL, meaning questions are not
-imported.}
+\item{importidrow}{Row number to be treated as Qualtrics meta
+data. Default is 3. Many CSV created by Qualtrics will have
+row 3 with a character string such as
+\code{"{""ImportId"":""QID1303_4""}"}.  If importids are not
+present in this row, there will be a warning.}
+
+\item{skip}{Number of rows that are meta data. Current Qualtrics
+CSV files will usually have 3 metadata rows, 1 = name, 2 =
+question, 3 = ImportId. This function will try to guess how
+many rows of metadata are present. skip should be at least
+as large as \code{max(namerow, questions, and importids)}}
 
 \item{dropTEXT}{Default TRUE, columns ending in "_TEXT" are
 omitted.}
@@ -27,8 +38,7 @@ omitted.}
 read.csv. Does not affect importation of Excel files.}
 }
 \value{
-Data frame that has attribute "questions" if questrow is
-    specified.
+Data frame that has attribute "meta"
 }
 \description{
 Defaults are based on most common format received from Qualtrics

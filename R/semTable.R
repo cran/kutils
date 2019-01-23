@@ -105,9 +105,8 @@
 ##'     specify groups as either names of fit objects or as integers
 ##'     for elements of the groups vector.
 ##' @param type Choose "latex", "html", or "csv"
-##' @param file Base name for output file. This function will
-##'     insert suffix, either "tex", "html" and "csv". That is,
-##'     specify "mymodel," NOT  "mymodel.tex".
+##' @param file Base name for output file. This function will insert
+##'     suffix, either "tex", "html" and "csv".
 ##' @param table.float If TRUE, create a LaTeX floating table object
 ##'     in which the tabular created here will reside. Default is
 ##'     FALSE.
@@ -123,14 +122,17 @@
 ##'     within the session. Otherwise, result is returned silently and
 ##'     user can use \code{cat} to dislay it. Don't use \code{print}
 ##'     because it inserts unwanted decorations.
+##' @param centering Default "siunitx". For method used in previous
+##'     editions, replace with "none".
 ##' @param alpha Thresholds for p-values that determine number of
 ##'     stars.  Defaults as \code{c(0.05, 0.01, 0.001)} for
 ##'     \code{c("*", "**", "***")}.
 ##' @importFrom stats pnorm
 ##' @importFrom lavaan lavInspect
 ##' @importFrom plyr mapvalues
-##' @return Markup for SEM table. Includes an attribute "markedResults", which
-##'     can be converted to other markup formats by the function markupConvert.
+##' @return Markup for SEM table. Includes an attribute
+##'     "markedResults", which can be converted to other markup
+##'     formats by the function markupConvert.
 ##' @export
 ##' @author Ben Kite <bakite@@ku.edu> Paul Johnson <pauljohn@@ku.edu>
 ##' @examples \donttest{
@@ -145,10 +147,23 @@
 ##'               speed   =~ x7 + x8 + x9'
 ##' fit1 <- cfa(HS.model, data = HolzingerSwineford1939,
 ##'             std.lv = TRUE, meanstructure = TRUE)
-##' fit1.t1 <- semTable(fit1, columns = c("est", "estse"),
+##' ## Try a LaTeX file first
+##' fit1.t1 <- semTable(fit1, columns = c("estse", "p"),
 ##'                     fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"),
-##'                     varLabels = c("x1" = "hello"))
-##' if (interactive()) testtable("fit1.t1", tempdir)
+##'                     varLabels = c("x1" = "hello"), type = "latex", print.results = FALSE)
+##' ## If you have a working version of pdflatex in your system path, 
+##' if (interactive()) testtable("fit1.t1.tex", tempdir)
+##' fit1.t1 <- semTable(fit1, columns = c("estse", "p"),
+##'                     fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1.html"),
+##'                     varLabels = c("x1" = "hello"), type = "html", print.results = FALSE)
+##' ## Use file attribute to get full file name
+##' browseURL(attr(fit1.t1, "file"))
+##' ## Try CSV output next
+##' fit1.t1 <- semTable(fit1, columns = c("estse", "p"),
+##'                     fits = c("chisq", "rmsea"), file = file.path(tempdir, "fit1.t1"),
+##'                     varLabels = c("x1" = "hello"), type = "csv", print.results = FALSE)
+##' ## Go inspect this file with a spread sheet program:
+##' attr(fit1.t1, "file")
 ##' ## Now demonstrate variable labels
 ##' vl <- c(visual = "Visual", textual = "Textual", speed = "Speed",
 ##'        x1 = "V1", x2 = "V2", x3 = "V3")
@@ -191,7 +206,8 @@
 ##' cat(markupConvert(attr(fit1.t7, "markedResults"), type = "csv"))
 ##' 
 ##' ## 2 groups
-##' fit1.g <- cfa(HS.model, data = HolzingerSwineford1939, std.lv = TRUE, group = "school")
+##' fit1.g <- cfa(HS.model, data = HolzingerSwineford1939,
+##'                         std.lv = TRUE, group = "school", estimator = "MLR")
 ##' fit1.gt1 <- semTable(fit1.g, columns = c("estsestars", "p"),
 ##'                columnLabels = c(estsestars = "Est w/stars", p = "p-value"),
 ##'                file = file.path(tempdir, "fit1.gt1"))
@@ -404,7 +420,8 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
                      fitLabels = toupper(fits), varLabels = NULL,
                      groups = NULL, type = "latex", table.float = FALSE,
                      caption = NULL, label = NULL, longtable = FALSE,
-                     print.results = TRUE, alpha =  c(0.05, 0.01, 0.001)) {
+                     print.results = TRUE, centering = "siunitx",
+                     alpha =  c(0.05, 0.01, 0.001)) {
     ## do.call(rbind, alist) unexpectedly converts characters to factors.
     ## it does not accept stringsAsFactors=FALSE,
     ## So set globally to avoid hassle
@@ -517,7 +534,7 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
     getParamTable <- function(onemodel, paramSets, paramSetLabels){
         createEstSE <- function(dframe, se = TRUE, stars = FALSE){
             dframe <- roundSubtable(dframe)
-            separt <- if(se) paste0("(", dframe[ , "se"], ")") else ""
+            separt <- if(se) paste0("{(", dframe[ , "se"], ")}") else ""
             starpart <- if(stars)dframe[ , "starsig"] else ""
             ifelse(dframe[ , "free"] != 0,
                    paste0(dframe[ , "est"], separt,
@@ -708,20 +725,20 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
     getChiSq <- function(object, report){
         newdf <- data.frame(col1 = "_CHI2_", row.names = "chisq", stringsAsFactors = FALSE)
         newdf[ , report] <- ""
-        ## build response for "chisq"
-        chimeas <- object@Fit@test[[1]]
+        ## If there is more than 1 test, use last one, and change label to
+        ## "Scaled chisq"
+        nOfTests <- length(object@Fit@test)
+        chimeas <- object@Fit@test[[nOfTests]]
+        if (nOfTests > 1) newdf[1 , "col1"] <- "Scaled _CHI2_"
         chimeas$stat <- frnd(chimeas$stat)
         chimeas$pvalue <- frnd(chimeas$pvalue, 3,  3)
         chimeas$pvalue <- gsub("0\\.", "\\.", chimeas$pvalue)
-        ##namenew <- paste0("_CHI2_", "(", chimeas$df, ")")
-        ##chisq <- paste0(namenew, "=", chimeas$stat , "(p < ", chimeas$pvalue,")")
-        ##names(chisq) <- "_CHI2_"
         chipstars <- if (any(c("eststars", "estsestars") %in% colnames(newdf))){
                          starsig(chimeas$pvalue, alpha = alpha, symbols = starsymbols)
                      } else {
                          ""
                      } 
-        newdf[ , 2] <- paste0(chimeas$stat, "(df=", chimeas$df, ")", chipstars)
+        newdf[ , 2] <- paste0(chimeas$stat, "(", chimeas$df, ")", chipstars)
         if ("p" %in% colnames(newdf)) newdf[ , "p"] <- chimeas$pvalue
         newdf
     }
@@ -926,7 +943,10 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
                                                           })
         results2 <- paste(results2, collapse = "")
         
-        colHeaderRow <- paste("_BR__EOC__BOC_", paste(colHeaderRow, collapse = "_EOC__BOC_"), "_EOC__EOR_\n _HL_\n")
+        ##colHeaderRow <- paste("_BR__EOC__BOC_", paste(colHeaderRow, collapse = "_EOC__BOC_"), "_EOC__EOR_\n _HL_\n")
+        colHeaderRow <- paste0("_BR__EOC_",
+                              paste0("_BOC__BOMC1_", paste0(colHeaderRow, collapse = "_EOMC__BOC__BOMC1_")), "_EOMC__EOR_\n _HL_\n")
+        
         modelHeaderRow <- paste0("_BR__EOC__BOC_",
                                  paste0("_BOMC", colNameCounts, "_", names(colNameCounts), "_EOMC_", collapse = "_BOC_"),
                                  "_EOR_\n _HL_\n", collapse = " ")
@@ -990,9 +1010,9 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
                 "residualvariances" = "Residual Variances",
                 "residualcovariances" = "Residual Covariances",
                 "variances" = "Variances",
+                "latentmeans" = "Latent Intercepts",
                 "latentvariances" = "Latent Variances",
                 "latentcovariances" = "Latent Covariances", 
-                "latentmeans" = "Latent Intercepts",
                 "thresholds" = "Thresholds",
                 "constructed" = "Constructed",
                 "fits" = "Fit Indices")
@@ -1114,7 +1134,7 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
             paramList[[ii]] <- extractParameters(parTableSplit[[ii]],
                                                 colLabels = colLabels,
                                                 modelName = ii)
-            if (!is.null(fits)){
+            if (!is.null(fits) && ii == names(parTableSplit)[1]){
                 paramList[[ii]][["fits"]] <- fitMaker(onemodel, fitsLabeled, colLabels, ii)
             }
         }
@@ -1142,17 +1162,17 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
     paramSetsFound <- unique(unlist(lapply(paramList, function(x) names(x))))
     ## re-order paramSetsFound according to standard list
     paramSetNames <- intersect(names(paramSetLabels), paramSetsFound)
-
+   
     paramSetsList <- gatherParamSetsList(paramSetNames, colLabels)
     markedResults <- finalizeMarkup(paramSetsList, colLabels)
-    
+  
     result <- markupConvert(markedResults, type = type, longtable = longtable,
-                            table.float = table.float,
-                            caption = caption, label = label, file = file,
-                            columns = colLabels)
+                            table.float = table.float, caption = caption, label = label, file = file,
+                            columns = colLabels, centering = centering)
     attr(result, "markedResults") <- markedResults
+    attr(result, "unmarkedResults") <- paramSetsList
     class(result) <- "kutable"    
-    if (print.results) cat(result, "\n")
+    if (print.results) cat(result, "\n") else cat("\n")
     
     invisible(result)
 }
@@ -1164,41 +1184,52 @@ NULL
 ##'
 ##' The conversion key tables are included in the code of the function.
 ##'
-##' The semTable uses a customized markup framework that uses character
-##' sequences that begin and end with underscores, such as "_BOMC2_ for
-##' "begin of multi-column entity that will use 2 columns". These
-##' special markups need to be converted into "tex", "html", or "csv"
-##' formats.
+##' The semTable uses a customized markup framework that uses
+##' character sequences that begin and end with underscores, such as
+##' "_BOMC2_ for "begin of multi-column entity that will use 2
+##' columns". These special markups need to be converted into "tex", "html", or "csv" formats.
 ##' @param marked A character string
 ##' @param type Output type, latex", "html", or "csv".
 ##' @param table.float TRUE if you want insertion of '\\begin{table}'
-##' @param longtable should a tabular or a longtable object be created?
-##' @param caption A caption to use if either longtable or table is TRUE
+##' @param longtable should a tabular or a longtable object be
+##'     created?
+##' @param caption A caption to use if either longtable or table is
+##'     TRUE
 ##' @param label A LaTeX label for cross-references
-##' @param file A file stub, to which ".tex", ".html", or ".csv" can be added
+##' @param file A file stub, to which ".tex", ".html", or ".csv" can
+##'     be added
 ##' @param columns For SEM table, the list of columns objects
+##' @param centering Default "siunitx". Specify "none" to return to
+##'     behavior of semTable before 1.50.
 ##' @return a list of marked up character objects
 ##' @export
 ##' @author Paul Johnson
 markupConvert <- function(marked, type = c("latex", "html", "csv"),
                           table.float = FALSE, longtable = FALSE,
                           caption = NULL, label = NULL, 
-                          file = NULL, columns)
+                          file = NULL, columns, centering = "siunitx")
 {
     if(missing(columns)) columns <- attr(marked, "colLabels")
     ##num of columns, except for col1
     Ncolumns <- length(unname(unlist(columns)))
 
     ## a tabular
-    ttabular <-   paste0("\\\\begin{tabular}{r",
-                              paste0(rep("c", Ncolumns), collapse = ""), "}\n")
+    tabularmarkup <-   paste0("{@{}r",
+                         if(centering == "siunitx")paste0("*{", Ncolumns, "}{S[
+                         input-symbols = ( ) +,
+                         group-digits = false,
+                         table-number-alignment = center,
+                         %table-space-text-pre = (,
+                         table-align-text-pre = false,
+                         table-align-text-post = false,
+                         table-space-text-post = {***},
+                         parse-units = false]}") else paste0(rep("c", Ncolumns), collapse = ""), "@{}}\n")
     ## longtable
     if(!longtable && !table.float){
-        tcode <- ttabular
+        tcode <- paste0("\\\\begin{tabular}", tabularmarkup)
     } else {
         if(longtable){
-            tcode <-  paste0("\\\\begin{longtable}{r",
-                             paste0(rep("c", Ncolumns), collapse = ""), "}")
+            tcode <-  paste0("\\\\begin{longtable}", tabularmarkup)
             if (!is.null(caption)) tcode <- paste0(tcode, "\n\\\\caption{", caption, "}")
             if (!is.null(label)) tcode <- paste0(tcode, "\n\\\\label{", label, "}")
             tcode <- paste0(tcode, "\n\\\\endfirsthead\n\\\\endhead\n")
@@ -1206,7 +1237,7 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
             tcode <- "\\\\begin{table}\n"
             if (!is.null(caption)) tcode <- paste0(tcode, "\n\\\\caption{", caption, "}")
             if (!is.null(label)) tcode <- paste0(tcode, "\n\\\\label{", label, "}")
-            tcode <- paste0(tcode, ttabular)
+            tcode <- paste0(tcode, tabularmarkup)
         } else {
             MESSG <- "Logic error in markupConvert"
             stop(MESSG)
@@ -1218,7 +1249,7 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
         "_EOC_" =  "",
         "_BOC_" = "& ", 
         "_EOMC_" = "}",
-        "_EOR_" = "\\\\tabularnewline\n",
+        "_EOR_" = "\\\\tabularnewline",
         "_BRU_" = "",
         "_BRT_" = "", 
         "_BOCU_" = "& ",
@@ -1263,7 +1294,7 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
         "_BOMCT3_" = "\\\\multicolumn{3}{c}{",
         "_BOMCT4_" = "\\\\multicolumn{4}{c}{",
         "_HTMLHL_" = "",
-        "_CHI2_" = "$\\\\chi^2$",
+        "_CHI2_" = "$\\\\chi^{2}(\\\\mathrm{df})$",
         "_R2_" = "$R^2$",
         "_LEQ_" = "$\\\\leq$",
         "_SIGMA_" = "$\\\\sigma$",
@@ -1288,7 +1319,7 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
         "_BRT_" = paste("<tr><td style=\"border-top: solid thin black; border-collapse:collapse;\">&nbsp;"),
         "_BOCU_" = paste("<td style=\"border-bottom: solid thin black; border-collapse:collapse;\">&nbsp;"),
         "_BR_" = "<tr><td>",
-        "_BTABULAR_" =  "<table cellpadding=\"10\">\n",
+        "_BTABULAR_" =  "<table style=\"padding-right:20px;padding-left:20px;\">\n",
         "_EOL_" = "\n",
         "_HL_" =  "",
         "_UL_" =  "<span style=\"text-decoration: underline;\">",
@@ -1393,23 +1424,27 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
     if (tolower(type) %in% c("latex", "tex")) {
         result <- mgsub(names(latexreplace), latexreplace, marked)
         if (!is.null(file)){
-            cat(result, file = paste0(file, ".tex"))
+            if (!isTRUE(grepl(".tex$", file))) file <- paste0(file, ".tex")
+            cat(result, file = file)
         }
     } else if (tolower(type) %in% c("html")){
         result <- mgsub(names(htmlreplace), htmlreplace, marked)
         if (!is.null(file)){
-            cat(result, file = paste0(file, ".html"))
+            if (!isTRUE(grepl(".html$", file))) file <- paste0(file, ".html")
+            cat(result, file = file)
         }
     } else if (!is.na(match("csv", type))) {
         result <- mgsub(names(csvreplace), csvreplace, marked)
         if (!is.null(file)){
-            cat(result, file = paste0(file, ".csv"))
+            if (!isTRUE(grepl(".csv$", file))) file <- paste0(file, ".csv")
+            cat(result, file = file)
         }
     } else {
         MESSG <- "convertMarkup type argument incorrect"
         stop(MESSG)
     }
-    return(result)
+    attr(result, "file") <- file
+    invisible(result)
 }
 NULL
 
@@ -1448,7 +1483,7 @@ testtable <- function(tablefile, dir, tmpfn = "tmp.tex"){
 
     ## If user forgets to remove .tex on end of filename, do it
     ## for them
-    tablefile <- gsub("\\.tex", "", tablefile)
+    tablefile <- gsub("\\.tex$", "", tablefile)
     
     x1 <- 
 "\\documentclass[english]{article}
@@ -1459,6 +1494,7 @@ testtable <- function(tablefile, dir, tmpfn = "tmp.tex"){
 \\usepackage{babel}
 \\usepackage{longtable}
 \\usepackage[normalem]{ulem}
+\\usepackage{siunitx}
 \\begin{document}
 "
     x2 <- paste0("\\include{", tablefile, "}\n")

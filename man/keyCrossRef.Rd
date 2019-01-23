@@ -4,7 +4,8 @@
 \alias{keyCrossRef}
 \title{keyCrossRef}
 \usage{
-keyCrossRef(key, ignoreClass = NULL, verbose = FALSE, lowercase = FALSE)
+keyCrossRef(key, ignoreClass = NULL, verbose = FALSE,
+  lowercase = FALSE)
 }
 \arguments{
 \item{key}{A variable key, ideally a long key. If a wide key is

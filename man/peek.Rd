@@ -6,8 +6,9 @@
 \title{Show variables, one column at a time.}
 \usage{
 peek(dat, sort = TRUE, file = NULL, textout = FALSE, ask, ...,
-  xlabstub = "kutils peek: ", freq = FALSE, histargs = list(probability =
-  !freq), barargs = list(horiz = TRUE, las = 1))
+  xlabstub = "kutils peek: ", freq = FALSE,
+  histargs = list(probability = !freq), barargs = list(horiz = TRUE,
+  las = 1))
 }
 \arguments{
 \item{dat}{An R data frame or something that can be coerced to a

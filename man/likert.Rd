@@ -4,8 +4,8 @@
 \alias{likert}
 \title{Percentage tables for Likert Scale variables}
 \usage{
-likert(data, vlist, columnlabels, valuelabels, rows = FALSE, digits = 2,
-  ...)
+likert(data, vlist, columnlabels, valuelabels, rows = FALSE,
+  digits = 2, ...)
 }
 \arguments{
 \item{data}{A data frame. Function will try to include all

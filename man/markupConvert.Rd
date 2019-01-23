@@ -4,8 +4,9 @@
 \alias{markupConvert}
 \title{Convert marked-up semTable structures to latex, html, or csv}
 \usage{
-markupConvert(marked, type = c("latex", "html", "csv"), table.float = FALSE,
-  longtable = FALSE, caption = NULL, label = NULL, file = NULL, columns)
+markupConvert(marked, type = c("latex", "html", "csv"),
+  table.float = FALSE, longtable = FALSE, caption = NULL,
+  label = NULL, file = NULL, columns, centering = "siunitx")
 }
 \arguments{
 \item{marked}{A character string}
@@ -14,15 +15,21 @@ markupConvert(marked, type = c("latex", "html", "csv"), table.float = FALSE,
 
 \item{table.float}{TRUE if you want insertion of '\\begin{table}'}
 
-\item{longtable}{should a tabular or a longtable object be created?}
+\item{longtable}{should a tabular or a longtable object be
+created?}
 
-\item{caption}{A caption to use if either longtable or table is TRUE}
+\item{caption}{A caption to use if either longtable or table is
+TRUE}
 
 \item{label}{A LaTeX label for cross-references}
 
-\item{file}{A file stub, to which ".tex", ".html", or ".csv" can be added}
+\item{file}{A file stub, to which ".tex", ".html", or ".csv" can
+be added}
 
 \item{columns}{For SEM table, the list of columns objects}
+
+\item{centering}{Default "siunitx". Specify "none" to return to
+behavior of semTable before 1.50.}
 }
 \value{
 a list of marked up character objects
@@ -31,11 +38,10 @@ a list of marked up character objects
 The conversion key tables are included in the code of the function.
 }
 \details{
-The semTable uses a customized markup framework that uses character
-sequences that begin and end with underscores, such as "_BOMC2_ for
-"begin of multi-column entity that will use 2 columns". These
-special markups need to be converted into "tex", "html", or "csv"
-formats.
+The semTable uses a customized markup framework that uses
+character sequences that begin and end with underscores, such as
+"_BOMC2_ for "begin of multi-column entity that will use 2
+columns". These special markups need to be converted into "tex", "html", or "csv" formats.
 }
 \author{
 Paul Johnson

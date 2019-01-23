@@ -4,8 +4,8 @@
 \alias{makeKeylist}
 \title{Convert the variable key into a list of long keys, one for each variable.}
 \usage{
-makeKeylist(key, sep = c(character = "\\\\|", logical = "\\\\|", integer =
-  "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric = "\\\\|"),
+makeKeylist(key, sep = c(character = "\\\\|", logical = "\\\\|", integer
+  = "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric = "\\\\|"),
   na.strings = c("\\\\.", "", "\\\\s+", "N/A"))
 }
 \arguments{
