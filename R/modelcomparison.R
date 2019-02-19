@@ -111,6 +111,8 @@ detectNested <- function(models){
 ##'     <pauljohn@@ku.edu>
 ##' @export
 ##' @importFrom stats anova update
+##' @importFrom utils modifyList
+##' @importFrom xtable xtable print.xtable
 ##' @return If type = NULL, a data.frame object includes an attribute
 ##'     called "noteinfo". If type = "tex", return is a character
 ##'     vector created by xtable. If type = "html", a vector of HTML

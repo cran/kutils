@@ -1,4 +1,4 @@
-49c9d7b95e899c3081a574b3fc965b4c *DESCRIPTION
+561b853c2527bf975b4a1f66d9e5662b *DESCRIPTION
 3ea860d9f22fac12c53f2f51dce21e17 *NAMESPACE
 781235596ad8e23a41bc00547ffbb266 *R/anonomize.R
 473a45c7834afedc6c91f97f51d60dc5 *R/checkCoercion.R
@@ -11,10 +11,10 @@ e215c7c5dbfaf834e54a24225b1ac501 *R/dir.create.unique.R
 1c2e5fae548245e4ec8cccdb91c5b1b3 *R/importQualtrics.R
 7f0f4241c285638fa9dfaddc75aacdc8 *R/likert.R
 e4ebad70f81456496f49dd3c2d2b0668 *R/mergeCheck.R
-7c89d666f630b2f967a5684bfd3ca20a *R/modelcomparison.R
+164a0066ec789c26800db2c94d813881 *R/modelcomparison.R
 72f595afc4b87482c10ae31f03d3f1bf *R/peek.R
 a2b51d585823f9aa8b74ca35018b3564 *R/project.R
-cd69c80aedad4c0bcf464f8e6adfd08e *R/semTable.R
+bf5ea3ae704faa713dc04020da30f79b *R/semTable.R
 5cc2860345661ad82fd91d474ff40eea *R/textUtils.R
 6ae81a57c5f83d0273c96cf6d9964533 *R/truncsmart.R
 72bc32fb5762f1622f6f2184cd5dcad5 *R/updatePkgDepends.R
@@ -26,7 +26,7 @@ bb83f887d15bd13f2fa8016761ceec3d *data/natlongsurv.RData
 c88ccc9a1bc2c2dca9ab3c0dfd594715 *inst/TODO
 2b8a0af292a9078dce50437a69bba128 *inst/doc/variablekey.R
 6fc62ac205d7db5611c37b2f72b4568a *inst/doc/variablekey.Rnw
-ab3df1827961f9bc1ccc24bfb732575c *inst/doc/variablekey.pdf
+d19716e725a0dd88f4f83a4e3250b920 *inst/doc/variablekey.pdf
 a9c9cff1882b1cb8d551ca00f3cbce70 *inst/examples/keytest-1.R
 5e45c021ca493d97d45c66ab6d868aa1 *inst/examples/keytest-2.R
 b2ec7affe3906276f028a87577719431 *inst/examples/mydf2.csv

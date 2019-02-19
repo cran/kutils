@@ -422,6 +422,11 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
                      caption = NULL, label = NULL, longtable = FALSE,
                      print.results = TRUE, centering = "siunitx",
                      alpha =  c(0.05, 0.01, 0.001)) {
+
+    messg <- paste("This function is moving to the semTable package",
+                   "Please use that package and function in the future.")
+    .Deprecated(new = "semTable", package ="semTable", msg = messg)
+    
     ## do.call(rbind, alist) unexpectedly converts characters to factors.
     ## it does not accept stringsAsFactors=FALSE,
     ## So set globally to avoid hassle
@@ -943,23 +948,21 @@ semTable <- function(object, file = NULL, paramSets = "all", paramSetLabels,
                                                           })
         results2 <- paste(results2, collapse = "")
         
-        ##colHeaderRow <- paste("_BR__EOC__BOC_", paste(colHeaderRow, collapse = "_EOC__BOC_"), "_EOC__EOR_\n _HL_\n")
         colHeaderRow <- paste0("_BR__EOC_",
-                              paste0("_BOC__BOMC1_", paste0(colHeaderRow, collapse = "_EOMC__BOC__BOMC1_")), "_EOMC__EOR_\n _HL_\n")
+                              paste0("_BOC__BOMC1_", paste0(colHeaderRow, collapse = "_EOMC__BOC__BOMC1_")), "_EOMC__EOR__HL_\n")
         
         modelHeaderRow <- paste0("_BR__EOC__BOC_",
                                  paste0("_BOMC", colNameCounts, "_", names(colNameCounts), "_EOMC_", collapse = "_BOC_"),
-                                 "_EOR_\n _HL_\n", collapse = " ")
+                                 "_EOR_ _HL_\n", collapse = " ")
         starnote <- if (any(c("eststars", "estsestars") %in% sapply(colLabels, names))) {
                         paste0(starsymbols, "p<", alpha, collapse = ", ")
                     } else ""
         fixnote <-  if(TRUE) paste0("_FIXED_", "Fixed parameter") else ""
-        tablesuffix <-  paste0("_LB_",
-                               if(fixnote != "") paste0("_BOML", totalNcolumns, "_", fixnote, "_EOMC__EOR__LB_"),
-                               if(starnote != "") paste0("_BOML", totalNcolumns, "_", starnote, "_EOMC__EOR__LB_"))
+        tablesuffix <-  paste0(if(fixnote != "") paste0("_BR__BOML", totalNcolumns + 1, "_", fixnote, "_EOMC__EOR_"),
+                               if(starnote != "") paste0("_BR__BOML", totalNcolumns + 1, "_", starnote, "_EOMC__EOR_"))
                                
-        resmark <- paste("_BTABULAR_\n", modelHeaderRow, colHeaderRow, results2, "_HL__LB_",
-                         tablesuffix, "_ETABULAR__LB_\n")
+        resmark <- paste0("_BTABULAR_", modelHeaderRow, colHeaderRow, results2, "_HL_",
+                         tablesuffix, "\n_ETABULAR__LB_\n")
         attr(resmark, "colLabels") <- colLabels
         resmark
     }
@@ -1234,9 +1237,10 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
             if (!is.null(label)) tcode <- paste0(tcode, "\n\\\\label{", label, "}")
             tcode <- paste0(tcode, "\n\\\\endfirsthead\n\\\\endhead\n")
         } else if (table.float){
-            tcode <- "\\\\begin{table}\n"
+            tcode <- "\\\\begin{table}"
             if (!is.null(caption)) tcode <- paste0(tcode, "\n\\\\caption{", caption, "}")
             if (!is.null(label)) tcode <- paste0(tcode, "\n\\\\label{", label, "}")
+            tcode <- paste0(tcode, "\\\\begin{tabular}")
             tcode <- paste0(tcode, tabularmarkup)
         } else {
             MESSG <- "Logic error in markupConvert"
@@ -1429,6 +1433,8 @@ markupConvert <- function(marked, type = c("latex", "html", "csv"),
         }
     } else if (tolower(type) %in% c("html")){
         result <- mgsub(names(htmlreplace), htmlreplace, marked)
+        result <- gsub("\\{\\(", "(", result)
+        result <- gsub("\\)\\}", ")", result)
         if (!is.null(file)){
             if (!isTRUE(grepl(".html$", file))) file <- paste0(file, ".html")
             cat(result, file = file)
