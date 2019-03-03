@@ -15,7 +15,7 @@ file. Default FALSE, return only the file name.}
 
 \item{keep.old}{If FALSE (default), rename the file. Otherwise, keep old copy.}
 
-\item{verbose}{If TRUE, list the files in the output directory}
+\item{verbose}{If TRUE, output warnings and list the files in the output directory when done.}
 }
 \value{
 The name of the newly created file.

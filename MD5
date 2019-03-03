@@ -1,4 +1,4 @@
-561b853c2527bf975b4a1f66d9e5662b *DESCRIPTION
+f6a864a294bec22976c92f6f2525afa5 *DESCRIPTION
 3ea860d9f22fac12c53f2f51dce21e17 *NAMESPACE
 781235596ad8e23a41bc00547ffbb266 *R/anonomize.R
 473a45c7834afedc6c91f97f51d60dc5 *R/checkCoercion.R
@@ -7,11 +7,11 @@ fb668d7620a742e99c170837ef881173 *R/data.R
 83347ec4ccce52994949d429ed225364 *R/deleteBogusRows.R
 e215c7c5dbfaf834e54a24225b1ac501 *R/dir.create.unique.R
 676b4c26791a6e63e69ca7322e445c8f *R/factors.R
-48923b37009504a10a6c9cdd3f899f51 *R/file.backup.R
+c9fa0c9244836de3cf85d40eb4de00d2 *R/file.backup.R
 1c2e5fae548245e4ec8cccdb91c5b1b3 *R/importQualtrics.R
 7f0f4241c285638fa9dfaddc75aacdc8 *R/likert.R
 e4ebad70f81456496f49dd3c2d2b0668 *R/mergeCheck.R
-164a0066ec789c26800db2c94d813881 *R/modelcomparison.R
+013fd71fb644e18ca2f85ce9007b38b3 *R/modelcomparison.R
 72f595afc4b87482c10ae31f03d3f1bf *R/peek.R
 a2b51d585823f9aa8b74ca35018b3564 *R/project.R
 bf5ea3ae704faa713dc04020da30f79b *R/semTable.R
@@ -20,13 +20,13 @@ bf5ea3ae704faa713dc04020da30f79b *R/semTable.R
 72bc32fb5762f1622f6f2184cd5dcad5 *R/updatePkgDepends.R
 36c76ae75f4f309bfceab64662260f17 *R/utils.R
 639d80fe9a16ee5d7a5a79e6d40652a8 *R/variableKey.R
-574f7741109b834d33acdf46c76abef6 *build/vignette.rds
-bb83f887d15bd13f2fa8016761ceec3d *data/natlongsurv.RData
+83506bf71d3b03645d0000e3c793015c *build/vignette.rds
+7225925f3439d413a406ac951ac23708 *data/natlongsurv.RData
 59bb7ed2cb1febd93617d585987364f9 *inst/ChangeLog
 c88ccc9a1bc2c2dca9ab3c0dfd594715 *inst/TODO
 2b8a0af292a9078dce50437a69bba128 *inst/doc/variablekey.R
 6fc62ac205d7db5611c37b2f72b4568a *inst/doc/variablekey.Rnw
-d19716e725a0dd88f4f83a4e3250b920 *inst/doc/variablekey.pdf
+aa6bc675d65fc8b46797e093171948ec *inst/doc/variablekey.pdf
 a9c9cff1882b1cb8d551ca00f3cbce70 *inst/examples/keytest-1.R
 5e45c021ca493d97d45c66ab6d868aa1 *inst/examples/keytest-2.R
 b2ec7affe3906276f028a87577719431 *inst/examples/mydf2.csv
@@ -50,7 +50,7 @@ b47598243334d5151983cc82586d54a5 *inst/extdata/testDF-key.csv
 f7db102a021c9525469166f1d04567f7 *inst/extdata/testDF.csv
 3988477f5c72e425bb03d185a89818a9 *inst/extdata/testDFkey.csv
 475d4aef3c86cb7bebe605d7e5e307e4 *inst/rmarkdown/kutils.css
-6e56837dcd1fe64c04cc543b64605ec7 *inst/unitTests/runit.VariableKey.R
+9df25c7dc6144eb36310929fd7a2ef02 *inst/unitTests/runit.VariableKey.R
 64aba685b0b9286f10e966827b060bea *man/all.equal.key.Rd
 11c2be8c15d92184adc469074b3751c6 *man/all.equal.keylong.Rd
 f196cda238f253a1eed8b9633efcf2ea *man/alphaOnly.Rd
@@ -71,7 +71,7 @@ bd9c62dda95f35cd29b954f87ebe83c7 *man/deleteBogusRows.Rd
 944436d46d98f6b64cf5e5835ff90ba7 *man/dms.Rd
 d7eabbdfdbf44660b144c0b2b59e9787 *man/dts.Rd
 192e2c97aa6666150091a494040ce7f3 *man/escape.Rd
-f6c1501b8a7c02a515fb3bd51fcbcecd *man/file.backup.Rd
+bff32c7359607826cf2a9f33f3336958 *man/file.backup.Rd
 d8acf67ffe273874b98627d93b7336b7 *man/importQualtrics.Rd
 9a296bff7e980236876b1bd0c20245c8 *man/initProject.Rd
 752cd763f5811ac8bd2cbd65ee9a7ab6 *man/is.data.frame.simple.Rd
