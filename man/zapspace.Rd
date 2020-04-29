@@ -23,8 +23,8 @@ is the same. On our TODO list, we intend to eliminate this function
 and replace its use with \code{trimws}
 }
 \examples{
-gg <- c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first")
-(zapspace(gg))
+x <-  c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first")
+zapspace(x)
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

@@ -59,7 +59,7 @@ data(natlongsurv)
 peek(natlongsurv, ask = FALSE, file = paste0(tempdir(), "/","peek.pdf"))
 }
 \references{
-Bureau of Labor Statistics. 2018.  NLS Original Cohort: Mature and Young Women, US National Longitudinal Surveys Public Use Data Sets \url{https://www.bls.gov/nls/nlsorig.htm}.
+Bureau of Labor Statistics. 2018.  NLS Original Cohort: Mature and Young Women, US National Longitudinal Surveys Public Use Data Sets \url{https://www.bls.gov/nls/home.htm}.
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

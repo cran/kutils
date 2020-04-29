@@ -12,9 +12,9 @@ isNA(x, na.strings = c("\\\\.", "", "\\\\s+", "N/A"))
 
 \item{na.strings}{Vector of string values to be considered as
 missing. Defaults will match values that are equal to ., empty
-string "", any number of white space elements, or charcter
-string "N/A". We do not include "NA" by default because some
-projects use "NA" to mean "not appropriate".}
+string, any number of white space elements, or charcter
+string N/A. We do not include `NA` by default because some
+projects use NA to mean "not appropriate".}
 }
 \value{
 Logical vector, TRUE if a value is either NA or in
@@ -26,23 +26,8 @@ vector.  This utility is used to check if the characters
 are either R missing or values in a list of characters that
 represent missings.
 }
-\keyword{"}
-\keyword{"")}
-\keyword{",}
-\keyword{".",}
-\keyword{"FALSE",}
-\keyword{"N/A",}
-\keyword{"NA",}
-\keyword{##}
-\keyword{<-}
-\keyword{@examples}
-\keyword{FALSE,}
-\keyword{NA,}
-\keyword{TRUE,}
-\keyword{c("TRUE",}
-\keyword{cbind(x1,}
-\keyword{internal}
-\keyword{isNA(x1)}
-\keyword{x1}
-\keyword{x1na}
-\keyword{x1na)}
+\examples{
+x1 <- c("TRUE", "FALSE", FALSE, TRUE, NA, "NA", ".", "N/A", " ", "")
+x1na <- kutils:::isNA(x1)
+cbind(x1, x1na)
+}
