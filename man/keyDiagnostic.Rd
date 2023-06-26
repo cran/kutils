@@ -4,8 +4,15 @@
 \alias{keyDiagnostic}
 \title{Diagnose accuracy of result from applying variable key to data}
 \usage{
-keyDiagnostic(dfold, dfnew, keylist, max.values = 20, nametrunc = 18,
-  wide = 200, confidential = FALSE)
+keyDiagnostic(
+  dfold,
+  dfnew,
+  keylist,
+  max.values = 20,
+  nametrunc = 18,
+  wide = 200,
+  confidential = FALSE
+)
 }
 \arguments{
 \item{dfold}{Original data frame}

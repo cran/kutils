@@ -23,7 +23,7 @@ is the same. On our TODO list, we intend to eliminate this function
 and replace its use with \code{trimws}
 }
 \examples{
-x <-  c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first")
+x <-  c("", " ", "   ", "\t", "\t some", "some\t", " space first")
 zapspace(x)
 }
 \author{

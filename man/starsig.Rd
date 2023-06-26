@@ -4,8 +4,7 @@
 \alias{starsig}
 \title{How many stars would we need for this p value?}
 \usage{
-starsig(pval, alpha = c(0.05, 0.01, 0.001), symbols = c("*", "**",
-  "***"))
+starsig(pval, alpha = c(0.05, 0.01, 0.001), symbols = c("*", "**", "***"))
 }
 \arguments{
 \item{pval}{P value}

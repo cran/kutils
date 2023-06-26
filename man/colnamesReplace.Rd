@@ -4,8 +4,14 @@
 \alias{colnamesReplace}
 \title{Replace column names with new names from a named vector}
 \usage{
-colnamesReplace(dat, newnames, oldnames = NULL, ..., lowercase = FALSE,
-  verbose = FALSE)
+colnamesReplace(
+  dat,
+  newnames,
+  oldnames = NULL,
+  ...,
+  lowercase = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{a data frame}

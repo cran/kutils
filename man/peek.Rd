@@ -5,10 +5,18 @@
 \alias{histOMatic}
 \title{Show variables, one at a time, QUICKLY and EASILY.}
 \usage{
-peek(dat, sort = TRUE, file = NULL, textout = FALSE, ask, ...,
-  xlabstub = "kutils peek: ", freq = FALSE,
-  histargs = list(probability = !freq), barargs = list(horiz = TRUE,
-  las = 1))
+peek(
+  dat,
+  sort = TRUE,
+  file = NULL,
+  textout = FALSE,
+  ask,
+  ...,
+  xlabstub = "kutils peek: ",
+  freq = FALSE,
+  histargs = list(probability = !freq),
+  barargs = list(horiz = TRUE, las = 1)
+)
 }
 \arguments{
 \item{dat}{An R data frame or something that can be coerced to a

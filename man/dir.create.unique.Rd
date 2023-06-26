@@ -5,8 +5,13 @@
 \title{Create a uniquely named directory. Appends number & optionally date to directory
 name.}
 \usage{
-dir.create.unique(path, usedate = TRUE, showWarnings = TRUE,
-  recursive = TRUE, mode = "0777")
+dir.create.unique(
+  path,
+  usedate = TRUE,
+  showWarnings = TRUE,
+  recursive = TRUE,
+  mode = "0777"
+)
 }
 \arguments{
 \item{path}{A character string for the base name of the directory.}

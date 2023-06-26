@@ -4,8 +4,11 @@
 \alias{keyCheck}
 \title{Check a key for consistency of names, values with classes.}
 \usage{
-keyCheck(key, colname = c("name_new", "class_old", "class_new"),
-  na.strings = c("\\\\.", "", "\\\\s+", "N/A"))
+keyCheck(
+  key,
+  colname = c("name_new", "class_old", "class_new"),
+  na.strings = c("\\\\.", "", "\\\\s+", "N/A")
+)
 }
 \arguments{
 \item{key}{A variable key object.}

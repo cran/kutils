@@ -5,8 +5,13 @@
 \title{If a numeric variable has only integer values, then
 make it an integer.}
 \usage{
-safeInteger(x, tol = .Machine$double.eps, digits = 7,
-  vmax = .Machine$integer.max, verbose = FALSE)
+safeInteger(
+  x,
+  tol = .Machine$double.eps,
+  digits = 7,
+  vmax = .Machine$integer.max,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x}{a numeric variable}

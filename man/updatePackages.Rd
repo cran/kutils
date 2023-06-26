@@ -4,9 +4,14 @@
 \alias{updatePackages}
 \title{Update packages, spot new dependencies, and install them}
 \usage{
-updatePackages(ask = FALSE, checkBuilt = TRUE,
+updatePackages(
+  ask = FALSE,
+  checkBuilt = TRUE,
   dependencies = c("Depends", "Imports", "LinkingTo"),
-  libnew = "/usr/share/R/library/", repos = options("repos"), ...)
+  libnew = "/usr/share/R/library/",
+  repos = options("repos"),
+  ...
+)
 }
 \arguments{
 \item{ask}{If TRUE, asks user to select packages to update}

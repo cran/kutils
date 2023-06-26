@@ -4,10 +4,16 @@
 \alias{keyImport}
 \title{Import/validate a key object or import/validate a key from a file.}
 \usage{
-keyImport(key, ignoreCase = TRUE, sep = c(character = "\\\\|", logical
-  = "\\\\|", integer = "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]",
-  numeric = "\\\\|"), na.strings = c("\\\\.", "", "\\\\s+", "N/A"),
-  missSymbol = ".", ..., keynames = NULL)
+keyImport(
+  key,
+  ignoreCase = TRUE,
+  sep = c(character = "\\\\|", logical = "\\\\|", integer = "\\\\|", factor = "\\\\|",
+    ordered = "[\\\\|<]", numeric = "\\\\|"),
+  na.strings = c("\\\\.", "", "\\\\s+", "N/A"),
+  missSymbol = ".",
+  ...,
+  keynames = NULL
+)
 }
 \arguments{
 \item{key}{A key object (class key or keylong) or a file name

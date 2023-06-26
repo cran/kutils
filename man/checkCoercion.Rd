@@ -5,8 +5,7 @@
 \title{Check if values can be safely coerced without introduction of
 missing values}
 \usage{
-checkCoercion(value, targetclass, na.strings = c("\\\\.", "", "\\\\s+",
-  "N/A"))
+checkCoercion(value, targetclass, na.strings = c("\\\\.", "", "\\\\s+", "N/A"))
 }
 \arguments{
 \item{value}{Character vector of values, such as value_new or

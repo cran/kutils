@@ -4,8 +4,11 @@
 \alias{long2wide}
 \title{convert a key object from long to wide format}
 \usage{
-long2wide(keylong, na.strings = c("\\\\.", "", "\\\\s+", "N/A"),
-  missSymbol = ".")
+long2wide(
+  keylong,
+  na.strings = c("\\\\.", "", "\\\\s+", "N/A"),
+  missSymbol = "."
+)
 }
 \arguments{
 \item{keylong}{A variable key in the long format}

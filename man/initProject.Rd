@@ -5,9 +5,18 @@
 \title{Create project directories, initialize a git repo, create README.md
 ChangeLog, and R template file in R directory}
 \usage{
-initProject(dir = NULL, ddir = "data", wdir = "workingdata",
-  odir = "output", tdir = "tmp", ldir = "lit",
-  writedir = "writeup", rdir = "R", ..., gitArgs = "--shared=group")
+initProject(
+  dir = NULL,
+  ddir = "data",
+  wdir = "workingdata",
+  odir = "output",
+  tdir = "tmp",
+  ldir = "lit",
+  writedir = "writeup",
+  rdir = "R",
+  ...,
+  gitArgs = "--shared=group"
+)
 }
 \arguments{
 \item{dir}{Default NULL, otherwise a legal directory name to serve

@@ -41,7 +41,7 @@ missing value), an empty string, or white space, meaning " ", or
 any number of spaces, or a tab.
 }
 \examples{
-gg <- c("", " ", "   ", "\\t", "\\t some", "some\\t", " space first", ".",
+gg <- c("", " ", "   ", "\t", "\t some", "some\t", " space first", ".",
        " . ")
 n2NA(x = gg)
 n2NA(x = gg, zapspace = FALSE)

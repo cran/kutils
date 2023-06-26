@@ -5,8 +5,7 @@
 \title{Remove columns in which the proportion of missing data exceeds
 a threshold.}
 \usage{
-deleteBogusColumns(dframe, pm = 0.9, drop = FALSE, verbose = TRUE,
-  n = 25)
+deleteBogusColumns(dframe, pm = 0.9, drop = FALSE, verbose = TRUE, n = 25)
 }
 \arguments{
 \item{dframe}{A data frame or matrix}

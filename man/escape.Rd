@@ -25,7 +25,7 @@ will not cause failures in the eventual document.
 }
 \details{
 The special in-document LaTeX symbols like percent sign or dollar sign
-are "\%" and "\$". *Warning*: In the R
+are "%" and "$". *Warning*: In the R
 session, these will appear as double-backslashed symbols, while in
 a saved text file, there will only be the one desired slash.
 

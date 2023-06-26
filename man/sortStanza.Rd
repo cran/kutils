@@ -4,8 +4,11 @@
 \alias{sortStanza}
 \title{Move missing values to last row in long key block}
 \usage{
-sortStanza(keyblock, valvar = "value_new", na.strings = c("\\\\.", "",
-  "\\\\s+", "N/A"))
+sortStanza(
+  keyblock,
+  valvar = "value_new",
+  na.strings = c("\\\\.", "", "\\\\s+", "N/A")
+)
 }
 \arguments{
 \item{keyblock}{a variable key, or section of rows}

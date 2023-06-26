@@ -4,9 +4,18 @@
 \alias{keyTemplate}
 \title{Create variable key template (in memory or in a file)}
 \usage{
-keyTemplate(dframe, long = FALSE, sort = FALSE, file = NULL,
-  max.levels = 15, missings = NULL, missSymbol = ".",
-  safeNumericToInteger = TRUE, trimws = "both", varlab = FALSE)
+keyTemplate(
+  dframe,
+  long = FALSE,
+  sort = FALSE,
+  file = NULL,
+  max.levels = 15,
+  missings = NULL,
+  missSymbol = ".",
+  safeNumericToInteger = TRUE,
+  trimws = "both",
+  varlab = FALSE
+)
 }
 \arguments{
 \item{dframe}{A data frame}

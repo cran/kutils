@@ -5,8 +5,12 @@
 \title{Sort key so that non missing values are first in the
 value vector.}
 \usage{
-naLast(key, byvar = "name_new", valvar = "value_new",
-  na.strings = c("\\\\.", "", "\\\\s+", "N/A"))
+naLast(
+  key,
+  byvar = "name_new",
+  valvar = "value_new",
+  na.strings = c("\\\\.", "", "\\\\s+", "N/A")
+)
 }
 \arguments{
 \item{key}{key, long or wide}

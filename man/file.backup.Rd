@@ -4,8 +4,7 @@
 \alias{file.backup}
 \title{Create a backup version of a file by renaming it.}
 \usage{
-file.backup(name, fullpath = FALSE, keep.old = FALSE,
-  verbose = FALSE)
+file.backup(name, fullpath = FALSE, keep.old = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{name}{A character string for the name of the file.}

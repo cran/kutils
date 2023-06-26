@@ -4,8 +4,11 @@
 \alias{wide2long}
 \title{Convert a key object from wide to long format}
 \usage{
-wide2long(key, sep = c(character = "\\\\|", logical = "\\\\|", integer =
-  "\\\\|", factor = "\\\\|", ordered = "[\\\\|<]", numeric = "\\\\|"))
+wide2long(
+  key,
+  sep = c(character = "\\\\|", logical = "\\\\|", integer = "\\\\|", factor = "\\\\|",
+    ordered = "[\\\\|<]", numeric = "\\\\|")
+)
 }
 \arguments{
 \item{key}{A variable key in the wide format}

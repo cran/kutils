@@ -4,8 +4,15 @@
 \alias{importQualtrics}
 \title{Import Qualtrics survey files, apply clean column names}
 \usage{
-importQualtrics(file, namerow = 1, questionrow = 2, importidrow = 3,
-  skip = 3, dropTEXT = TRUE, stringsAsFactors = FALSE)
+importQualtrics(
+  file,
+  namerow = 1,
+  questionrow = 2,
+  importidrow = 3,
+  skip = 3,
+  dropTEXT = TRUE,
+  stringsAsFactors = FALSE
+)
 }
 \arguments{
 \item{file}{file name (including path if in another directory) of

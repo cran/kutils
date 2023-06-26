@@ -4,8 +4,16 @@
 \alias{keyApply}
 \title{Apply variable key to data frame (generate recoded data frame)}
 \usage{
-keyApply(dframe, key, diagnostic = TRUE, safeNumericToInteger = TRUE,
-  trimws = "both", ignoreCase = TRUE, drop = TRUE, debug = FALSE)
+keyApply(
+  dframe,
+  key,
+  diagnostic = TRUE,
+  safeNumericToInteger = TRUE,
+  trimws = "both",
+  ignoreCase = TRUE,
+  drop = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{dframe}{An R data frame}

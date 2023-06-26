@@ -5,8 +5,13 @@
 \title{Cuts a string at a specified linewidth, trying to align cut with a
 separator}
 \usage{
-truncsmart(x, target = 20, tol = c(5, 3), separators = c(" ", "_",
-  ";", ","), capwidth = 1)
+truncsmart(
+  x,
+  target = 20,
+  tol = c(5, 3),
+  separators = c(" ", "_", ";", ","),
+  capwidth = 1
+)
 }
 \arguments{
 \item{x}{character or vector of characters}

@@ -5,10 +5,14 @@
 \title{Homogenize class values and create a long key by pooling variable
 keys.}
 \usage{
-keysPool(keylong = NULL, keysplit = NULL, classes = list(c("logical",
-  "integer"), c("integer", "numeric"), c("ordered", "factor"), c("factor",
-  "character")), colnames = c("class_old", "class_new"),
-  textre = "TEXT$")
+keysPool(
+  keylong = NULL,
+  keysplit = NULL,
+  classes = list(c("logical", "integer"), c("integer", "numeric"), c("ordered",
+    "factor"), c("factor", "character")),
+  colnames = c("class_old", "class_new"),
+  textre = "TEXT$"
+)
 }
 \arguments{
 \item{keylong}{A list of long keys, or just one long key,

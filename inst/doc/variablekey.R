@@ -1,5 +1,4 @@
 ### R code from vignette source 'variablekey.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: variablekey.Rnw:22-23
@@ -8,7 +7,7 @@
 
 
 ###################################################
-### code chunk number 2: variablekey.Rnw:138-139
+### code chunk number 2: variablekey.Rnw:139-140
 ###################################################
 if(!dir.exists("plots")) dir.create("plots")
 
@@ -24,7 +23,7 @@ pdf.options(onefile=F,family="Times",pointsize=10)
 
 
 ###################################################
-### code chunk number 4: variablekey.Rnw:323-338
+### code chunk number 4: variablekey.Rnw:324-339
 ###################################################
 set.seed(234234)
 N <- 200
@@ -44,13 +43,13 @@ mydf$x5[sample(1:N, 10)] <- -999
 
 
 ###################################################
-### code chunk number 5: variablekey.Rnw:366-367 (eval = FALSE)
+### code chunk number 5: variablekey.Rnw:367-368 (eval = FALSE)
 ###################################################
 ## key_wide <- keyTemplate(mydf, file = "key_wide.csv", max.levels = 5)
 
 
 ###################################################
-### code chunk number 6: variablekey.Rnw:373-374 (eval = FALSE)
+### code chunk number 6: variablekey.Rnw:374-375 (eval = FALSE)
 ###################################################
 ## key_long <- keyTemplate(mydf, long = TRUE, file = "key_long.csv", max.levels = 5)
 
@@ -87,7 +86,7 @@ print(xtable(key_long), include.rownames = FALSE, size = "small", floating = FAL
 
 
 ###################################################
-### code chunk number 12: variablekey.Rnw:602-603 (eval = FALSE)
+### code chunk number 12: variablekey.Rnw:603-604 (eval = FALSE)
 ###################################################
 ## mydf.cleaned <- keyApply(mydf, mydf.keylist)
 

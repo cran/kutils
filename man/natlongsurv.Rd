@@ -4,7 +4,8 @@
 \name{natlongsurv}
 \alias{natlongsurv}
 \title{Smoking, Happiness, and other survey responses}
-\format{A data frame with 2867 rows and 29 variables:
+\format{
+A data frame with 2867 rows and 29 variables:
 
 \itemize{
   \item	R0000100	IDENTIFICATION CODE
@@ -25,7 +26,7 @@
   \item	R7293430	YOUNG WOMEN 20-ITEM CES-D ITEM RESPONSE SCORE
   \item	R7312300	INCOME FROM WAGES/SALARY IN PAST YEAR
   \item	R7329900	INCOME ADEQUACY: R OPINION OF HER HAPPINESS WITH HER/FAMILY INCOME
-  \item	R7330000	INCOME ADEQUACY: R OPINION OF AMOUNT NEEDED TO MAKE ENDS MEET \$ AMOUNT
+  \item	R7330000	INCOME ADEQUACY: R OPINION OF AMOUNT NEEDED TO MAKE ENDS MEET $ AMOUNT
   \item	R7337600	R HAS ATTENDED/COMPLETED TWO/MORE YEARS OF COLLEGE
   \item	R7344600	ATTITUDE TOWARD FEELINGS OVERALL
   \item	R7344700	DID R DO ANY UNPAID VOLUNTEER WORK IN PAST YEAR?
@@ -35,7 +36,8 @@
   \item	R7477700	TOTAL CHILDREN IN ROSTER
   \item	R7477800	COUNT ELIGIBLE HOUSEHOLD CHILDREN
   \item	R7610300	REGION OF RESIDENCE
-}}
+}
+}
 \source{
 National Longitudinal Surveys public-use data set (Bureau of Labor Statistics, 2018).
 }
@@ -59,7 +61,7 @@ data(natlongsurv)
 peek(natlongsurv, ask = FALSE, file = paste0(tempdir(), "/","peek.pdf"))
 }
 \references{
-Bureau of Labor Statistics. 2018.  NLS Original Cohort: Mature and Young Women, US National Longitudinal Surveys Public Use Data Sets \url{https://www.bls.gov/nls/home.htm}.
+Bureau of Labor Statistics. 2018.  NLS Original Cohort: Mature and Young Women, US National Longitudinal Surveys Public Use Data Sets (www.bls.gov/nls/home.htm).
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>

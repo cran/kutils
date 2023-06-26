@@ -31,7 +31,7 @@ turning FALSE R's own method to insert quotation marks.
 }
 \examples{
 set.seed(234)
-x1 <- data.frame(x1 = c("a", "b,c", "b", "The \\"Washington, DC\\""),
+x1 <- data.frame(x1 = c("a", "b,c", "b", "The \"Washington, DC\""),
       x2 = rnorm(4), stringsAsFactors = FALSE)
 x1
 fn <- tempfile(pattern = "testcsv", fileext = ".csv")

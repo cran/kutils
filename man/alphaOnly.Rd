@@ -22,8 +22,8 @@ cleaned text string
 From a text string, keep ASCII letters, numbers, as well as "'",
 " ", "_" "(", ")", "-", and "+". For maximum compatability with
 the cross-platform file-naming standard. Obliterates all
-characters that migth be mistaken for shell symbols, like "\^",
-"\$", "\@" and so forth.
+characters that migth be mistaken for shell symbols, like "^",
+"$", "@" and so forth.
 }
 \details{
 Removes trailing spaces.
@@ -33,7 +33,7 @@ also argument can be used to eliminate spaces or other hated symbols.
 }
 \examples{
 x <- c("[]kansas(city) Missouri", "percent\%slash/",
-       "\\back{squiggle}_under(paren)", "*star-minus+plus")
+       "\back{squiggle}_under(paren)", "*star-minus+plus")
 alphaOnly(x)
 alphaOnly(x, also = c(" " = "_", "+" = "_"))
 alphaOnly(x, also = c("(" = "[", ")" = "]"))

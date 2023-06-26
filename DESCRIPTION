@@ -1,8 +1,9 @@
 Package: kutils
 Type: Package
 Title: Project Management Tools
-Version: 1.70
-Date: 2020-04-28
+Version: 1.72
+Date: 2023-06-25
+Encoding: UTF-8
 Authors@R: c(person("Paul","Johnson",email="pauljohn@ku.edu",role = c("aut", "cre")),
 		   person("Benjamin","Kite",email="bakite@ku.edu",role="aut"),
 		   person("Charles","Redmon",email="redmon@ku.edu",role="aut"),
@@ -25,10 +26,10 @@ License: GPL-2
 Depends: R (>= 3.3.0)
 Imports: stats, utils, methods, foreign, xtable, plyr, openxlsx, RUnit
 Suggests: rockchalk
-RoxygenNote: 7.1.0
+RoxygenNote: 7.2.3
 LazyData: TRUE
 NeedsCompilation: no
-Packaged: 2020-04-29 18:02:35 UTC; pauljohn
+Packaged: 2023-06-26 04:42:01 UTC; pauljohn
 Author: Paul Johnson [aut, cre],
   Benjamin Kite [aut],
   Charles Redmon [aut],
@@ -37,4 +38,4 @@ Author: Paul Johnson [aut, cre],
   Po-Yi Chen [ctb],
   Shadi Pirhosseinloo [ctb]
 Repository: CRAN
-Date/Publication: 2020-04-29 18:30:02 UTC
+Date/Publication: 2023-06-26 22:40:02 UTC
