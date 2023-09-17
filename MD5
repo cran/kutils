@@ -1,4 +1,4 @@
-8de4bc02cf13f63d76353eb12fa03743 *DESCRIPTION
+41dfa66890e643b9c5d07993fccf73f5 *DESCRIPTION
 63adaf6eb8739c2721b51d9dca9ab469 *NAMESPACE
 781235596ad8e23a41bc00547ffbb266 *R/anonomize.R
 473a45c7834afedc6c91f97f51d60dc5 *R/checkCoercion.R
@@ -23,8 +23,8 @@ a334b4d90709ba3c9dced4d42d1305e6 *data/natlongsurv.RData
 59bb7ed2cb1febd93617d585987364f9 *inst/ChangeLog
 c88ccc9a1bc2c2dca9ab3c0dfd594715 *inst/TODO
 de2bd961dc1f3c7db340984b267b8c65 *inst/doc/variablekey.R
-20d28a69a7726769ef53061f93ea49c2 *inst/doc/variablekey.Rnw
-be92252b2a8178018e39ea7383619088 *inst/doc/variablekey.pdf
+d379293f113cef0473f997c8b685fc0f *inst/doc/variablekey.Rnw
+696face4d61bc46c4757aae41f8756f3 *inst/doc/variablekey.pdf
 a9c9cff1882b1cb8d551ca00f3cbce70 *inst/examples/keytest-1.R
 5e45c021ca493d97d45c66ab6d868aa1 *inst/examples/keytest-2.R
 b2ec7affe3906276f028a87577719431 *inst/examples/mydf2.csv
@@ -121,5 +121,5 @@ c1252367c5a42fbee4471bcfdb2c93ba *tests/runUnitTests.R
 dd751af313a16a0308545d5bfd7aaaa2 *vignettes/cancel.sty
 37597df8b841cb1007ccd516204db678 *vignettes/kutils.bib
 c4cc3164fe24f2f2fbb06eb71b1da4c4 *vignettes/relsize.sty
-20d28a69a7726769ef53061f93ea49c2 *vignettes/variablekey.Rnw
-5d63f85b5f516d49f3f75d2e9af2787d *vignettes/variablekey.lyx
+d379293f113cef0473f997c8b685fc0f *vignettes/variablekey.Rnw
+44698b113ff519202a8bb01687b36ea9 *vignettes/variablekey.lyx

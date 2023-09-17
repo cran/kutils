@@ -1,8 +1,8 @@
 Package: kutils
 Type: Package
 Title: Project Management Tools
-Version: 1.72
-Date: 2023-06-25
+Version: 1.73
+Date: 2023-09-17
 Encoding: UTF-8
 Authors@R: c(person("Paul","Johnson",email="pauljohn@ku.edu",role = c("aut", "cre")),
 		   person("Benjamin","Kite",email="bakite@ku.edu",role="aut"),
@@ -29,7 +29,7 @@ Suggests: rockchalk
 RoxygenNote: 7.2.3
 LazyData: TRUE
 NeedsCompilation: no
-Packaged: 2023-06-26 04:42:01 UTC; pauljohn
+Packaged: 2023-09-17 14:13:02 UTC; pauljohn
 Author: Paul Johnson [aut, cre],
   Benjamin Kite [aut],
   Charles Redmon [aut],
@@ -38,4 +38,4 @@ Author: Paul Johnson [aut, cre],
   Po-Yi Chen [ctb],
   Shadi Pirhosseinloo [ctb]
 Repository: CRAN
-Date/Publication: 2023-06-26 22:40:02 UTC
+Date/Publication: 2023-09-17 15:50:02 UTC
